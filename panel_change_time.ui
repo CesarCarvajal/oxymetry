@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PanelChangeTime</class>
+ <widget class="QWidget" name="PanelChangeTime">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>225</width>
+    <height>42</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Change integration time</string>
+  </property>
+  <widget class="QPushButton" name="button_apply">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>10</y>
+     <width>65</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="spinbox_timeValue">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>80</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="decimals">
+    <number>2</number>
+   </property>
+   <property name="minimum">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>10000.000000000000000</double>
+   </property>
+   <property name="singleStep">
+    <double>0.100000000000000</double>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="combobox_timeBase">
+   <property name="geometry">
+    <rect>
+     <x>95</x>
+     <y>10</y>
+     <width>40</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>µs</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>ms</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>s</string>
+    </property>
+   </item>
+  </widget>
+  <zorder>spinbox_timeValue</zorder>
+  <zorder>button_apply</zorder>
+  <zorder>combobox_timeBase</zorder>
+ </widget>
+ <tabstops>
+  <tabstop>spinbox_timeValue</tabstop>
+  <tabstop>combobox_timeBase</tabstop>
+  <tabstop>button_apply</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

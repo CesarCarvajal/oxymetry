@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PanelAbout</class>
+ <widget class="QDialog" name="PanelAbout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>470</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>About Oxymetry</string>
+  </property>
+  <widget class="QPushButton" name="button_close">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>190</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_title">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>10</y>
+     <width>311</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Oxymetry 0.3.0</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_compiler">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>40</y>
+     <width>310</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>&lt;Compiler info&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_build">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>60</y>
+     <width>311</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;Build info&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_copyright">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>80</y>
+     <width>311</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;Copyright info&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_license">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>120</y>
+     <width>311</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;License&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>210</y>
+     <width>451</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Changelog</string>
+    </attribute>
+    <widget class="QPlainTextEdit" name="plainTextEdit_changelog">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>425</width>
+       <height>135</height>
+      </rect>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="plainText">
+      <string>Version 0.3.0: (29.09.2017)
+
+* Legend now shows 'unknown' if serial number or readable name of spectrometer are not available
+* Fixed spectra count in StoreToRAM files
+* Changes of readable name are now accepted
+* Disabling/enabling of a device now disables all elements in device item
++ Many code optimizations, especially to the StoreToRAM function and the spectrometer configuration dialog
++ Time-controlled measurements can now be automated via button 'time pattern'
++ The serial number of the device is no longer attached to the file names of StoreToRAM
++ StoreToRAM now supports more than 10000 spectra
++ Wavelengths are shown belong pixel numbers in configuration dialog
++ Combined 'preview start' and 'preview stop' buttons into one single button
+
+Version 0.2.6: (04.09.2017)
+
+* Fixed a bug that prevented data export
++ Increased maximum of StoreToRAM spectra
++ StoreToRAM dialog remembers last path
+
+Version 0.2.5: (14.08.2017)
+
+* Updated AvaSpec library to version 9.6.0.0
+
+Version 0.2.4: (19.06.2017)
+
++ Support of increased peristaltic pump RPM update rate
++ RPM in fluidic toolbox is now calculated over a period of one second
+* Compatibility check for Qt 5.9.0
+
+Version 0.2.3: (14.06.2017)
+
++ The user must now confirm whether existing files should be overwritten during data export
+
+Version 0.2.2: (29.05.2017)
+
+* Fixed calculation of fluidic circuit rollerpump RPM
+* Fixed bug that prevented the first pinch valve from being switched
+* Fixed a bug that caused the user to be overwhelmed with error messages when the light source was disconnected during operation
++ Added fluidic circuit auto-connect functionality
++ Added changelog and contributors lists
+- Removed message if no spectrometers were found
+
+Version 0.2.1 (24.05.2017):
+
++ The spectral data from the spectrometers are now stored in separate files
++ Additional information (dynamic dark correction enabled, time and date, ...) is now stored within the saved spectra
+
+Version 0.2:
+
+Initial release</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Contributors</string>
+    </attribute>
+    <widget class="QPlainTextEdit" name="plainTextEdit_contributors">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>425</width>
+       <height>135</height>
+      </rect>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="plainText">
+      <string>Isabeau Dibbern, Torben Kruse, Benjamin Redmer</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <zorder>label_license</zorder>
+  <zorder>button_close</zorder>
+  <zorder>label_title</zorder>
+  <zorder>label_compiler</zorder>
+  <zorder>label_build</zorder>
+  <zorder>label_copyright</zorder>
+  <zorder>tabWidget</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
