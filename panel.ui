@@ -905,7 +905,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Hardware Settings</string>
+                <string>Configuration</string>
                </property>
               </widget>
              </item>
@@ -926,7 +926,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Configure Pump</string>
+                  <string>Measurement</string>
                  </property>
                 </widget>
                </item>
@@ -945,59 +945,11 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Configure F-Rotator</string>
+                  <string>F-Rotator</string>
                  </property>
                 </widget>
                </item>
               </layout>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_12">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Minimum</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>15</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_Set_Spec_Pol">
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Spectrometer Settings:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QListWidget" name="list_devices_Pol">
-               <property name="minimumSize">
-                <size>
-                 <width>260</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>280</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="autoScroll">
-                <bool>false</bool>
-               </property>
-              </widget>
              </item>
              <item>
               <spacer name="verticalSpacer_8">
@@ -1009,8 +961,8 @@
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>20</width>
-                 <height>15</height>
+                 <width>10</width>
+                 <height>10</height>
                 </size>
                </property>
               </spacer>
@@ -1024,7 +976,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Autosave options</string>
+                <string>Save Options</string>
                </property>
               </widget>
              </item>
@@ -1088,28 +1040,31 @@
                  <property name="text">
                   <string>Raw Data</string>
                  </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
                 </widget>
                </item>
               </layout>
              </item>
              <item>
-              <spacer name="verticalSpacer_10">
+              <spacer name="verticalSpacer_12">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Minimum</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>20</width>
-                 <height>15</height>
+                 <height>10</height>
                 </size>
                </property>
               </spacer>
              </item>
              <item>
-              <widget class="QLabel" name="label_Save_Raw_Pol">
+              <widget class="QLabel" name="label_Set_Spec_Pol">
                <property name="font">
                 <font>
                  <weight>75</weight>
@@ -1117,112 +1072,28 @@
                 </font>
                </property>
                <property name="text">
-                <string>Save to File Options</string>
+                <string>Spectrometer:</string>
                </property>
               </widget>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_11">
-               <item>
-                <spacer name="horizontalSpacer_16">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>10</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="checkBox_Save_Pol">
-                 <property name="minimumSize">
-                  <size>
-                   <width>110</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>110</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>FFT Profiles</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="checkBox_Save_Pol_Raw">
-                 <property name="minimumSize">
-                  <size>
-                   <width>110</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>110</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Raw Data</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_14">
-               <item>
-                <spacer name="horizontalSpacer_14">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>110</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="button_Save_FFT_Pol">
-                 <property name="minimumSize">
-                  <size>
-                   <width>110</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>110</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>   Save    </string>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>16</width>
-                   <height>16</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QListWidget" name="list_devices_Pol">
+               <property name="minimumSize">
+                <size>
+                 <width>290</width>
+                 <height>100</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>280</width>
+                 <height>150</height>
+                </size>
+               </property>
+               <property name="autoScroll">
+                <bool>false</bool>
+               </property>
+              </widget>
              </item>
              <item>
               <spacer name="verticalSpacer_9">
@@ -1235,7 +1106,7 @@
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>15</width>
-                 <height>15</height>
+                 <height>10</height>
                 </size>
                </property>
               </spacer>
@@ -1249,7 +1120,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Measurements Summary</string>
+                <string>Measurement Progress:</string>
                </property>
               </widget>
              </item>
@@ -1257,8 +1128,8 @@
               <widget class="QTableWidget" name="Table_Measurements_Pol">
                <property name="minimumSize">
                 <size>
-                 <width>260</width>
-                 <height>0</height>
+                 <width>290</width>
+                 <height>250</height>
                 </size>
                </property>
                <property name="maximumSize">
@@ -1269,6 +1140,9 @@
                </property>
                <property name="autoScroll">
                 <bool>true</bool>
+               </property>
+               <property name="autoScrollMargin">
+                <number>18</number>
                </property>
                <property name="textElideMode">
                 <enum>Qt::ElideLeft</enum>
@@ -1283,7 +1157,7 @@
                 <bool>false</bool>
                </attribute>
                <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>79</number>
+                <number>54</number>
                </attribute>
                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                 <bool>false</bool>
@@ -1294,6 +1168,12 @@
                <attribute name="verticalHeaderCascadingSectionResizes">
                 <bool>false</bool>
                </attribute>
+               <attribute name="verticalHeaderHighlightSections">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderMinimumSectionSize">
+                <number>39</number>
+               </attribute>
                <attribute name="verticalHeaderShowSortIndicator" stdset="0">
                 <bool>false</bool>
                </attribute>
@@ -1302,20 +1182,144 @@
                </attribute>
                <column>
                 <property name="text">
-                 <string>Date</string>
+                 <string>No.</string>
                 </property>
                </column>
                <column>
                 <property name="text">
-                 <string>C</string>
+                 <string>Time</string>
                 </property>
                </column>
                <column>
                 <property name="text">
-                 <string>C_r</string>
+                 <string>File Name</string>
                 </property>
                </column>
               </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Current Measurement:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QProgressBar" name="currentProgressBar_Pol">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>15</height>
+                </size>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+               <property name="textVisible">
+                <bool>true</bool>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Total measurement:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QProgressBar" name="TotalProgressBar_Pol">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>15</height>
+                </size>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="button_Start_Meas_Pol">
+               <property name="minimumSize">
+                <size>
+                 <width>290</width>
+                 <height>55</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>120</width>
+                 <height>55</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Start Measurement</string>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="verticalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>5</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>
@@ -1329,7 +1333,7 @@
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>10</width>
+               <width>5</width>
                <height>20</height>
               </size>
              </property>
@@ -1356,20 +1360,40 @@
                 </spacer>
                </item>
                <item>
-                <widget class="Plot" name="qwtPlot_Pol">
-                 <property name="minimumSize">
-                  <size>
-                   <width>270</width>
-                   <height>300</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_10">
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Raw Signal</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Plot" name="qwtPlot_Pol">
+                   <property name="minimumSize">
+                    <size>
+                     <width>265</width>
+                     <height>300</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <spacer name="horizontalSpacer_12">
@@ -1388,26 +1412,46 @@
                 </spacer>
                </item>
                <item>
-                <widget class="Plot" name="qwtPlot_Pol_Compensation">
-                 <property name="minimumSize">
-                  <size>
-                   <width>270</width>
-                   <height>300</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_11">
+                 <item>
+                  <widget class="QLabel" name="label_7">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Compensation Signal W/2W</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Plot" name="qwtPlot_Pol_Compensation">
+                   <property name="minimumSize">
+                    <size>
+                     <width>265</width>
+                     <height>300</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <spacer name="horizontalSpacer_11">
@@ -1426,26 +1470,46 @@
                 </spacer>
                </item>
                <item>
-                <widget class="Plot" name="qwtPlot_Pol_Prediction">
-                 <property name="minimumSize">
-                  <size>
-                   <width>270</width>
-                   <height>300</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_12">
+                 <item>
+                  <widget class="QLabel" name="FFT_label_Pol">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>FFT</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Plot" name="qwtPlot_Pol_Prediction">
+                   <property name="minimumSize">
+                    <size>
+                     <width>265</width>
+                     <height>300</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <spacer name="horizontalSpacer_18">
@@ -1484,20 +1548,40 @@
                 </spacer>
                </item>
                <item>
-                <widget class="Plot" name="qwtPlot_Pol_w_2w">
-                 <property name="minimumSize">
-                  <size>
-                   <width>400</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <item>
+                  <widget class="QLabel" name="label_9">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>FFT Amplitudes For All Wavelengths</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Plot" name="qwtPlot_Pol_w_2w">
+                   <property name="minimumSize">
+                    <size>
+                     <width>380</width>
+                     <height>340</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <spacer name="horizontalSpacer_13">
@@ -1516,26 +1600,46 @@
                 </spacer>
                </item>
                <item>
-                <widget class="Plot" name="qwtPlot_Pol_Average">
-                 <property name="minimumSize">
-                  <size>
-                   <width>400</width>
-                   <height>350</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>16777215</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
+                <layout class="QVBoxLayout" name="verticalLayout_14">
+                 <item>
+                  <widget class="QLabel" name="label_10">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Measurements History</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Plot" name="qwtPlot_Pol_Average">
+                   <property name="minimumSize">
+                    <size>
+                     <width>380</width>
+                     <height>340</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
                 <spacer name="horizontalSpacer_20">
@@ -1561,7 +1665,7 @@
                 <widget class="QPushButton" name="Button_Save_Graphs_Pol">
                  <property name="minimumSize">
                   <size>
-                   <width>100</width>
+                   <width>120</width>
                    <height>28</height>
                   </size>
                  </property>
@@ -1572,7 +1676,7 @@
                   </size>
                  </property>
                  <property name="text">
-                  <string>Save Graphs</string>
+                  <string>Save Graphs as PDF</string>
                  </property>
                 </widget>
                </item>
@@ -1580,80 +1684,18 @@
                 <widget class="QPushButton" name="button_Load_Graphs">
                  <property name="minimumSize">
                   <size>
+                   <width>120</width>
+                   <height>28</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
                    <width>100</width>
                    <height>28</height>
                   </size>
                  </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>28</height>
-                  </size>
-                 </property>
                  <property name="text">
-                  <string>Load Graphs</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="button_Stop_Meas_Pol">
-                 <property name="minimumSize">
-                  <size>
-                   <width>120</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>120</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Stop Measurement</string>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>16</width>
-                   <height>16</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="button_Start_Meas_Pol">
-                 <property name="minimumSize">
-                  <size>
-                   <width>120</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>120</width>
-                   <height>28</height>
-                  </size>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Start Measurement</string>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>16</width>
-                   <height>16</height>
-                  </size>
+                  <string>Load a Measurement</string>
                  </property>
                 </widget>
                </item>
@@ -1674,15 +1716,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>ClickableLabel</class>
+   <extends>QLabel</extends>
+   <header>clickablelabel.h</header>
+  </customwidget>
+  <customwidget>
    <class>Plot</class>
    <extends>QFrame</extends>
    <header>plot.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QLabel</extends>
-   <header>clickablelabel.h</header>
   </customwidget>
   <customwidget>
    <class>MeasurementsTable</class>

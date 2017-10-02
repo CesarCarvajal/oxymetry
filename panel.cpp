@@ -368,18 +368,14 @@ Panel::Panel(QWidget *parent) :
      */
 
         /* Connect buttons in Polarimeter Tab */
-         connect(ui->button_Start_Meas_Pol, SIGNAL(clicked()), this, SLOT(startMeasurement()));
-         connect(ui->button_Stop_Meas_Pol, SIGNAL(clicked()), this, SLOT(stopMeasurement()));
+         //connect(ui->button_Start_Meas_Pol, SIGNAL(clicked()), this, SLOT(start_Pol_Measurement()));
+         connect(ui->button_Start_Meas_Pol, SIGNAL(clicked()), this, SLOT(toggle_Pol_Measurement()));
 
          /* If there are spectrometers connected, allow the Measurements*/
-       //  ui->button_Start_Meas_Pol->setDisabled((!m_NrDevices) ? true : false); *************----------------------------------
-         ui->button_Stop_Meas_Pol->setDisabled(true);
+         ui->button_Start_Meas_Pol->setDisabled((!m_NrDevices) ? true : false);
 
          /* Connect buttons for saving purposes manually */
-         connect(ui->button_Save_FFT_Pol, SIGNAL(clicked()), this, SLOT(saveManuallyFFT()));
          connect(ui->Button_Save_Graphs_Pol, SIGNAL(clicked()), this, SLOT(saveGraph_Pol()));
-         connect(ui->checkBox_Save_Pol, SIGNAL(clicked(bool)), this, SLOT(Save_FFT()));
-         connect(ui->checkBox_Save_Pol_Raw, SIGNAL(clicked(bool)), this, SLOT(Save_Raw()));
 
          /* Connect buttons for saving purposes Automatically */
          connect(ui->checkBox_AutoSave_Pol, SIGNAL(clicked(bool)), this, SLOT(AutoSave_FFT()));
@@ -743,6 +739,25 @@ void Panel::togglePreview(void)
     }
 }
 
+
+/**
+ * @brief Toggles Measurements of the Polarimeter
+ */
+void Panel::toggle_Pol_Measurement(void)
+{
+    /* Preview running or not? */
+    if (!previewRunning)
+    {
+        /* No preview running at the moment. Start preview. */
+        start_Pol_Measurement();
+    }
+    else
+    {
+        /* Preview running at the moment. Stop preview. */
+        stop_Pol_Measurement();
+    }
+}
+
 /**
  * @brief Starts preview of spectrometer data
  */
@@ -753,7 +768,6 @@ void Panel::startPreview(void)
     ui->pushButton_storeToRam->setEnabled(false);
     ui->pushButton_timePattern->setEnabled(false);
 
-    ui->button_Stop_Meas_Pol->setEnabled(true);
     ui->button_Start_Meas_Pol->setEnabled(false);
 
     unsigned int i = 0;
@@ -799,6 +813,11 @@ void Panel::startPreview(void)
     /* Update preview button */
     ui->pushButton_preview->setText("Stop preview");
     ui->pushButton_preview->setEnabled(true);
+
+    /* Update pol meas button */
+    ui->button_Start_Meas_Pol->setText("Stop Measurement");
+    ui->button_Start_Meas_Pol->setEnabled(true);
+
 }
 
 /**
@@ -808,6 +827,7 @@ void Panel::stopPreview(void)
 {
     /* Disable preview button */
     ui->pushButton_preview->setEnabled(false);
+    ui->button_Start_Meas_Pol->setEnabled(false);
 
     unsigned int i = 0;
 
@@ -849,12 +869,15 @@ void Panel::stopPreview(void)
     ui->pushButton_preview->setText("Start preview");
     ui->pushButton_preview->setEnabled(true);
 
+    /* Update pol meas button */
+    ui->button_Start_Meas_Pol->setText("Start Measurement");
+    ui->button_Start_Meas_Pol->setEnabled(true);
+
+
     /* Enable buttons */
     ui->pushButton_storeToRam->setEnabled(true);
     ui->pushButton_timePattern->setEnabled(true);
 
-    ui->button_Stop_Meas_Pol->setEnabled(false);
-    ui->button_Start_Meas_Pol->setEnabled(true);
 }
 
 /**
@@ -1682,17 +1705,24 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
  * @brief Start Measurments for the Polarimeter Setup
  */
 
-void Panel::startMeasurement(void) {
+void Panel::start_Pol_Measurement(void) {
 
     /* Enable / Disable buttons when measuring */
-       ui->button_Stop_Meas_Pol->setEnabled(true);
-       ui->button_Start_Meas_Pol->setEnabled(false);
        ui->button_Load_Graphs->setEnabled(false);
+       ui->button_Start_Meas_Pol->setEnabled(false);
 
+       ui->pushButton_preview->setEnabled(false);
        ui->checkBox_AutoSave_Pol->setEnabled(false);
        ui->checkBox_AutoSave_Pol_Raw->setEnabled(false);
        ui->button_Conf_Setup_Pol->setEnabled(false);
        ui->button_Pol_Syringe->setEnabled(false);
+
+       ui->pushButton_storeToRam->setEnabled(false);
+       ui->pushButton_timePattern->setEnabled(false);
+
+       /* Update preview button */
+       ui->pushButton_preview->setText("Stop preview");
+       ui->pushButton_preview->setEnabled(true);
 
        for (unsigned int i = 0; i < m_NrDevices; i++)
        {
@@ -1737,12 +1767,14 @@ void Panel::startMeasurement(void) {
 
     FFTL->getFFT(1000); // 1000 is the number of samples obtained
 
-    FFT_oneWave = new QwtPlotCurve("FFT for " + QString::number(FFTL->wavelengths[438]) + " nm");
+    FFT_oneWave = new QwtPlotCurve("");
     FFT_oneWave->setPen(QPen("blue"));
+    FFT_oneWave->setItemAttribute(QwtPlotItem::Legend, false);
+    ui->FFT_label_Pol->setText("FFT for " + QString::number(FFTL->wavelengths[438]) + " nm");
 
     FFT_oneWave->setSamples(FFTL->time , FFTL->fft_data,500);
-
     FFT_oneWave->attach(ui->qwtPlot_Pol_Prediction);
+    FFT_oneWave->show();
 
     FFT_DC = new QwtPlotCurve("DC");
     FFT_DC->setPen(QPen("blue"));
@@ -1759,15 +1791,34 @@ void Panel::startMeasurement(void) {
     FFT_2W->setSamples(FFTL->wavelengths , FFTL->fft_2W,1430);
     FFT_2W->attach(ui->qwtPlot_Pol_w_2w);
 
+    Compensation_Signal = new QwtPlotCurve("");
+    Compensation_Signal->setPen(QPen("red"));
+    Compensation_Signal->setSamples(FFTL->wavelengths , FFTL->fft_Compensation_Signal,1430);
+    Compensation_Signal->setItemAttribute(QwtPlotItem::Legend, false);
+    Compensation_Signal->attach(ui->qwtPlot_Pol_Compensation);
+
+    ui->qwtPlot_Pol_w_2w->update();
+    ui->qwtPlot_Pol_Compensation->update();
+    ui->qwtPlot_Pol_Prediction->update();
+
+    /* Update pol meas button */
+    ui->button_Start_Meas_Pol->setText("Stop Measurement");
+    ui->button_Start_Meas_Pol->setEnabled(true);
+
     }
 
 /**
  * @brief Stop Measurments for the Polarimeter Setup
  */
-void Panel::stopMeasurement(void) {
+void Panel::stop_Pol_Measurement(void) {
 
-    ui->button_Stop_Meas_Pol->setEnabled(false);
-    ui->button_Start_Meas_Pol->setEnabled(true);
+    /* Disable preview button */
+    ui->pushButton_preview->setEnabled(false);
+
+    ui->button_Start_Meas_Pol->setEnabled(false);
+
+    ui->pushButton_storeToRam->setEnabled(true);
+    ui->pushButton_timePattern->setEnabled(true);
 
     ui->button_Load_Graphs->setEnabled(true);
 
@@ -1806,48 +1857,14 @@ void Panel::stopMeasurement(void) {
     ui->button_Conf_Setup_Pol->setEnabled(true);
     ui->button_Pol_Syringe->setEnabled(true);
 
-}
+    /* Update preview button */
+    ui->pushButton_preview->setText("Start preview");
+    ui->pushButton_preview->setEnabled(true);
 
-/**
- * @brief Save the FFT manually from the Polarimeter Setup
- */
-void Panel::saveManuallyFFT(void) {
+    /* Update pol meas button */
+    ui->button_Start_Meas_Pol->setText("Start Measurement");
+    ui->button_Start_Meas_Pol->setEnabled(true);
 
-    QString exportPath_Pol;
-
-    /* Get path for data export */
-    exportPath_Pol = QFileDialog::getSaveFileName(this, QString("Save FFT"), (!lastExportPath.length()) ? "." : lastExportPath, QString("Text file (*.CS)"));
-
-// ....
-
-}
-
-/**
- * @brief Save the FFT Manually from the Polarimeter Setup
- */
-void Panel::Save_FFT(void) {
-    if (ui->checkBox_AutoSave_Pol->isChecked())
-    {
-       // AutoSave
-    }
-    else
-    {
-       // Stop AutoSave
-    }
-}
-
-/**
- * @brief Save the Raw Data Manually from the Polarimeter Setup
- */
-void Panel::Save_Raw(void) {
-    if (ui->checkBox_AutoSave_Pol_Raw->isChecked())
-    {
-       // AutoSave
-    }
-    else
-    {
-       // Stop AutoSave
-    }
 }
 
 /**

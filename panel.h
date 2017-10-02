@@ -89,14 +89,12 @@ private slots:
     void Load_Pol_Graphs(void);
 
     /* Functions for Polarimeter */
-    void startMeasurement(void);
-    void stopMeasurement(void);
+    void start_Pol_Measurement(void);
+    void stop_Pol_Measurement(void);
+    void toggle_Pol_Measurement(void);
 
     /* Save Functions for Polarimeter */
-    void saveManuallyFFT(void);
     void saveGraph_Pol(void);
-    void Save_FFT(void);
-    void Save_Raw(void);
 
     void AutoSave_FFT(void);
     void AutoSave_Raw(void);
@@ -143,6 +141,7 @@ private:
     QwtPlotCurve *FFT_DC;
     QwtPlotCurve *FFT_W;
     QwtPlotCurve *FFT_2W;
+    QwtPlotCurve *Compensation_Signal;
     fft *FFTL;
 };
 

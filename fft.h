@@ -24,6 +24,7 @@ public:
     double fft_DC[1500];
     double fft_W[1500];
     double fft_2W[1500];
+    double fft_Compensation_Signal[1500];
 
 };
 

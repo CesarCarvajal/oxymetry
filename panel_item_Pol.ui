@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>239</width>
-    <height>177</height>
+    <width>252</width>
+    <height>116</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -94,7 +94,7 @@
   <widget class="QLabel" name="label_timeBase">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>230</x>
      <y>50</y>
      <width>20</width>
      <height>25</height>
@@ -110,7 +110,7 @@
   <widget class="ClickableLabel" name="label_integrationTime">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>170</x>
      <y>50</y>
      <width>50</width>
      <height>25</height>
@@ -134,7 +134,7 @@
   <widget class="ClickableLabel" name="label_numberOfAverages">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>170</x>
      <y>70</y>
      <width>50</width>
      <height>25</height>
@@ -160,7 +160,7 @@
     <rect>
      <x>10</x>
      <y>30</y>
-     <width>201</width>
+     <width>231</width>
      <height>20</height>
     </rect>
    </property>
@@ -192,7 +192,7 @@
   <widget class="ClickableLabel" name="label_autoAdjust">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>190</x>
      <y>90</y>
      <width>71</width>
      <height>25</height>
@@ -218,7 +218,7 @@
     <rect>
      <x>0</x>
      <y>10</y>
-     <width>231</width>
+     <width>251</width>
      <height>16</height>
     </rect>
    </property>
@@ -227,32 +227,6 @@
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QProgressBar" name="progressBar_Measure_Pol">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>120</y>
-     <width>221</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="value">
-    <number>24</number>
-   </property>
-  </widget>
-  <widget class="QProgressBar" name="progressBar_Totalmeasure_Pol">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>150</y>
-     <width>221</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="value">
-    <number>24</number>
    </property>
   </widget>
  </widget>

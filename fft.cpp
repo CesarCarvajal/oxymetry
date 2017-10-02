@@ -86,6 +86,7 @@ void fft::getFFT(int n)
               fft_DC[k] = fabs(out[0][0]);
               fft_W[k] = fabs(out[20][0]);
               fft_2W[k] = fabs(out[40][0]);
+              fft_Compensation_Signal[k] = fft_W[k]/fft_2W[k];
 
              // fft_ratio[k] =
 
