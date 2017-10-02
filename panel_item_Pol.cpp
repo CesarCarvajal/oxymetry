@@ -21,18 +21,18 @@
 #include <QString>
 
 /* Internal includes */
-#include "panel_item.h"
-#include "ui_panel_item.h"
+#include "panel_item_Pol.h"
+#include "ui_panel_item_Pol.h"
 
 /**
- * @brief Constructor of 'PanelItem' class
+ * @brief Constructor of 'PanelItem_Pol' class
  * @param parent
  * @param name
  * @param color
  */
-PanelItem::PanelItem(QWidget *parent, QString name, QString color) :
+PanelItem_Pol::PanelItem_Pol(QWidget *parent, QString name, QString color) :
     QWidget(parent),
-    ui(new Ui::PanelItem)
+    ui(new Ui::PanelItem_Pol)
 {
     /* Set up user interface */
     ui->setupUi(this);
@@ -43,21 +43,20 @@ PanelItem::PanelItem(QWidget *parent, QString name, QString color) :
     /* Set to default, adjust progress bar */
     ui->lineEdit_name->setText(name);
     ui->lineEdit_name->setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }");
-    ui->progress_measurement->setRange(0, 100);
-    ui->progress_measurement->setStyleSheet("QProgressBar { border: 0px; background: grey; width: 200px; }\
-                                            QProgressBar::chunk { background-color: "+color+"; }");
     ui->label_integrationTime->setStyleSheet("QLabel { color: blue; }");
     ui->label_autoAdjust->setStyleSheet("QLabel { color: blue; }");
     ui->label_numberOfAverages->setStyleSheet("QLabel { color: blue; }");
     ui->label_saturatedPixels->setText(QString("Not saturated"));
     ui->label_saturatedPixels->setStyleSheet(QString("color: green; font: bold;"));
+    ui->label_ActiveSpec_Pol->setText(QString("Active Spectrometer"));
+    ui->label_ActiveSpec_Pol->setStyleSheet(QString("color: green; font: bold;"));
 }
 
 /**
  * @brief Sets name of panel item
  * @param name Name of panel item
  */
-void PanelItem::setName(QString name)
+void PanelItem_Pol::setName(QString name)
 {
     ui->lineEdit_name->setText(name);
 }
@@ -66,7 +65,7 @@ void PanelItem::setName(QString name)
  * @brief Gets integration time
  * @return Integration time in milliseconds
  */
-float PanelItem::getIntegrationTime(void)
+float PanelItem_Pol::getIntegrationTime(void)
 {
     return integrationTime;
 }
@@ -75,7 +74,7 @@ float PanelItem::getIntegrationTime(void)
  * @brief Sets integration time
  * @param[in] value Integration time in milliseconds
  */
-void PanelItem::setIntegrationTime(float value)
+void PanelItem_Pol::setIntegrationTime(float value)
 {
     /* Remember integration time */
     integrationTime = value;
@@ -112,7 +111,7 @@ void PanelItem::setIntegrationTime(float value)
  * @brief Gets number of averages
  * @return Number of averages
  */
-int PanelItem::getNumberOfAverages(void)
+int PanelItem_Pol::getNumberOfAverages(void)
 {
     return numberOfAverages;
 }
@@ -121,7 +120,7 @@ int PanelItem::getNumberOfAverages(void)
  * @brief Sets number of averages
  * @param[in] value Number of averages
  */
-void PanelItem::setNumberOfAverages(int value)
+void PanelItem_Pol::setNumberOfAverages(int value)
 {
     numberOfAverages = value;
 
@@ -133,7 +132,7 @@ void PanelItem::setNumberOfAverages(int value)
  * @brief Gets saturated status
  * @return TRUE if saturated, else FALSE
  */
-bool PanelItem::getIsSaturated(void)
+bool PanelItem_Pol::getIsSaturated(void)
 {
     return isSaturated;
 }
@@ -142,7 +141,7 @@ bool PanelItem::getIsSaturated(void)
  * @brief Sets saturated status
  * @param value TRUE if saturated, else FALSE
  */
-void PanelItem::setIsSaturated(bool value)
+void PanelItem_Pol::setIsSaturated(bool value)
 {
     /* Only update if necessary */
     if (isSaturated != value)
@@ -157,19 +156,10 @@ void PanelItem::setIsSaturated(bool value)
 }
 
 /**
- * @brief Sets progress bar value
- * @param percent Progress bar value in percent
- */
-void PanelItem::setProgress(int percent)
-{
-    ui->progress_measurement->setValue(percent);
-}
-
-/**
  * @brief Gets enabled status
  * @return TRUE if enabled, else FALSE
  */
-bool PanelItem::getIsEnabled(void)
+bool PanelItem_Pol::getIsEnabled(void)
 {
     return isEnabled;
 }
@@ -178,15 +168,13 @@ bool PanelItem::getIsEnabled(void)
  * @brief Sets enabled status
  * @param value TRUE if enabled, else FALSE
  */
-void PanelItem::setIsEnabled(bool value)
+void PanelItem_Pol::setIsEnabled(bool value)
 {
     /* Value has changed? */
     if (isEnabled != value)
     {
         /* Update GUI elements */
         ui->lineEdit_name->setEnabled(value);
-        ui->button_config->setEnabled(value);
-        ui->button_eeprom->setEnabled(value);
 
         /* Remember new value */
         isEnabled = value;
@@ -194,62 +182,42 @@ void PanelItem::setIsEnabled(bool value)
 }
 
 /**
- * @brief Get checked status
- * @return TRUE if checked, else FALSE
- */
-bool PanelItem::getIsChecked(void)
-{
-    return ui->checkBox_enabled->isChecked();
-}
-
-/**
- * @brief Set checked status
- * @param TRUE if checked, else FALSE
- */
-void PanelItem::setIsChecked(bool value)
-{
-    /* Update checkbox */
-    ui->checkBox_enabled->setChecked(value);
-}
-
-/**
  * @brief Enable clickable labels
  * @param[in] value TRUE enables labels, FALSE disables labels
  */
-void PanelItem::setClickableLabelsEnabled(bool value)
+void PanelItem_Pol::setClickableLabelsEnabled(bool value)
 {
     /* Enable/disable labels */
     ui->label_integrationTime->setEnabled(value);
     ui->label_numberOfAverages->setEnabled(value);
-    ui->label_autoAdjust->setEnabled(value);
 
     /* Set label stylesheets */
     ui->label_integrationTime->setStyleSheet(value ? "QLabel { color: blue; }" : "QLabel { color: grey; }");
     ui->label_numberOfAverages->setStyleSheet(value ? "QLabel { color: blue; }" : "QLabel { color: grey; }");
-    ui->label_autoAdjust->setStyleSheet(value ? "QLabel { color: blue; }" : "QLabel { color: grey; }");
+
+    ui->label_ActiveSpec_Pol->setText(QString(value ? "Active Spectrometer" : "Select a Spectrometer"));
+    ui->label_ActiveSpec_Pol->setStyleSheet(QString(value ? "color: green; font: bold;" : "color: red; font: bold;"));
 }
 
 /**
  * @brief Disable clickable labels
  * @param[in] value TRUE disables labels, FALSE enables labels
  */
-void PanelItem::setClickableLabelsDisabled(bool value)
+void PanelItem_Pol::setClickableLabelsDisabled(bool value)
 {
     /* Disable/enable labels */
     ui->label_integrationTime->setDisabled(value);
     ui->label_numberOfAverages->setDisabled(value);
-    ui->label_autoAdjust->setDisabled(value);
 
     /* Set label stylesheets */
     ui->label_integrationTime->setStyleSheet(value ? "QLabel { color: grey; }" : "QLabel { color: blue; }");
     ui->label_numberOfAverages->setStyleSheet(value ? "QLabel { color: grey; }" : "QLabel { color: blue; }");
-    ui->label_autoAdjust->setStyleSheet(value ? "QLabel { color: grey; }" : "QLabel { color: blue; }");
 }
 
 /**
- * @brief Destructor of 'PanelItem' class
+ * @brief Destructor of 'PanelItem_Pol' class
  */
-PanelItem::~PanelItem(void)
+PanelItem_Pol::~PanelItem_Pol(void)
 {
     /* Delete user interface */
     delete ui;

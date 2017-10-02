@@ -16,27 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PANEL_ITEM_H
-#define PANEL_ITEM_H
+#ifndef PANEL_ITEM_POL_H
+#define PANEL_ITEM_POL_H
 
 /* External includes */
 #include <QWidget>
 #include <QString>
 
 namespace Ui {
-    class PanelItem;
+    class PanelItem_Pol;
 }
 
 /**
  * @brief The 'PanelItem' class
  */
-class PanelItem : public QWidget
+class PanelItem_Pol : public QWidget
 {
     Q_OBJECT
 
 public:
     /* Constructor */
-    explicit PanelItem(QWidget *parent = 0, QString name = NULL, QString color = NULL);
+    explicit PanelItem_Pol(QWidget *parent = 0, QString name = NULL, QString color = NULL);
 
     /* Set name of panel item */
     void setName(QString name);
@@ -53,26 +53,19 @@ public:
     bool getIsSaturated(void);
     void setIsSaturated(bool value);
 
-    /* Set progress */
-    void setProgress(int percent);
-
     /* Get or set is enabled */
     bool getIsEnabled(void);
     void setIsEnabled(bool value);
-
-    /* Get or set is checked */
-    bool getIsChecked(void);
-    void setIsChecked(bool value);
 
     /* Enable/disable clickable labels */
     void setClickableLabelsEnabled(bool value);
     void setClickableLabelsDisabled(bool value);
 
     /* Destructor */
-    ~PanelItem(void);
+    ~PanelItem_Pol(void);
 
     /* User interface */
-    Ui::PanelItem *ui;
+    Ui::PanelItem_Pol *ui;
 
 private:
     float integrationTime;  /* Integration time */
@@ -81,4 +74,4 @@ private:
     bool isEnabled;         /* Spectrometer enabled? */
 };
 
-#endif // PANEL_ITEM_H
+#endif // PANEL_ITEM_POL_H

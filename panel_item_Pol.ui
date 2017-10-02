@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PanelItem</class>
- <widget class="QWidget" name="PanelItem">
+ <class>PanelItem_Pol</class>
+ <widget class="QWidget" name="PanelItem_Pol">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
-    <height>170</height>
+    <width>239</width>
+    <height>177</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,79 +25,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QPushButton" name="button_config">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>45</y>
-     <width>70</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>8</pointsize>
-     <kerning>true</kerning>
-    </font>
-   </property>
-   <property name="text">
-    <string>Configure</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="button_eeprom">
-   <property name="geometry">
-    <rect>
-     <x>85</x>
-     <y>45</y>
-     <width>70</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>8</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>EEPROM</string>
-   </property>
-  </widget>
-  <widget class="QProgressBar" name="progress_measurement">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>35</y>
-     <width>200</width>
-     <height>5</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="maximum">
-    <number>100</number>
-   </property>
-   <property name="value">
-    <number>100</number>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-   </property>
-   <property name="textVisible">
-    <bool>false</bool>
-   </property>
-   <property name="invertedAppearance">
-    <bool>false</bool>
-   </property>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>75</y>
+     <y>50</y>
      <width>120</width>
      <height>25</height>
     </rect>
@@ -119,7 +51,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>115</y>
+     <y>70</y>
      <width>120</width>
      <height>25</height>
     </rect>
@@ -141,7 +73,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>135</y>
+     <y>90</y>
      <width>120</width>
      <height>25</height>
     </rect>
@@ -162,8 +94,8 @@
   <widget class="QLabel" name="label_timeBase">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>75</y>
+     <x>210</x>
+     <y>50</y>
      <width>20</width>
      <height>25</height>
     </rect>
@@ -178,8 +110,8 @@
   <widget class="ClickableLabel" name="label_integrationTime">
    <property name="geometry">
     <rect>
-     <x>135</x>
-     <y>75</y>
+     <x>150</x>
+     <y>50</y>
      <width>50</width>
      <height>25</height>
     </rect>
@@ -202,8 +134,8 @@
   <widget class="ClickableLabel" name="label_numberOfAverages">
    <property name="geometry">
     <rect>
-     <x>135</x>
-     <y>115</y>
+     <x>150</x>
+     <y>70</y>
      <width>50</width>
      <height>25</height>
     </rect>
@@ -223,41 +155,13 @@
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkBox_enabled">
-   <property name="geometry">
-    <rect>
-     <x>195</x>
-     <y>10</y>
-     <width>15</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>15</width>
-     <height>15</height>
-    </size>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="lineEdit_name">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>175</width>
-     <height>15</height>
+     <y>30</y>
+     <width>201</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -281,13 +185,16 @@
    <property name="frame">
     <bool>false</bool>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="ClickableLabel" name="label_autoAdjust">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>95</y>
-     <width>181</width>
+     <x>170</x>
+     <y>90</y>
+     <width>71</width>
      <height>25</height>
     </rect>
    </property>
@@ -300,10 +207,52 @@
     <cursorShape>PointingHandCursor</cursorShape>
    </property>
    <property name="text">
-    <string>Automatic adjustment</string>
+    <string>Auto Adjust</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_ActiveSpec_Pol">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>10</y>
+     <width>231</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Active</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar_Measure_Pol">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>221</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>24</number>
+   </property>
+  </widget>
+  <widget class="QProgressBar" name="progressBar_Totalmeasure_Pol">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>150</y>
+     <width>221</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="value">
+    <number>24</number>
    </property>
   </widget>
  </widget>
