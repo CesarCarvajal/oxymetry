@@ -14,7 +14,7 @@ CONFIG(64bit) {
     TARGET = oxymetry64
     DEFINES += amd64
     QMAKE_CXXFLAGS += -m64
-    LIBS += -lavaspecx64 -lqwt64.dll -lusb-1.0-64.dll
+    LIBS += -lavaspecx64 -lqwt64.dll -lusb-1.0-64.dll -lfftw3-3.dll
 }
 
 TEMPLATE = app
@@ -39,7 +39,6 @@ SOURCES += \
     panel_change_time.cpp \
     panel_legend.cpp \
     panel_storetoram.cpp \
-    panel_timepattern.cpp \
     iad_configure.cpp \
     iad_configure_page01.cpp \
     iad_configure_page02.cpp \
@@ -52,7 +51,10 @@ SOURCES += \
     timer.cpp \
     fluidic_connect.cpp \
     fluidic_control.cpp \
-    light_control.cpp
+    light_control.cpp \
+    panel_timepattern.cpp \
+    fft.cpp \
+    panel_item_Pol.cpp
 
 HEADERS += \
     application.h \
@@ -71,7 +73,6 @@ HEADERS += \
     panel_change_time.h \
     panel_legend.h \
     panel_storetoram.h \
-    panel_timepattern.h \
     iad_configure.h \
     iad_configure_page01.h \
     iad_configure_page02.h \
@@ -84,7 +85,11 @@ HEADERS += \
     timer.h \
     fluidic_connect.h \
     fluidic_control.h \
-    light_control.h
+    light_control.h \
+    panel_timepattern.h \
+    fft.h \
+    panel_item_Pol.h \
+    include/fftw3.h
 
 FORMS += \
     panel.ui \
@@ -94,7 +99,6 @@ FORMS += \
     panel_change_time.ui \
     panel_legend.ui \
     panel_storetoram.ui \
-    panel_timepattern.ui \
     spectrometer_config.ui \
     spectrometer_eeprom.ui \
     iad_configure_page01.ui \
@@ -104,7 +108,9 @@ FORMS += \
     iad_calibrate_page03.ui \
     fluidic_connect.ui \
     fluidic_control.ui \
-    light_control.ui
+    light_control.ui \
+    panel_timepattern.ui \
+    panel_item_Pol.ui
 
 DISTFILES += \
     oxymetry.rc

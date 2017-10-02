@@ -33,6 +33,8 @@
 
 /* Internal includes */
 #include "panel_item.h"
+#include "panel_item_Pol.h"
+#include "fft.h"
 
 namespace Ui {
     class Panel;
@@ -84,6 +86,24 @@ private slots:
     void calibrateIAD(void);
     void measureIAD(void);
     void liveViewIAD(void);
+    void Load_Pol_Graphs(void);
+
+    /* Functions for Polarimeter */
+    void startMeasurement(void);
+    void stopMeasurement(void);
+
+    /* Save Functions for Polarimeter */
+    void saveManuallyFFT(void);
+    void saveGraph_Pol(void);
+    void Save_FFT(void);
+    void Save_Raw(void);
+
+    void AutoSave_FFT(void);
+    void AutoSave_Raw(void);
+
+    /* Configuration of Pump and Faraday Rotator for Polarimeter */
+    void ConfSetup_Pol_Pump(void);
+    void ConfSetup_Pol(void);
 
 private:
     /* Automatic adjustment of integration time */
@@ -96,10 +116,13 @@ private:
     Ui::Panel *ui;
     QSignalMapper *signalMapper;
     QList<PanelItem *> devices;
+    QList<PanelItem_Pol *> devices2;
     QTimer *timer;
 
     /* Device graph */
     QList<QwtPlotCurve *> curves;
+    QList<QwtPlotCurve *> curves_Pol;
+    QList<QwtPlotCurve *> FFT;
 
     /* Last path for data export */
     QString lastExportPath;
@@ -114,6 +137,13 @@ private:
     QwtPlotCurve *M_R;
     QwtPlotCurve *M_T;
     QwtPlotCurve *M_U;
+
+    /* Polarimetry stuff */
+    QwtPlotCurve *FFT_oneWave;
+    QwtPlotCurve *FFT_DC;
+    QwtPlotCurve *FFT_W;
+    QwtPlotCurve *FFT_2W;
+    fft *FFTL;
 };
 
 #endif // PANEL_H
