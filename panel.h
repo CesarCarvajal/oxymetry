@@ -138,10 +138,9 @@ private:
 
     /* Polarimetry stuff */
     QwtPlotCurve *FFT_oneWave;
-    QwtPlotCurve *FFT_DC;
-    QwtPlotCurve *FFT_W;
-    QwtPlotCurve *FFT_2W;
+    QwtPlotCurve *FFT_DC, *FFT_W, *FFT_2W;
     QwtPlotCurve *Compensation_Signal;
+    QwtPlotCurve *Average_DC_Signal, *Average_W_Signal, *Average_2W_Signal;
     fft *FFTL;
 };
 

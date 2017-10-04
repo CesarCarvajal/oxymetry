@@ -31,6 +31,8 @@ INPUT(
 ./debug\fluidic_control.o
 ./debug\light_control.o
 ./debug\panel_timepattern.o
+./debug\fft.o
+./debug\panel_item_Pol.o
 ./debug\qrc_icons.o
 ./debug\moc_application.o
 ./debug\moc_spectrometer_config.o
@@ -54,4 +56,5 @@ INPUT(
 ./debug\moc_fluidic_control.o
 ./debug\moc_light_control.o
 ./debug\moc_panel_timepattern.o
+./debug\moc_panel_item_Pol.o
 );

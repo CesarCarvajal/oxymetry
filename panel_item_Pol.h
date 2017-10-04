@@ -36,7 +36,7 @@ class PanelItem_Pol : public QWidget
 
 public:
     /* Constructor */
-    explicit PanelItem_Pol(QWidget *parent = 0, QString name = NULL, QString color = NULL);
+    explicit PanelItem_Pol(QWidget *parent = 0, QString name = NULL);
 
     /* Set name of panel item */
     void setName(QString name);

@@ -30,7 +30,7 @@
  * @param name
  * @param color
  */
-PanelItem_Pol::PanelItem_Pol(QWidget *parent, QString name, QString color) :
+PanelItem_Pol::PanelItem_Pol(QWidget *parent, QString name) :
     QWidget(parent),
     ui(new Ui::PanelItem_Pol)
 {
@@ -195,7 +195,7 @@ void PanelItem_Pol::setClickableLabelsEnabled(bool value)
     ui->label_integrationTime->setStyleSheet(value ? "QLabel { color: blue; }" : "QLabel { color: grey; }");
     ui->label_numberOfAverages->setStyleSheet(value ? "QLabel { color: blue; }" : "QLabel { color: grey; }");
 
-    ui->label_ActiveSpec_Pol->setText(QString(value ? "Active Spectrometer" : "Select a Spectrometer"));
+    ui->label_ActiveSpec_Pol->setText(QString(value ? "Active Spectrometer" : "Select a Spectrometer from Preview List"));
     ui->label_ActiveSpec_Pol->setStyleSheet(QString(value ? "color: green; font: bold;" : "color: red; font: bold;"));
 }
 

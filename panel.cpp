@@ -36,6 +36,7 @@
 #include <QTimer>
 #include <QThread>
 #include <QStringRef>
+#include <qdir.h>
 
 /* Avantes AvaSpec library */
 #include "avaspec.h"
@@ -69,6 +70,7 @@
 #include "panel.h"
 #include "ui_panel.h"
 #include "fft.h"
+
 
 /*
  * Global variables
@@ -116,13 +118,13 @@ Panel::Panel(QWidget *parent) :
         {
             /* Yes. Add the spectrometer to the list using the readable name. */
             devices.append(new PanelItem(0, ptrSpectrometers[i]->getReadableName(), defaultColors[i % 5]));
-            devices2.append(new PanelItem_Pol(0, ptrSpectrometers[i]->getReadableName(), defaultColors[i % 5]));
+            devices2.append(new PanelItem_Pol(0, ptrSpectrometers[i]->getReadableName()));
         }
         else
         {
             /* No. Add the spectrometer to the list using the serial number. */
             devices.append(new PanelItem(0, ptrSpectrometers[i]->getSerialNumber(), defaultColors[i % 5]));
-            devices2.append(new PanelItem_Pol(0, ptrSpectrometers[i]->getSerialNumber(), defaultColors[i % 5]));
+            devices2.append(new PanelItem_Pol(0, ptrSpectrometers[i]->getSerialNumber()));
         }
 
         /* Set initial values */
@@ -278,8 +280,8 @@ Panel::Panel(QWidget *parent) :
     /* Set axis and title of Average over all Wavelenths plot for Polarimeter */
     ui->qwtPlot_Pol_Average->setXAxisTitle("Time in min");
     ui->qwtPlot_Pol_Average->setYAxisTitle("Intensity");
-    ui->qwtPlot_Pol_Average->setYAxis(0.0, 1);
-    ui->qwtPlot_Pol_Average->setXAxis(0.0, 100.0);
+    ui->qwtPlot_Pol_Average->setYAxis(0.0, 5600000);
+    ui->qwtPlot_Pol_Average->setXAxis(0.0, 60);
 
     /* Set axis and title of Average over all Wavelenths plot for Polarimeter */
    // ui->qwtPlot_Pol_Prediction->setXAxisTitle("Reference Concentration");
@@ -368,7 +370,6 @@ Panel::Panel(QWidget *parent) :
      */
 
         /* Connect buttons in Polarimeter Tab */
-         //connect(ui->button_Start_Meas_Pol, SIGNAL(clicked()), this, SLOT(start_Pol_Measurement()));
          connect(ui->button_Start_Meas_Pol, SIGNAL(clicked()), this, SLOT(toggle_Pol_Measurement()));
 
          /* If there are spectrometers connected, allow the Measurements*/
@@ -745,15 +746,15 @@ void Panel::togglePreview(void)
  */
 void Panel::toggle_Pol_Measurement(void)
 {
-    /* Preview running or not? */
+    /* Pol Measurement running or not? */
     if (!previewRunning)
     {
-        /* No preview running at the moment. Start preview. */
+        /* No Pol Measurement running at the moment. Start it. */
         start_Pol_Measurement();
     }
     else
     {
-        /* Preview running at the moment. Stop preview. */
+        /* Pol Measurement running at the moment. Stop it. */
         stop_Pol_Measurement();
     }
 }
@@ -1707,66 +1708,49 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
 
 void Panel::start_Pol_Measurement(void) {
 
+    /* Enable / Disable buttons from Preview */
+    ui->pushButton_preview->setEnabled(false);
+    ui->pushButton_storeToRam->setEnabled(false);
+    ui->pushButton_timePattern->setEnabled(false);
+    /* Update preview button */
+    ui->pushButton_preview->setText("Stop preview");
+    ui->pushButton_preview->setEnabled(true);
+
     /* Enable / Disable buttons when measuring */
-       ui->button_Load_Graphs->setEnabled(false);
-       ui->button_Start_Meas_Pol->setEnabled(false);
+    ui->button_Load_FFTData->setEnabled(false);
+    ui->button_Start_Meas_Pol->setEnabled(false);
+    ui->checkBox_AutoSave_Pol->setEnabled(false);
+    ui->checkBox_AutoSave_Pol_Raw->setEnabled(false);
+    ui->button_Conf_Setup_Pol->setEnabled(false);
+    ui->button_Pol_Syringe->setEnabled(false);
 
-       ui->pushButton_preview->setEnabled(false);
-       ui->checkBox_AutoSave_Pol->setEnabled(false);
-       ui->checkBox_AutoSave_Pol_Raw->setEnabled(false);
-       ui->button_Conf_Setup_Pol->setEnabled(false);
-       ui->button_Pol_Syringe->setEnabled(false);
+    /* Is spectrometer enabled? */
 
-       ui->pushButton_storeToRam->setEnabled(false);
-       ui->pushButton_timePattern->setEnabled(false);
+    if (devices2[0]->getIsEnabled())
+    {
 
-       /* Update preview button */
-       ui->pushButton_preview->setText("Stop preview");
-       ui->pushButton_preview->setEnabled(true);
+        /* Prepare for new measurement */
+      if (ptrSpectrometers[0]->prepareMeasurement())
+    {
+            /* If successful, start measurement */
+            ptrSpectrometers[0]->startMeasurement(-1);
+        }
 
-       for (unsigned int i = 0; i < m_NrDevices; i++)
-       {
-           /* Is spectrometer enabled? */
-           if (devices[i]->getIsChecked())
-           {
-               /* Disable GUI elements */
-               devices[i]->setIsEnabled(false);
-           }
+        /* Handle events and update UI */
+        Application::processEvents();
+    }
 
-           /* Active checkboxes again */
-           devices[i]->ui->checkBox_enabled->setEnabled(false);
-       }
+    /* Remember preview or Pol Measurement is running */
+    previewRunning = true;
 
-           /* Is spectrometer enabled? */
-           if (devices2[0]->getIsEnabled())
-           {
-               /* Prepare for new measurement */
-               if (ptrSpectrometers[0]->prepareMeasurement())
-               {
-                   /* If successful, start measurement */
-                   ptrSpectrometers[0]->startMeasurement(-1);
-               }
+    /* Start update timer */
+    timer->start(1);
 
-               /* Handle events and update UI */
-               Application::processEvents();
-          }
-
-       /* Remember preview is running */
-       previewRunning = true;
-
-       /* Start update timer */
-       timer->start(1);
-
-   // Start the Store to RAM with sequences of storage of Data!!!
-
-   // Can we perform the FFT while measuring or we need to wait until everything is done?
-       // if yes... do it every x time
-       // else Add a Load data button or an auto load of the last file obtained from the spectrometer and then do FFT
-
+    /* Data Analysis by FFT */
     FFTL = new fft();
-
     FFTL->getFFT(1000); // 1000 is the number of samples obtained
 
+    /* Plot all the Analysis Graphs */
     FFT_oneWave = new QwtPlotCurve("");
     FFT_oneWave->setPen(QPen("blue"));
     FFT_oneWave->setItemAttribute(QwtPlotItem::Legend, false);
@@ -1797,9 +1781,30 @@ void Panel::start_Pol_Measurement(void) {
     Compensation_Signal->setItemAttribute(QwtPlotItem::Legend, false);
     Compensation_Signal->attach(ui->qwtPlot_Pol_Compensation);
 
+    Average_DC_Signal = new QwtPlotCurve("DC");
+    Average_DC_Signal->setPen(QPen("blue"));
+    Average_DC_Signal->setSamples(FFTL->time , FFTL->fft_Average_DC_signal,100);
+    Average_DC_Signal->attach(ui->qwtPlot_Pol_Average);
+
+    Average_W_Signal = new QwtPlotCurve("W");
+    Average_W_Signal->setPen(QPen("red"));
+    Average_W_Signal->setSamples(FFTL->time , FFTL->fft_Average_W_signal,100);
+    Average_W_Signal->attach(ui->qwtPlot_Pol_Average);
+
+    Average_2W_Signal = new QwtPlotCurve("2W");
+    Average_2W_Signal->setPen(QPen("green"));
+    Average_2W_Signal->setSamples(FFTL->time , FFTL->fft_Average_2W_signal,100);
+    Average_2W_Signal->attach(ui->qwtPlot_Pol_Average);
+
     ui->qwtPlot_Pol_w_2w->update();
     ui->qwtPlot_Pol_Compensation->update();
     ui->qwtPlot_Pol_Prediction->update();
+    ui->qwtPlot_Pol_Average->update();
+
+    ui->qwtPlot_Pol_w_2w->updateLayout();
+    ui->qwtPlot_Pol_Average->updateLayout();
+    ui->qwtPlot_Pol_Compensation->updateLayout();
+    ui->qwtPlot_Pol_w_2w->updateLayout();
 
     /* Update pol meas button */
     ui->button_Start_Meas_Pol->setText("Stop Measurement");
@@ -1820,7 +1825,7 @@ void Panel::stop_Pol_Measurement(void) {
     ui->pushButton_storeToRam->setEnabled(true);
     ui->pushButton_timePattern->setEnabled(true);
 
-    ui->button_Load_Graphs->setEnabled(true);
+    ui->button_Load_FFTData->setEnabled(true);
 
         /* Is spectrometer enabled? */
         if (devices2[0]->getIsEnabled())
@@ -1828,20 +1833,6 @@ void Panel::stop_Pol_Measurement(void) {
             /* Stop measurement */
             ptrSpectrometers[0]->stopMeasurement();
         }
-
-        for (unsigned int i = 0; i < m_NrDevices; i++)
-        {
-            /* Is spectrometer enabled? */
-            if (devices[i]->getIsChecked())
-            {
-                /* Enable GUI elements */
-                devices[i]->setIsEnabled(true);
-            }
-
-            /* Active checkboxes again */
-            devices[i]->ui->checkBox_enabled->setEnabled(true);
-        }
-
 
         /* Handle events and update UI */
         Application::processEvents();
@@ -1864,6 +1855,42 @@ void Panel::stop_Pol_Measurement(void) {
     /* Update pol meas button */
     ui->button_Start_Meas_Pol->setText("Start Measurement");
     ui->button_Start_Meas_Pol->setEnabled(true);
+
+    FFT_DC->detach();
+    delete FFT_DC;
+    FFT_DC = nullptr;
+
+    FFT_W->detach();
+    delete FFT_W;
+    FFT_W = nullptr;
+
+    FFT_2W->detach();
+    delete FFT_2W;
+    FFT_2W = nullptr;
+
+    Compensation_Signal ->detach();
+    delete Compensation_Signal;
+    Compensation_Signal  = nullptr;
+
+    Average_DC_Signal->detach();
+    delete Average_DC_Signal;
+    Average_DC_Signal= nullptr;
+
+    Average_W_Signal->detach();
+    delete Average_W_Signal;
+    Average_W_Signal= nullptr;
+
+    Average_2W_Signal->detach();
+    delete Average_2W_Signal;
+    Average_2W_Signal= nullptr;
+
+    FFT_oneWave->detach();
+    delete FFT_oneWave;
+    FFT_oneWave= nullptr;
+
+    ui->qwtPlot_Pol_w_2w->update();
+    ui->qwtPlot_Pol_Average->updateLayout();
+    ui->qwtPlot_Pol_Compensation->updateLayout();
 
 }
 

@@ -31,6 +31,8 @@ INPUT(
 ./release\fluidic_control.o
 ./release\light_control.o
 ./release\panel_timepattern.o
+./release\fft.o
+./release\panel_item_Pol.o
 ./release\qrc_icons.o
 ./release\moc_application.o
 ./release\moc_spectrometer_config.o
@@ -54,4 +56,5 @@ INPUT(
 ./release\moc_fluidic_control.o
 ./release\moc_light_control.o
 ./release\moc_panel_timepattern.o
+./release\moc_panel_item_Pol.o
 );

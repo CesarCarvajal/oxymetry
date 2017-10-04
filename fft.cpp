@@ -2,7 +2,8 @@
 #include <fftw3.h>
 #include <complex.h>
 #include <iostream>
-
+#include <QMessageBox>
+#include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
 #include <QIODevice>
@@ -11,6 +12,11 @@
 #include <QDebug>
 #include <math.h>
 #include <algorithm>
+#include "ui_panel.h"
+#include <qdir.h>
+#include <QDate>
+#include "panel.h"
+#include <QTime>
 
 using namespace std;
 
@@ -20,54 +26,77 @@ using namespace std;
 
 void fft::getFFT(int n)
 {
+    QString date = QDate::currentDate().toString("dd MM yyyy");
+    //QString hour = QTime::currentTime().toString("hh mm");
 
-       QString FileName = "Data/Data.TXT";
-       QFile file(FileName);
+    QDir().mkdir("FFT Polarimeter Measurements");
+    QString folderOne = "FFT Data " + date;
+    QDir("FFT Polarimeter Measurements").mkdir(folderOne);// + " - " + hour);
 
-       fftw_complex *in;
-       fftw_complex *out;
-       fftw_plan plan_forward;
+    QString FFT_File_Name = "FFT_" + date + ".txt";
+    QString path = "FFT Polarimeter Measurements/"+folderOne+"/"+FFT_File_Name;
 
-         /*
-           Create the input array.
-         */
-         in = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
+    QFile FFT_File(path);
+    QFileInfo checkFile(path);
+    FILE *fileFFT = fopen(path.toLatin1().data(), "wt");
 
-       if(!file.exists()){
-       qDebug() << "File: " << FileName << "doesn't exists!";
-       }
 
-       QString Row;
+    /* Check if file exists */
+    if (checkFile.exists() && checkFile.isFile())
+    {
 
-       if(file.open(QIODevice::ReadOnly)) {
+        // Later Develop
+        qDebug() << "FFT File Exists";
 
-       QTextStream stream(&file);
+    }
+    else
+    {
+        /* File doesn't exist; export data for current spectrometer */
+        qDebug() << "FFT File Created";
 
-       int k = 0;
+    }
 
-            while(!stream.atEnd()){
+    QString FileName = "Data/Data.TXT";
+    QFile file(FileName);
 
-                Row = stream.readLine();
+    fftw_complex *in;
+    fftw_complex *out;
+    fftw_plan plan_forward;
 
-                QStringList Readed_Row = Row.split(';');
+    /*
+    Create the input array.
+    */
+    in = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
+    out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
+    plan_forward = fftw_plan_dft_1d ( n, in, out, FFTW_FORWARD, FFTW_ESTIMATE );
 
-                Readed_Row.replaceInStrings(",",".");
+    if(!file.exists()){
+        qDebug() << "File: " << FileName << "doesn't exists!";
+    }
 
-                QString Row_waves = Readed_Row.at(0);
+    QString Row;
 
-                wavelengths[k] = Row_waves.toDouble();
+    if(file.open(QIODevice::ReadOnly)) {
 
-                for (int j=0; j <= Readed_Row.length()-4; j++){
+        QTextStream stream(&file);
+        int k = 0;
+        double AverageDC =0, AverageW = 0, Average2W = 0;
 
-                    QString Row_counts = Readed_Row.at(j+3);
+        while(!stream.atEnd()){
 
-                    counts[j] = Row_counts.toDouble();
+            Row = stream.readLine();
+            QStringList Readed_Row = Row.split(';');
+            Readed_Row.replaceInStrings(",",".");
+            QString Row_waves = Readed_Row.at(0);
+            wavelengths[k] = Row_waves.toDouble();
 
-                    time[j] = j/(n*0.01);
-                    in[j][1] = 0;
-                    in[j][0] = counts[j];
+            for (int j=0; j <= Readed_Row.length()-4; j++){
 
-                }
+                QString Row_counts = Readed_Row.at(j+3);
+                counts[j] = Row_counts.toDouble();
+                in[j][1] = 0;
+                in[j][0] = counts[j];
+            }
 
             /*
              *FFT part
@@ -75,47 +104,53 @@ void fft::getFFT(int n)
               Create the output array.
             */
 
-              out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * n);
+            fftw_execute ( plan_forward );
+            fft_DC[k] = fabs(out[0][0]);
+            fft_W[k] = fabs(out[20][0]);
+            fft_2W[k] = fabs(out[40][0]);
+            fft_Compensation_Signal[k] = fft_W[k]/fft_2W[k];
 
-              plan_forward = fftw_plan_dft_1d ( n, in, out, FFTW_FORWARD, FFTW_ESTIMATE );
+            AverageDC = AverageDC + fft_DC[k];
+            AverageW = AverageW + fft_W[k];
+            Average2W = Average2W + fft_2W[k];
 
-              fftw_execute ( plan_forward );
+            if (k == 438){
 
-             // double max = fabs(out[0][0]); // Normalize
+                for ( int  i = 0; i < n/2; i++ )
+                {
+                    fft_data[i] = fabs(out[i][0]);
+                    time[i] = i/(n*0.01);
+                }
+            }
 
-              fft_DC[k] = fabs(out[0][0]);
-              fft_W[k] = fabs(out[20][0]);
-              fft_2W[k] = fabs(out[40][0]);
-              fft_Compensation_Signal[k] = fft_W[k]/fft_2W[k];
-
-             // fft_ratio[k] =
-
-              if (k == 438){
-              for ( int  i = 0; i < n/2; i++ )
-              {
-                fft_data[i] = fabs(out[i][0]);
-              //  qDebug() << time[i] << " " << fft_data[i];
-             }
-              }
-
-              k = k+1;
-
-}
-
-              /*
-              Free up the allocated memory.
-            */
-
+            k = k+1;
         }
 
-       file.close();
+        /*
+        Average the Analyzed Signals
+      */
 
-       fftw_destroy_plan ( plan_forward );
-       fftw_free ( in );
-       fftw_free ( out );
+        for ( int  i = 0; i < n/2; i++ )
+        {
+            fft_Average_DC_signal[i] = AverageDC/n;
+            fft_Average_W_signal[i] = AverageW/n;
+            fft_Average_2W_signal[i] = Average2W/n;
+        }
+    }
 
+       /*
+       Free up the allocated memory.
+     */
 
-     return ;
+    /* Close file */
+    file.close();
+    fclose(fileFFT);
+
+    fftw_destroy_plan ( plan_forward );
+    fftw_free ( in );
+    fftw_free ( out );
+
+    return ;
 }
 
 
