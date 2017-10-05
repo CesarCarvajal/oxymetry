@@ -26,12 +26,12 @@ using namespace std;
 
 void fft::getFFT(int n)
 {
+    // Saving Option of the FFT
     QString date = QDate::currentDate().toString("dd MM yyyy");
-    //QString hour = QTime::currentTime().toString("hh mm");
 
     QDir().mkdir("FFT Polarimeter Measurements");
     QString folderOne = "FFT Data " + date;
-    QDir("FFT Polarimeter Measurements").mkdir(folderOne);// + " - " + hour);
+    QDir("FFT Polarimeter Measurements").mkdir(folderOne);
 
     QString FFT_File_Name = "FFT_" + date + ".txt";
     QString path = "FFT Polarimeter Measurements/"+folderOne+"/"+FFT_File_Name;
@@ -39,22 +39,6 @@ void fft::getFFT(int n)
     QFile FFT_File(path);
     QFileInfo checkFile(path);
     FILE *fileFFT = fopen(path.toLatin1().data(), "wt");
-
-
-    /* Check if file exists */
-    if (checkFile.exists() && checkFile.isFile())
-    {
-
-        // Later Develop
-        qDebug() << "FFT File Exists";
-
-    }
-    else
-    {
-        /* File doesn't exist; export data for current spectrometer */
-        qDebug() << "FFT File Created";
-
-    }
 
     QString FileName = "Data/Data.TXT";
     QFile file(FileName);
@@ -137,6 +121,46 @@ void fft::getFFT(int n)
             fft_Average_2W_signal[i] = Average2W/n;
         }
     }
+
+    /* Check if file exists */
+    if (checkFile.exists() && checkFile.isFile())
+    {
+
+        // Later Develop
+        qDebug() << "FFT File Exists";
+
+    }
+    else
+    {
+        /* File doesn't exist; export data for current spectrometer */
+        qDebug() << "FFT File Created";
+
+        /*
+         * Write file header
+         */
+
+        /* Write serial number */
+    //    fprintf(file, "Serial number: %s\n", getSerialNumber().toLatin1().data());
+
+        /* Check for readable name */
+  //      if (hasReadableName())
+  //      {
+            /* Write readable name */
+ //           fprintf(file, "Readable name: %s\n", getReadableName().toLatin1().data());
+ //      }
+
+        /* Write integration time, number of averages and dynamic dark correction */
+  //      fprintf(file, "Integration time: %.2f ms\n", getIntegrationTime());
+  //      fprintf(file, "Number of averages: %i\n", getNumberOfAverages());
+  //      fprintf(file, "Dynamic dark correction: %s\n", getDynamicDarkCorrection() ? "true" : "false");
+  //      fprintf(file, "Timestamp: %s\n\n", QDateTime::currentDateTime().toString().toLatin1().data());
+
+
+
+
+    }
+
+
 
        /*
        Free up the allocated memory.
