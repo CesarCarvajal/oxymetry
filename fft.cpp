@@ -176,6 +176,3 @@ void fft::getFFT(int n)
 
     return ;
 }
-
-
-
