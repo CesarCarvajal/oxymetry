@@ -16,9 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Needed for Avantes AvaSpec library */
 #define USE_POSTMESSAGE
 
-/* External includes */
+/*
+ * External includes
+ */
+
+/* Qt libraries */
 #include <QSettings>
 #include <QDialog>
 #include <QListWidget>
@@ -30,13 +35,12 @@
 #include <QCheckBox>
 #include <QIcon>
 #include <QElapsedTimer>
-#include <QDate>
-#include <QTime>
+#include <QDateTime>
 #include <QFileDialog>
 #include <QTimer>
 #include <QThread>
 #include <QStringRef>
-#include <qdir.h>
+#include <QDir.h>
 
 /* Avantes AvaSpec library */
 #include "avaspec.h"
@@ -44,33 +48,42 @@
 /* Qwt library */
 #include "qwt_plot_curve.h"
 
-/* Internal includes */
+/*
+ * Internal includes
+ */
+
+/* General stuff */
 #include "application.h"
 #include "messages.h"
 #include "timer.h"
 #include "math_helper.h"
-#include "spectrometer.h"
-#include "panel_item_Pol.h"
-#include "ui_panel_item_Pol.h"
-#include "panel_item.h"
-#include "ui_panel_item.h"
-#include "panel_change_averages.h"
-#include "panel_change_time.h"
-#include "panel_about.h"
-#include "panel_legend.h"
+
+/* Inverse Adding-Doubling */
 #include "iad_configure.h"
 #include "iad_calibrate.h"
 #include "iad_measure.h"
-#include "panel_storetoram.h"
-#include "ui_panel_storetoram.h"
-#include "panel_timepattern.h"
-#include "ui_panel_timepattern.h"
-#include "spectrometer_config.h"
-#include "ui_spectrometer_config.h"
-#include "panel.h"
-#include "ui_panel.h"
-#include "fft.h"
 
+/* Panel elements */
+#include "panel.h"
+#include "panel_about.h"
+#include "panel_change_averages.h"
+#include "panel_change_time.h"
+#include "panel_item.h"
+#include "panel_polarimeter.h"
+#include "panel_legend.h"
+#include "panel_storetoram.h"
+#include "panel_timepattern.h"
+
+/* Spectrometer control */
+#include "spectrometer.h"
+#include "spectrometer_config.h"
+
+/* User interface */
+#include "ui_panel.h"
+#include "ui_panel_item.h"
+#include "ui_panel_storetoram.h"
+#include "ui_panel_timepattern.h"
+#include "ui_spectrometer_config.h"
 
 /*
  * Global variables
@@ -81,11 +94,6 @@ extern unsigned int m_NrDevices;
 
 /* Colors for spectrometers */
 QString defaultColors[] = { "blue", "red", "green", "yellow", "cyan" };
-
-// Polarimeter Setup Variables Start
-QListWidgetItem *item_Pol = new QListWidgetItem(0);
-bool PolMeasurementRunning = false;
-// Polarimeter Setup Variables End
 
 /**
  * @brief Constructor of 'Panel' class
@@ -122,13 +130,11 @@ Panel::Panel(QWidget *parent) :
         {
             /* Yes. Add the spectrometer to the list using the readable name. */
             devices.append(new PanelItem(0, ptrSpectrometers[i]->getReadableName(), defaultColors[i % 5]));
-            devices2.append(new PanelItem_Pol(0, ptrSpectrometers[0]->getReadableName())); // Polarimeter Setup Variable
         }
         else
         {
             /* No. Add the spectrometer to the list using the serial number. */
             devices.append(new PanelItem(0, ptrSpectrometers[i]->getSerialNumber(), defaultColors[i % 5]));
-            devices2.append(new PanelItem_Pol(0, ptrSpectrometers[0]->getSerialNumber())); // Polarimeter Setup Variable
         }
 
         /* Set initial values */
@@ -139,55 +145,31 @@ Panel::Panel(QWidget *parent) :
         devices[i]->setIsEnabled(true);
         devices[i]->setIsChecked(true);
 
-        // Polarimeter Setup Device Initialization Start
-        devices2[0]->setIntegrationTime(devices[0]->getIntegrationTime());
-        devices2[0]->setNumberOfAverages(devices[0]->getNumberOfAverages());
-        devices2[0]->setIsSaturated(devices[0]->getIsSaturated());
-        devices2[0]->setIsEnabled(true);
-        // Polarimeter Setup Device Initialization End
-
         /* Set current spectrometer enabled */
         ptrSpectrometers[i]->setEnabled(true);
 
         /* Don't allow resize of item */
         item->setSizeHint(devices[i]->size());
-        item_Pol->setSizeHint(devices2[0]->size());  // Polarimeter Setup Variable
 
         /* Add item to list and make it visible */
         ui->list_devices->addItem(item);
-        ui->list_devices->setItemWidget(item, devices[i]); // Polarimeter Setup Variable
-
-        // Polarimeter Preview Item
-        ui->list_devices_Pol->addItem(item_Pol);
-        ui->list_devices_Pol->setItemWidget(item_Pol, devices2[0]); // Polarimeter Setup Variable
+        ui->list_devices->setItemWidget(item, devices[i]);
 
         /* Does the current spectrometer already have a readable name assigned? */
         if (ptrSpectrometers[i]->hasReadableName())
         {
             /* Yes. Create new plot curve using the readable name */
             curves.append(new QwtPlotCurve(ptrSpectrometers[i]->getReadableName()));
-
-            // Polarimeter Adds
-            curves_Pol.append(new QwtPlotCurve(ptrSpectrometers[i]->getReadableName())); // Polarimeter Setup Variable
-            curves_Pol[i]->setItemAttribute(QwtPlotItem::Legend, false); // Polarimeter Setup Variable
         }
         else
         {
             /* No. Create new plot curve using the serial number */
             curves.append(new QwtPlotCurve(ptrSpectrometers[i]->getSerialNumber()));
-
-            // Polarimeter Adds
-            curves_Pol.append(new QwtPlotCurve(ptrSpectrometers[i]->getSerialNumber())); // Polarimeter Setup Variable
-            curves_Pol[i]->setItemAttribute(QwtPlotItem::Legend, false); // Polarimeter Setup Variable
         }
 
         /* Add a curve to preview plot for current spectrometer */
         curves[i]->setPen(QPen(defaultColors[i % 5]));
         curves[i]->attach(ui->qwtPlot);
-
-        // Polarimeter Adds
-        curves_Pol[i]->setPen(QPen(defaultColors[i % 5])); // Polarimeter Setup Variable
-        curves_Pol[i]->attach(ui->qwtPlot_Pol); // Polarimeter Setup Variable
 
         /* Connect buttons and labels to signal mapper */
         connect(devices[i]->ui->lineEdit_name, SIGNAL(textChanged(const QString &)), signalMapper, SLOT(map()));
@@ -198,11 +180,6 @@ Panel::Panel(QWidget *parent) :
         connect(devices[i]->ui->label_numberOfAverages, SIGNAL(clicked()), signalMapper, SLOT(map()));
         connect(devices[i]->ui->checkBox_enabled, SIGNAL(clicked()), signalMapper, SLOT(map()));
 
-        // Polarimeter buttons and labels signal mapper
-        connect(devices2[0]->ui->label_integrationTime, SIGNAL(clicked()), signalMapper, SLOT(map()));
-        connect(devices2[0]->ui->label_numberOfAverages, SIGNAL(clicked()), signalMapper, SLOT(map()));
-        connect(devices2[0]->ui->label_autoAdjust, SIGNAL(clicked()), signalMapper, SLOT(map()));
-
         /* Set mapping for buttons and labels */
         signalMapper->setMapping(devices[i]->ui->lineEdit_name, devices[i]->ui->lineEdit_name);
         signalMapper->setMapping(devices[i]->ui->button_config, devices[i]->ui->button_config);
@@ -211,11 +188,6 @@ Panel::Panel(QWidget *parent) :
         signalMapper->setMapping(devices[i]->ui->label_autoAdjust, devices[i]->ui->label_autoAdjust);
         signalMapper->setMapping(devices[i]->ui->label_numberOfAverages, devices[i]->ui->label_numberOfAverages);
         signalMapper->setMapping(devices[i]->ui->checkBox_enabled, devices[i]->ui->checkBox_enabled);
-
-        // Polarimeter set mapping for buttons and labels
-        signalMapper->setMapping(devices2[0]->ui->label_integrationTime, devices2[0]->ui->label_integrationTime);
-        signalMapper->setMapping(devices2[0]->ui->label_numberOfAverages, devices2[0]->ui->label_numberOfAverages);
-        signalMapper->setMapping(devices2[0]->ui->label_autoAdjust, devices2[0]->ui->label_autoAdjust);
     }
 
     /* Connect signal mapper action */
@@ -260,12 +232,6 @@ Panel::Panel(QWidget *parent) :
     ui->qwtPlot->setYAxisTitle("ADC counts");
     ui->qwtPlot->setYAxis(0.0, 65535.0);
 
-    // Polarimeter Setup Graphs Start
-    /* Set axis and title of preview plot for Polarimeter */
-    ui->qwtPlot_Pol->setXAxisTitle("Wavelength in nm");
-    ui->qwtPlot_Pol->setYAxisTitle("ADC counts");
-    ui->qwtPlot_Pol->setYAxis(0.0, 65535.0);
-
     /* Set axis and title of the normalized intensity plots */
     ui->qwtPlot_reflection->setXAxisTitle("Wavelength in nm");
     ui->qwtPlot_reflection->setYAxisTitle("Normalized intensity");
@@ -275,31 +241,6 @@ Panel::Panel(QWidget *parent) :
     ui->qwtPlot_transmission->setYAxisTitle("Normalized intensity");
     ui->qwtPlot_transmission->setCaption("Normalized transmission");
     ui->qwtPlot_transmission->setYAxis(0.0, 1.0);
-
-    /* Set axis and title of Compensated Signal plot for Polarimeter */
-    ui->qwtPlot_Pol_Compensation->setXAxisTitle("Wavelength in nm");
-    ui->qwtPlot_Pol_Compensation->setYAxisTitle("Intensity");
-    ui->qwtPlot_Pol_Compensation->setYAxis(0.0, 1);
-
-    /* Set axis and title of w/2w plot for Polarimeter */
-    ui->qwtPlot_Pol_w_2w->setXAxisTitle("Wavelength in nm");
-    ui->qwtPlot_Pol_w_2w->setYAxisTitle("FFT Intesities");
-    ui->qwtPlot_Pol_w_2w->setYAxis(0.0, 30000000);
-
-    /* Set axis and title of Average over all Wavelenths plot for Polarimeter */
-    ui->qwtPlot_Pol_Average->setXAxisTitle("Time in min");
-    ui->qwtPlot_Pol_Average->setYAxisTitle("Intensity");
-    ui->qwtPlot_Pol_Average->setYAxis(0.0, 5600000);
-    ui->qwtPlot_Pol_Average->setXAxis(0.0, 60);
-
-    /* Set axis and title of Average over all Wavelenths plot for Polarimeter */
-   // ui->qwtPlot_Pol_Prediction->setXAxisTitle("Reference Concentration");
-    ui->qwtPlot_Pol_Prediction->setXAxisTitle("Frequency in Hz");
-    ui->qwtPlot_Pol_Prediction->setYAxisTitle("FFT Intensity");
-   // ui->qwtPlot_Pol_Prediction->setXAxis(0.0, 100);
-    ui->qwtPlot_Pol_Prediction->setXAxis(0.0, 6);
-    ui->qwtPlot_Pol_Prediction->setYAxis(0.0, 30000000);
-    // Polarimeter Setup Graphs End
 
     /* Defaults values for x-axis are 400 to 1000 nm */
     double minWavelength = 400.0, maxWavelength = 1000.0;
@@ -324,15 +265,10 @@ Panel::Panel(QWidget *parent) :
 
     /* Update x-axis of graphs */
     ui->qwtPlot->setXAxis(minWavelength, maxWavelength);
-    ui->qwtPlot_Pol->setXAxis(minWavelength, maxWavelength);   // Polarimeter Setup Variable
     ui->qwtPlot_reflection->setXAxis(minWavelength, maxWavelength);
     ui->qwtPlot_transmission->setXAxis(minWavelength, maxWavelength);
 
-    ui->qwtPlot_Pol_Compensation->setXAxis(minWavelength, maxWavelength);    // Polarimeter Setup Variable
-    ui->qwtPlot_Pol_w_2w->setXAxis(minWavelength, maxWavelength);     // Polarimeter Setup Variable
-
-    /* ---------------------------------------- */
-
+/* ---------------------------------------- */
     /* To do */
     M_R = new QwtPlotCurve("Diffuse reflection");
     M_T = new QwtPlotCurve("Diffuse transmission");
@@ -344,8 +280,6 @@ Panel::Panel(QWidget *parent) :
     M_T->attach(ui->qwtPlot_transmission);
     M_U->setPen(QPen("green"));
     M_U->attach(ui->qwtPlot_transmission);
-
-    /* ---------------------------------------- */
 
     /*
      * Connect and configure the Inverse Adding-Doubling stuff
@@ -364,6 +298,9 @@ Panel::Panel(QWidget *parent) :
     ui->label_iad_configurationName->setCursor(QCursor(Qt::ArrowCursor));
 
     //ui->table_iad_measurements->setup();
+/* ---------------------------------------- */
+    polarimeter = new PanelPolarimeter(this);
+    ui->tabWidget->addTab(polarimeter, "Polarimeter");
 
     /*
      * Create timer for updating spectrometer progress bars
@@ -374,27 +311,6 @@ Panel::Panel(QWidget *parent) :
 
     /* If timer times out, things should be updated */
     connect(timer, SIGNAL(timeout()), this, SLOT(updateProgress()));
-
-    /*
-     * Connect and configure the Polarimeter stuff ***************
-     */
-
-        /* Connect buttons in Polarimeter Tab */
-         connect(ui->button_Start_Meas_Pol, SIGNAL(clicked()), this, SLOT(toggle_Pol_Measurement()));
-
-         /* If there are spectrometers connected, allow the Measurements*/
-         ui->button_Start_Meas_Pol->setDisabled((!m_NrDevices) ? true : false);
-
-         /* Connect buttons for saving purposes manually */
-         connect(ui->Button_Save_Graphs_Pol, SIGNAL(clicked()), this, SLOT(saveGraph_Pol()));
-
-         /* Connect buttons for saving purposes Automatically */
-         connect(ui->checkBox_AutoSave_Pol, SIGNAL(clicked(bool)), this, SLOT(AutoSave_FFT()));
-         connect(ui->checkBox_AutoSave_Pol_Raw, SIGNAL(clicked(bool)), this, SLOT(AutoSave_Raw()));
-
-         /* Connect button for Faraday Rotator and Syringe Pump Configuration */
-         connect(ui->button_Conf_Setup_Pol, SIGNAL(clicked()), this, SLOT(ConfSetup_Pol()));
-         connect(ui->button_Pol_Syringe, SIGNAL(clicked()), this, SLOT(ConfSetup_Pol_Pump()));
 }
 
 /**
@@ -473,9 +389,9 @@ void Panel::handleClickEvent(QWidget *widget)
             ui->qwtPlot->setXAxis(minWavelength, maxWavelength);
             ui->qwtPlot_reflection->setXAxis(minWavelength, maxWavelength);
             ui->qwtPlot_transmission->setXAxis(minWavelength, maxWavelength);
-            ui->qwtPlot_Pol->setXAxis(minWavelength, maxWavelength); // Polarimeter Setup Variable
 
         }
+
         /* The EEPROM button has been clicked */
         else if (pushButton == devices[i]->ui->button_eeprom)
         {
@@ -483,14 +399,12 @@ void Panel::handleClickEvent(QWidget *widget)
             ptrSpectrometers[i]->showEEPROM();
         }
         /* The integration time label has been clicked */ // Polarimeter Setup Involved
-        else if (label == devices[i]->ui->label_integrationTime || (label == devices2[0]->ui->label_integrationTime && devices[i]->ui->lineEdit_name->text()== devices2[0]->ui->lineEdit_name->text()))
+        else if (label == devices[i]->ui->label_integrationTime)
         {
-
             PanelChangeTime changeDialog(this);
 
             /* Set integration time */
             changeDialog.setValue(devices[i]->getIntegrationTime());
-            changeDialog.setValue(devices2[0]->getIntegrationTime()); // Polarimeter Setup Variable
 
             /* User pressed 'ok' */
             if (QDialog::Accepted == changeDialog.exec())
@@ -500,7 +414,7 @@ void Panel::handleClickEvent(QWidget *widget)
 
                 /* Set panel item and device integration time */
                 devices[i]->setIntegrationTime(intTime);
-                devices2[0]->setIntegrationTime(intTime);  // Polarimeter Setup Variable
+                polarimeter->devices2[0]->setIntegrationTime(devices[polarimeter->SpectrometerNumber]->getIntegrationTime()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
                 ptrSpectrometers[i]->setIntegrationTime(intTime);
 
                 /* Is the device measuring? */
@@ -519,19 +433,18 @@ void Panel::handleClickEvent(QWidget *widget)
             }
         }
         /* The auto-adjust label has been clicked */ // Polarimeter Setup Involved
-        else if (label == devices[i]->ui->label_autoAdjust || (label == devices2[0]->ui->label_autoAdjust && devices[i]->ui->lineEdit_name->text()== devices2[0]->ui->lineEdit_name->text()))
+        else if (label == devices[i]->ui->label_autoAdjust)
         {
             /* Run automatic adjustment of integration time */
             adjustIntegrationTime(i);
         }
         /* The number of averages label has been clicked */ // Polarimeter Setup Involved
-        else if (label == devices[i]->ui->label_numberOfAverages || (label == devices2[0]->ui->label_numberOfAverages && devices[i]->ui->lineEdit_name->text()== devices2[0]->ui->lineEdit_name->text()))
+        else if (label == devices[i]->ui->label_numberOfAverages)
         {
             PanelChangeAverages changeDialog(this);
 
             /* Set number of averages */
             changeDialog.setValue(devices[i]->getNumberOfAverages());
-            changeDialog.setValue(devices2[0]->getNumberOfAverages());  // Polarimeter Setup Variable
 
             /* User pressed 'ok' */
             if (QDialog::Accepted == changeDialog.exec())
@@ -541,7 +454,7 @@ void Panel::handleClickEvent(QWidget *widget)
 
                 /* Set panel item and device number of averages */
                 devices[i]->setNumberOfAverages(numberOfAverages);
-                devices2[0]->setNumberOfAverages(numberOfAverages);  // Polarimeter Setup Variable
+                polarimeter->devices2[0]->setNumberOfAverages(devices[polarimeter->SpectrometerNumber]->getNumberOfAverages()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
                 ptrSpectrometers[i]->setNumberOfAverages(numberOfAverages);
 
                 /* Is the device measuring? */
@@ -570,63 +483,32 @@ void Panel::handleClickEvent(QWidget *widget)
             devices[i]->setClickableLabelsEnabled(isChecked);     
             ptrSpectrometers[i]->setEnabled(isChecked);
 
+        //}  // *** Cesar: (a) This bracket is wrong located. The variable devicesEnabled should be checked when a box is checked/unchecked, not when doing click in other labels.
+
+        /*
+         * Furthermore, we have to check if there are any enabled spectrometers left.
+         * If no spectrometers are enabled anymore, preview has to be disabled.
+         */
+
+        bool devicesEnabled = false;
+
+        unsigned int i = 0;
+
+        /* Loop through devices */
+        for (i = 0; i < m_NrDevices; i++)
+        {
+            devicesEnabled = devicesEnabled || devices[i]->getIsEnabled();
         }
-            /*
-             * Furthermore, we have to check if there are any enabled spectrometers left.
-             * If no spectrometers are enabled anymore, preview has to be disabled.
-             */
 
-            bool devicesEnabled = false;
+        polarimeter->SelectedSpectrometer_Polarimeter();  // *** Cesar: Added this Line. Is important to know when all the spectrometer has been unchecked from the list.
 
-            unsigned int i = 0;
+        /* Update buttons */
+        ui->pushButton_preview->setEnabled(devicesEnabled ? true : false);
+        ui->pushButton_storeToRam->setEnabled(devicesEnabled ? true : false);
+        ui->pushButton_timePattern->setEnabled(devicesEnabled ? true : false);
 
-            /* Loop through devices */
-            for (i = 0; i < m_NrDevices; i++)
-            {
-                devicesEnabled = devicesEnabled || devices[i]->getIsEnabled();
-            }
-
-
-             // Polarimeter Setup Add of the First Checked Spectrometer start
-            if(devicesEnabled == false){
-                /* Disable or enable the first checked for Polarimeter */
-                devices2[0]->setIntegrationTime(0);
-                devices2[0]->setClickableLabelsEnabled(false);
-                devices2[0]->setName("Null");
-                devices2[0]->setNumberOfAverages(0);
-                devices2[0]->setIsSaturated(true);
-            }else{
-                for (i = 0; i < m_NrDevices; i++)
-                {
-                if(devices[i]->getIsEnabled()){
-                devices2[0]->setIsEnabled(true);
-                devices2[0]->setClickableLabelsEnabled(true);
-                devices2[0]->setIntegrationTime(devices[i]->getIntegrationTime());
-                devices2[0]->setNumberOfAverages(devices[i]->getNumberOfAverages());
-                devices2[0]->setIsSaturated(devices[i]->getIsSaturated());
-                item_Pol->setSizeHint(devices2[0]->size());
-                ui->list_devices_Pol->setItemWidget(item_Pol, devices2[0]);
-
-                if (ptrSpectrometers[i]->hasReadableName())
-                {
-                devices2[0]->setName(ptrSpectrometers[i]->getReadableName());
-                }else{
-
-                    devices2[0]->setName(ptrSpectrometers[i]->getSerialNumber());
-                }
-                break;
-                    }
-                }
-            }
-              // Polarimeter Setup Add of the First Checked Spectrometer End
-
-            /* Update buttons */
-            ui->pushButton_preview->setEnabled(devicesEnabled ? true : false);
-            ui->pushButton_storeToRam->setEnabled(devicesEnabled ? true : false);
-            ui->pushButton_timePattern->setEnabled(devicesEnabled ? true : false);
-            ui->button_Start_Meas_Pol->setEnabled(devicesEnabled ? true : false);  // Polarimeter Setup Variable
-
-        }
+        }  // *** Cesar: (a) Moved bracket from above checkpoint, Now it only checks when the click event is on the check boxes.
+    }
 }
 
 /**
@@ -782,25 +664,6 @@ void Panel::togglePreview(void)
     }
 }
 
-
-/**
- * @brief Toggles Measurements of the Polarimeter
- */
-void Panel::toggle_Pol_Measurement(void)
-{
-    /* Pol Measurement running or not? */
-    if (!previewRunning)
-    {
-        /* No Pol Measurement running at the moment. Start it. */
-        start_Pol_Measurement();
-    }
-    else
-    {
-        /* Pol Measurement running at the moment. Stop it. */
-        stop_Pol_Measurement();
-    }
-}
-
 /**
  * @brief Starts preview of spectrometer data
  */
@@ -855,14 +718,12 @@ void Panel::startPreview(void)
     ui->pushButton_preview->setText("Stop preview");
     ui->pushButton_preview->setEnabled(true);
 
+/*------------------------*/
+//    pol.disable();
 
-    // Polarimeter Setup Interactions
-    ui->button_Start_Meas_Pol->setEnabled(false);
-    devices2[0]->ui->label_autoAdjust->setEnabled(false);
-    devices2[0]->ui->label_integrationTime->setEnabled(false);
-    devices2[0]->ui->label_numberOfAverages->setEnabled(false);
-    devices2[0]->ui->lineEdit_name->setEnabled(false);
+    polarimeter->disable_Polarimeter_Measurement();  // *** Cesar: Added the function to disable the Polarimeter Mesaurement options when preview is running.
 
+/*------------------------*/
 }
 
 /**
@@ -917,13 +778,11 @@ void Panel::stopPreview(void)
     ui->pushButton_storeToRam->setEnabled(true);
     ui->pushButton_timePattern->setEnabled(true);
 
-    // Polarimeter Setup Interactions
-    ui->button_Start_Meas_Pol->setEnabled(true);
-    devices2[0]->ui->label_autoAdjust->setEnabled(true);
-    devices2[0]->ui->label_integrationTime->setEnabled(true);
-    devices2[0]->ui->label_numberOfAverages->setEnabled(true);
-    devices2[0]->ui->lineEdit_name->setEnabled(true);
+/*------------------------*/
+//    pol.enable();
 
+    polarimeter->enable_Polarimeter_Measurement();  // *** Cesar: Added the function to enable the Polarimeter Measurement if the Preview isn't running.
+/*------------------------*/
 }
 
 /**
@@ -1051,7 +910,7 @@ bool Panel::isCurveVisible(unsigned int i)
 void Panel::setCurveVisible(unsigned int i, bool value)
 {
     curves[i]->setVisible(value);
-    curves_Pol[i]->setVisible(value);
+//    curves_Pol[i]->setVisible(value);
 
 }
 
@@ -1062,7 +921,7 @@ void Panel::updateGraph(void)
 {
     /* Update the graph */
     ui->qwtPlot->update();
-    ui->qwtPlot_Pol->update();
+//    ui->qwtPlot_Pol->update();
 }
 
 /**
@@ -1235,7 +1094,7 @@ void Panel::adjustIntegrationTime(unsigned int id)
 
             /* Set panel item and device new integration time */
             devices[id]->setIntegrationTime(intTime);
-            devices2[0]->setIntegrationTime(devices[id]->getIntegrationTime());  // Polarimeter Setup Variable
+            polarimeter->devices2[0]->setIntegrationTime(devices[polarimeter->SpectrometerNumber]->getIntegrationTime()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
             ptrSpectrometers[id]->setIntegrationTime(intTime);
         }
 
@@ -1281,6 +1140,7 @@ void Panel::adjustIntegrationTime(unsigned int id)
     }
 }
 
+/*---------------------------------------------------*/
 /**
  * @brief Creates new configuration for IAD method
  */
@@ -1343,7 +1203,7 @@ void Panel::newConfigurationIAD(void)
 void Panel::openConfigurationIAD(void)
 {
     /* Let the user choose the configuration file */
-    configPath = QFileDialog::getOpenFileName(this, QString("Open configuration file"), "./config", QString("Configuration file (*.cfg)"));
+    configPath = QFileDialog::getOpenFileName(this, QString("Open Raw Data file"), "./config", QString("Configuration file (*.cfg)"));
 
     /* File selected by user? */
     if (NULL == configPath)
@@ -1524,6 +1384,7 @@ void Panel::liveViewIAD(void)
         stopPreview();
     }
 }
+/*---------------------------------------------------*/
 
 /**
  * @brief Data from spectrometer has arrived
@@ -1554,7 +1415,7 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
 
                     /* Update saturation status */
                     devices[i]->setIsSaturated(ptrSpectrometers[i]->isSaturated());
-                    devices2[0]->setIsSaturated(ptrSpectrometers[0]->isSaturated());  // Polarimeter Setup Variable
+                    polarimeter->devices2[0]->setIsSaturated(ptrSpectrometers[polarimeter->SpectrometerNumber]->isSaturated()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
 
                     /* Graph needs update */
                     needUpdate = true;
@@ -1597,7 +1458,7 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
 
                             /* Update saturation status */
                             devices[i]->setIsSaturated(ptrSpectrometers[i]->isSaturated());
-                            devices2[0]->setIsSaturated(ptrSpectrometers[0]->isSaturated());  // Polarimeter Setup Variable
+                            polarimeter->devices2[0]->setIsSaturated(ptrSpectrometers[polarimeter->SpectrometerNumber]->isSaturated()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
 
                             /* Save counts */
                             double *temp = ptrSpectrometers[i]->getCounts();
@@ -1692,10 +1553,9 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
 
             /* Update curve data */
             curves[i]->setSamples(ptrSpectrometers[i]->getWavelengths(), ptrSpectrometers[i]->getCounts(), ptrSpectrometers[i]->getNumberOfPixels());
-            curves_Pol[i]->setSamples(ptrSpectrometers[i]->getWavelengths(), ptrSpectrometers[i]->getCounts(), ptrSpectrometers[i]->getNumberOfPixels());  // Polarimeter Setup Variable
+//            polarimeter->curves_Pol[0]->setSamples(ptrSpectrometers[polarimeter->SpectrometerNumber]->getWavelengths(), ptrSpectrometers[polarimeter->SpectrometerNumber]->getCounts(), ptrSpectrometers[polarimeter->SpectrometerNumber]->getNumberOfPixels()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
 
-            /* ---------------------------------------- */
-
+/* ---------------------------------------- */
             /* To do */
             if ((nullptr != Rd_factor) && (nullptr != Td_factor) && (nullptr != Tu_factor))
             {
@@ -1728,8 +1588,7 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
                     M_U->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
                 }
             }
-
-            /* ---------------------------------------- */
+ /* ---------------------------------------- */
         }
 
         /* Does the graph needs a update? */
@@ -1737,279 +1596,11 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
         {
             /* Update the graph */
             ui->qwtPlot->update();
-            ui->qwtPlot_Pol->update();  // Polarimeter Setup Variable
+
+            //ui->qwtPlot_Pol->update();  // Polarimeter Setup Variable
 
         }
     }
-}
-
-/**
- * @brief POLARIMETER FUNCTIONS *********************************************************************************
- */
-
-/**
- * @brief Start Measurments for the Polarimeter Setup
- */
-
-void Panel::start_Pol_Measurement(void) {
-
-    /* Enable / Disable buttons from Preview */
-    ui->pushButton_preview->setEnabled(false);
-    ui->pushButton_storeToRam->setEnabled(false);
-    ui->pushButton_timePattern->setEnabled(false);
-
-    /* Enable / Disable buttons when measuring */
-    ui->button_Load_FFTData->setEnabled(false);
-    ui->button_Start_Meas_Pol->setEnabled(false);
-    ui->checkBox_AutoSave_Pol->setEnabled(false);
-    ui->checkBox_AutoSave_Pol_Raw->setEnabled(false);
-    ui->button_Conf_Setup_Pol->setEnabled(false);
-    ui->button_Pol_Syringe->setEnabled(false);
-
-    /* Is spectrometer enabled? */
-
-    if (devices2[0]->getIsEnabled())
-    {
-
-        /* Prepare for new measurement */
-      if (ptrSpectrometers[0]->prepareMeasurement())
-    {
-            /* If successful, start measurement */
-            ptrSpectrometers[0]->startMeasurement(-1);
-        }
-
-        /* Handle events and update UI */
-        Application::processEvents();
-    }
-
-    /* Remember preview or Pol Measurement is running */
-    previewRunning = true;
-
-    /* Start update timer */
-    timer->start(1);
-
-    /* Data Analysis by FFT */
-    FFTL = new fft();
-    FFTL->getFFT(1000); // 1000 is the number of samples obtained
-
-    /* Plot all the Analysis Graphs */
-    FFT_oneWave = new QwtPlotCurve("");
-    FFT_oneWave->setPen(QPen("blue"));
-    FFT_oneWave->setItemAttribute(QwtPlotItem::Legend, false);
-    ui->FFT_label_Pol->setText("FFT for " + QString::number(FFTL->wavelengths[438]) + " nm");
-
-    FFT_oneWave->setSamples(FFTL->time , FFTL->fft_data,500);
-    FFT_oneWave->attach(ui->qwtPlot_Pol_Prediction);
-    FFT_oneWave->show();
-
-    FFT_DC = new QwtPlotCurve("DC");
-    FFT_DC->setPen(QPen("blue"));
-    FFT_DC->setSamples(FFTL->wavelengths , FFTL->fft_DC,1430);
-    FFT_DC->attach(ui->qwtPlot_Pol_w_2w);
-
-    FFT_W = new QwtPlotCurve("W");
-    FFT_W->setPen(QPen("red"));
-    FFT_W->setSamples(FFTL->wavelengths , FFTL->fft_W,1430);
-    FFT_W->attach(ui->qwtPlot_Pol_w_2w);
-
-    FFT_2W = new QwtPlotCurve("2W");
-    FFT_2W->setPen(QPen("green"));
-    FFT_2W->setSamples(FFTL->wavelengths , FFTL->fft_2W,1430);
-    FFT_2W->attach(ui->qwtPlot_Pol_w_2w);
-
-    Compensation_Signal = new QwtPlotCurve("");
-    Compensation_Signal->setPen(QPen("red"));
-    Compensation_Signal->setSamples(FFTL->wavelengths , FFTL->fft_Compensation_Signal,1430);
-    Compensation_Signal->setItemAttribute(QwtPlotItem::Legend, false);
-    Compensation_Signal->attach(ui->qwtPlot_Pol_Compensation);
-
-    Average_DC_Signal = new QwtPlotCurve("DC");
-    Average_DC_Signal->setPen(QPen("blue"));
-    Average_DC_Signal->setSamples(FFTL->time , FFTL->fft_Average_DC_signal,100);
-    Average_DC_Signal->attach(ui->qwtPlot_Pol_Average);
-
-    Average_W_Signal = new QwtPlotCurve("W");
-    Average_W_Signal->setPen(QPen("red"));
-    Average_W_Signal->setSamples(FFTL->time , FFTL->fft_Average_W_signal,100);
-    Average_W_Signal->attach(ui->qwtPlot_Pol_Average);
-
-    Average_2W_Signal = new QwtPlotCurve("2W");
-    Average_2W_Signal->setPen(QPen("green"));
-    Average_2W_Signal->setSamples(FFTL->time , FFTL->fft_Average_2W_signal,100);
-    Average_2W_Signal->attach(ui->qwtPlot_Pol_Average);
-
-    ui->qwtPlot_Pol_w_2w->update();
-    ui->qwtPlot_Pol_Compensation->update();
-    ui->qwtPlot_Pol_Prediction->update();
-    ui->qwtPlot_Pol_Average->update();
-
-    ui->qwtPlot_Pol_w_2w->updateLayout();
-    ui->qwtPlot_Pol_Average->updateLayout();
-    ui->qwtPlot_Pol_Compensation->updateLayout();
-    ui->qwtPlot_Pol_w_2w->updateLayout();
-
-    /* Update pol meas button */
-    ui->button_Start_Meas_Pol->setText("Stop Measurement");
-    ui->button_Start_Meas_Pol->setEnabled(true);
-
-    PolMeasurementRunning = true;
-
-    }
-
-/**
- * @brief Stop Measurments for the Polarimeter Setup
- */
-void Panel::stop_Pol_Measurement(void) {
-
-    /* Disable preview button */
-    ui->pushButton_preview->setEnabled(true);
-    ui->button_Start_Meas_Pol->setEnabled(false);
-
-    ui->pushButton_storeToRam->setEnabled(true);
-    ui->pushButton_timePattern->setEnabled(true);
-
-    ui->button_Load_FFTData->setEnabled(true);
-
-        /* Is spectrometer enabled? */
-        if (devices2[0]->getIsEnabled())
-        {
-            /* Stop measurement */
-            ptrSpectrometers[0]->stopMeasurement();
-        }
-
-        /* Handle events and update UI */
-        Application::processEvents();
-
-    /* No preview running anymore */
-    previewRunning = false;
-
-    /* Stop update timer */
-    timer->stop();
-
-    ui->checkBox_AutoSave_Pol->setEnabled(true);
-    ui->checkBox_AutoSave_Pol_Raw->setEnabled(true);
-    ui->button_Conf_Setup_Pol->setEnabled(true);
-    ui->button_Pol_Syringe->setEnabled(true);
-
-    /* Update pol meas button */
-    ui->button_Start_Meas_Pol->setText("Start Measurement");
-    ui->button_Start_Meas_Pol->setEnabled(true);
-
-if (PolMeasurementRunning){
-    FFT_DC->detach();
-    delete FFT_DC;
-    FFT_DC = nullptr;
-
-    FFT_W->detach();
-    delete FFT_W;
-    FFT_W = nullptr;
-
-    FFT_2W->detach();
-    delete FFT_2W;
-    FFT_2W = nullptr;
-
-    Compensation_Signal ->detach();
-    delete Compensation_Signal;
-    Compensation_Signal  = nullptr;
-
-    Average_DC_Signal->detach();
-    delete Average_DC_Signal;
-    Average_DC_Signal= nullptr;
-
-    Average_W_Signal->detach();
-    delete Average_W_Signal;
-    Average_W_Signal= nullptr;
-
-    Average_2W_Signal->detach();
-    delete Average_2W_Signal;
-    Average_2W_Signal= nullptr;
-
-    FFT_oneWave->detach();
-    delete FFT_oneWave;
-    FFT_oneWave= nullptr;
-
-    ui->qwtPlot_Pol_w_2w->update();
-    ui->qwtPlot_Pol_Average->update();
-    ui->qwtPlot_Pol_Compensation->update();
-    ui->qwtPlot_Pol_Prediction->update();
-    ui->qwtPlot_Pol_Prediction->updateLayout();
-}
-
-PolMeasurementRunning = false;
-
-}
-
-/**
- * @brief Save the FFT Automatic from the Polarimeter Setup
- */
-void Panel::AutoSave_FFT(void) {
-    if (ui->checkBox_AutoSave_Pol->isChecked())
-    {
-       // AutoSave
-    }
-    else
-    {
-       // Stop AutoSave
-    }
-}
-
-/**
- * @brief Save the Raw Data Automatic from the Polarimeter Setup
- */
-void Panel::AutoSave_Raw(void) {
-    if (ui->checkBox_AutoSave_Pol_Raw->isChecked())
-    {
-       // AutoSave
-    }
-    else
-    {
-       // Stop AutoSave
-    }
-}
-
-
-/**
- * @brief Save All graphs from the Polarimeter Setup
- */
-void Panel::saveGraph_Pol(void) {
-    QString exportPath_Graph_Pol;
-
-    /* Get path for data export */
-    exportPath_Graph_Pol = QFileDialog::getSaveFileName(this, QString("Save graphs"), (!lastExportPath.length()) ? "." : lastExportPath, QString("Portable document format (*.pdf)"));
-
-    /* Check export path */
-    if (!exportPath_Graph_Pol.isEmpty())
-    {
-        /* Remember export path */
-        lastExportPath = exportPath_Graph_Pol;
-
-        /* Save graph to disk */
-        ui->qwtPlot->save(exportPath_Graph_Pol);
-    }
-}
-
-/**
- * @brief Opens Previous Measurements of Polarimeter Setup
- */
-void Panel::Load_Pol_Graphs(void)
-{
-    /* Let the user choose the configuration file */
-    configPath = QFileDialog::getOpenFileName(this, QString("Open configuration file"), "./config", QString("Configuration file (*.CS)"));
-
-}
-
-/**
- * @brief Configuration of the Faraday Rotator for the Polarimeter Setup
- */
-void Panel::ConfSetup_Pol(void) {
-
-}
-
-/**
- * @brief Configuration of the Syrynge Pump for the Polarimeter Setup
- */
-void Panel::ConfSetup_Pol_Pump(void) {
-
 }
 
 /**
@@ -2034,8 +1625,7 @@ Panel::~Panel(void)
         }
     }
 
-    /* ---------------------------------------- */
-
+/* ---------------------------------------- */
     /* To do */
     M_R->detach();
     delete M_R;
@@ -2048,8 +1638,12 @@ Panel::~Panel(void)
     M_U->detach();
     delete M_U;
     M_U = nullptr;
-
-    /* ---------------------------------------- */
+/* ---------------------------------------- */
+    if (nullptr != polarimeter)
+    {
+        delete polarimeter;
+        polarimeter = nullptr;
+    }
 
     /* Loop through spectrometers */
     for (i = 0; i < m_NrDevices; i++)

@@ -58,7 +58,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Oxymetry 0.3.0</string>
+    <string>Oxymetry 0.4.2</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_compiler">
@@ -163,7 +163,26 @@
       <bool>true</bool>
      </property>
      <property name="plainText">
-      <string>Version 0.3.0: (29.09.2017)
+      <string>Version 0.4.2: (08.10.2017)
+
+- Dropped support for 32-bit OS
++ Code cleanup and restructuring
+
+Version 0.4.1: (06.10.2017)
+
++ Added button for polarimeter setup
++ Implemented FFT data analysis
++ Disabled preview/polarimeter setup when one preview/polarimeter setup is active
++ Modification of polarimeter setup tab panel
++ Toggle button for polarimeter setup
++ File and folder creation when polarimetric measurement starts
+
+Version 0.4.0: (02.10.2017)
+
++ Added files for polarimeter control
++ Added FFTW library and data folder
+
+Version 0.3.0: (29.09.2017)
 
 * Legend now shows 'unknown' if serial number or readable name of spectrometer are not available
 * Fixed spectra count in StoreToRAM files
@@ -236,7 +255,7 @@ Initial release</string>
       <bool>true</bool>
      </property>
      <property name="plainText">
-      <string>Isabeau Dibbern, Torben Kruse, Benjamin Redmer</string>
+      <string>Benjamin Redmer, Cesar Andres Carvajal Arrieta, Torben Kruse, Isabeau Dibbern</string>
      </property>
     </widget>
    </widget>

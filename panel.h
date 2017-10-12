@@ -19,7 +19,11 @@
 #ifndef PANEL_H
 #define PANEL_H
 
-/* External includes */
+/*
+ * External includes
+ */
+
+/* Qt library */
 #include <QDialog>
 #include <QWidget>
 #include <QListWidget>
@@ -31,10 +35,17 @@
 /* Qwt library */
 #include "qwt_plot_curve.h"
 
-/* Internal includes */
+/*
+ * Internal includes
+ */
+
+/* General stuff */
 #include "panel_item.h"
-#include "panel_item_Pol.h"
-#include "fft.h"
+#include "panel_polarimeter.h"
+
+/*
+ * Other stuff
+ */
 
 namespace Ui {
     class Panel;
@@ -56,14 +67,18 @@ public:
     void setCurveVisible(unsigned int i, bool value);
     void updateGraph(void);
 
+    QList<PanelItem *> devices;
+
     /* Destructor */
     ~Panel(void);
 
-public slots:
+    /* User interface */
+    Ui::Panel *ui;
+
+private slots:
     /* Called if new data signal arrived */
     void ReceiveDataIsHere(int WParam, int LParam);
 
-private slots:
     /* Functions for preview */
     void togglePreview(void);
     void startPreview(void);
@@ -86,41 +101,17 @@ private slots:
     void calibrateIAD(void);
     void measureIAD(void);
     void liveViewIAD(void);
-    void Load_Pol_Graphs(void);
-
-    /* Functions for Polarimeter */
-    void start_Pol_Measurement(void);
-    void stop_Pol_Measurement(void);
-    void toggle_Pol_Measurement(void);
-
-    /* Save Functions for Polarimeter */
-    void saveGraph_Pol(void);
-
-    void AutoSave_FFT(void);
-    void AutoSave_Raw(void);
-
-    /* Configuration of Pump and Faraday Rotator for Polarimeter */
-    void ConfSetup_Pol_Pump(void);
-    void ConfSetup_Pol(void);
 
 private:
     /* Automatic adjustment of integration time */
     void adjustIntegrationTime(unsigned int id);
 
-    /* General stuff */
-    bool previewRunning = false;
-
-    /* Preview stuff */
-    Ui::Panel *ui;
     QSignalMapper *signalMapper;
-    QList<PanelItem *> devices;
-    QList<PanelItem_Pol *> devices2;
+    /* Preview stuff */
     QTimer *timer;
 
     /* Device graph */
     QList<QwtPlotCurve *> curves;
-    QList<QwtPlotCurve *> curves_Pol;
-    QList<QwtPlotCurve *> FFT;
 
     /* Last path for data export */
     QString lastExportPath;
@@ -128,6 +119,12 @@ private:
     /* Inverse Adding-Doubling stuff */
     QString configPath;
 
+    /* General stuff */
+    bool previewRunning = false;
+
+/*--------------------------------------
+ * IAD stuff to move to extra file
+ *--------------------------------------*/
     double *Rd_factor = nullptr;
     double *Td_factor = nullptr;
     double *Tu_factor = nullptr;
@@ -135,13 +132,8 @@ private:
     QwtPlotCurve *M_R;
     QwtPlotCurve *M_T;
     QwtPlotCurve *M_U;
-
-    /* Polarimetry stuff */
-    QwtPlotCurve *FFT_oneWave;
-    QwtPlotCurve *FFT_DC, *FFT_W, *FFT_2W;
-    QwtPlotCurve *Compensation_Signal;
-    QwtPlotCurve *Average_DC_Signal, *Average_W_Signal, *Average_2W_Signal;
-    fft *FFTL;
+/*--------------------------------------*/
+    PanelPolarimeter *polarimeter = nullptr;  // *** Cesar: Change from QWidget to PanelPolarimeter type.
 };
 
 #endif // PANEL_H
