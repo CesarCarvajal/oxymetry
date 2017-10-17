@@ -59,7 +59,8 @@ SOURCES += \
     timer.cpp \
     fluidic_connect.cpp \
     fluidic_control.cpp \
-    light_control.cpp
+    light_control.cpp \
+    panel_change_Wave_FFT.cpp
 
 HEADERS += \
     application.h \
@@ -94,7 +95,8 @@ HEADERS += \
     timer.h \
     fluidic_connect.h \
     fluidic_control.h \
-    light_control.h
+    light_control.h \
+    panel_change_Wave_FFT.h
 
 FORMS += \
     panel.ui \
@@ -116,7 +118,8 @@ FORMS += \
     iad_calibrate_page03.ui \
     fluidic_connect.ui \
     fluidic_control.ui \
-    light_control.ui
+    light_control.ui \
+    panel_change_Wave_FFT.ui
 
 DISTFILES += \
     oxymetry.rc

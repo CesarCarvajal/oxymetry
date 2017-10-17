@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_PanelPolarimeter_t {
-    QByteArrayData data[17];
-    char stringdata0[245];
+    QByteArrayData data[20];
+    char stringdata0[282];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,25 +36,29 @@ QT_MOC_LITERAL(1, 17, 16), // "handleClickEvent"
 QT_MOC_LITERAL(2, 34, 0), // ""
 QT_MOC_LITERAL(3, 35, 8), // "QWidget*"
 QT_MOC_LITERAL(4, 44, 6), // "widget"
-QT_MOC_LITERAL(5, 51, 15), // "Load_Pol_Graphs"
-QT_MOC_LITERAL(6, 67, 21), // "start_Pol_Measurement"
-QT_MOC_LITERAL(7, 89, 20), // "stop_Pol_Measurement"
-QT_MOC_LITERAL(8, 110, 22), // "toggle_Pol_Measurement"
-QT_MOC_LITERAL(9, 133, 13), // "saveGraph_Pol"
-QT_MOC_LITERAL(10, 147, 12), // "AutoSave_FFT"
-QT_MOC_LITERAL(11, 160, 12), // "AutoSave_Raw"
-QT_MOC_LITERAL(12, 173, 10), // "clearPlots"
-QT_MOC_LITERAL(13, 184, 11), // "LoadFromFFT"
-QT_MOC_LITERAL(14, 196, 15), // "LoadFromRawData"
-QT_MOC_LITERAL(15, 212, 18), // "ConfSetup_Pol_Pump"
-QT_MOC_LITERAL(16, 231, 13) // "ConfSetup_Pol"
+QT_MOC_LITERAL(5, 51, 21), // "start_Pol_Measurement"
+QT_MOC_LITERAL(6, 73, 20), // "stop_Pol_Measurement"
+QT_MOC_LITERAL(7, 94, 22), // "toggle_Pol_Measurement"
+QT_MOC_LITERAL(8, 117, 13), // "saveGraph_Pol"
+QT_MOC_LITERAL(9, 131, 12), // "AutoSave_FFT"
+QT_MOC_LITERAL(10, 144, 12), // "AutoSave_Raw"
+QT_MOC_LITERAL(11, 157, 10), // "clearPlots"
+QT_MOC_LITERAL(12, 168, 21), // "plotFFTatSelectedWave"
+QT_MOC_LITERAL(13, 190, 8), // "double[]"
+QT_MOC_LITERAL(14, 199, 12), // "FFTLfft_data"
+QT_MOC_LITERAL(15, 212, 8), // "FFTLtime"
+QT_MOC_LITERAL(16, 221, 11), // "LoadFromFFT"
+QT_MOC_LITERAL(17, 233, 15), // "LoadFromRawData"
+QT_MOC_LITERAL(18, 249, 18), // "ConfSetup_Pol_Pump"
+QT_MOC_LITERAL(19, 268, 13) // "ConfSetup_Pol"
 
     },
     "PanelPolarimeter\0handleClickEvent\0\0"
-    "QWidget*\0widget\0Load_Pol_Graphs\0"
-    "start_Pol_Measurement\0stop_Pol_Measurement\0"
-    "toggle_Pol_Measurement\0saveGraph_Pol\0"
-    "AutoSave_FFT\0AutoSave_Raw\0clearPlots\0"
+    "QWidget*\0widget\0start_Pol_Measurement\0"
+    "stop_Pol_Measurement\0toggle_Pol_Measurement\0"
+    "saveGraph_Pol\0AutoSave_FFT\0AutoSave_Raw\0"
+    "clearPlots\0plotFFTatSelectedWave\0"
+    "double[]\0FFTLfft_data\0FFTLtime\0"
     "LoadFromFFT\0LoadFromRawData\0"
     "ConfSetup_Pol_Pump\0ConfSetup_Pol"
 };
@@ -82,11 +86,11 @@ static const uint qt_meta_data_PanelPolarimeter[] = {
        9,    0,   86,    2, 0x08 /* Private */,
       10,    0,   87,    2, 0x08 /* Private */,
       11,    0,   88,    2, 0x08 /* Private */,
-      12,    0,   89,    2, 0x08 /* Private */,
-      13,    0,   90,    2, 0x08 /* Private */,
-      14,    0,   91,    2, 0x08 /* Private */,
-      15,    0,   92,    2, 0x08 /* Private */,
-      16,    0,   93,    2, 0x08 /* Private */,
+      12,    2,   89,    2, 0x08 /* Private */,
+      16,    0,   94,    2, 0x08 /* Private */,
+      17,    0,   95,    2, 0x08 /* Private */,
+      18,    0,   96,    2, 0x08 /* Private */,
+      19,    0,   97,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
@@ -97,7 +101,7 @@ static const uint qt_meta_data_PanelPolarimeter[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 13, 0x80000000 | 13,   14,   15,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -113,14 +117,14 @@ void PanelPolarimeter::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->handleClickEvent((*reinterpret_cast< QWidget*(*)>(_a[1]))); break;
-        case 1: _t->Load_Pol_Graphs(); break;
-        case 2: _t->start_Pol_Measurement(); break;
-        case 3: _t->stop_Pol_Measurement(); break;
-        case 4: _t->toggle_Pol_Measurement(); break;
-        case 5: _t->saveGraph_Pol(); break;
-        case 6: _t->AutoSave_FFT(); break;
-        case 7: _t->AutoSave_Raw(); break;
-        case 8: _t->clearPlots(); break;
+        case 1: _t->start_Pol_Measurement(); break;
+        case 2: _t->stop_Pol_Measurement(); break;
+        case 3: _t->toggle_Pol_Measurement(); break;
+        case 4: _t->saveGraph_Pol(); break;
+        case 5: _t->AutoSave_FFT(); break;
+        case 6: _t->AutoSave_Raw(); break;
+        case 7: _t->clearPlots(); break;
+        case 8: _t->plotFFTatSelectedWave((*reinterpret_cast< double(*)[]>(_a[1])),(*reinterpret_cast< double(*)[]>(_a[2]))); break;
         case 9: _t->LoadFromFFT(); break;
         case 10: _t->LoadFromRawData(); break;
         case 11: _t->ConfSetup_Pol_Pump(); break;

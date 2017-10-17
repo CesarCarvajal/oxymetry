@@ -74,8 +74,6 @@ private slots:
     /* Functions for spectrometer items */
     void handleClickEvent(QWidget *widget);
 
-    void Load_Pol_Graphs(void);
-
     /* Functions for Polarimeter */
     void start_Pol_Measurement(void);
     void stop_Pol_Measurement(void);
@@ -87,6 +85,8 @@ private slots:
     void AutoSave_FFT(void);
     void AutoSave_Raw(void);
     void clearPlots(void);
+
+    void plotFFTatSelectedWave( double FFTLfft_data[], double FFTLtime[]);
 
     void LoadFromFFT(void);
     void LoadFromRawData(void);
@@ -103,11 +103,8 @@ private:
 
     QList<QwtPlotCurve *> FFT;
 
-    /* Last path for data export */
-    QString lastExportPath;
-
     /* Inverse Adding-Doubling stuff */
-    QString RawDataPath;
+    QString RawDataPath, FFTDataPath;
 
     /* Polarimetry stuff */
     QwtPlotCurve *FFT_oneWave;
@@ -121,7 +118,9 @@ public:
     QList<PanelItem_Pol *> devices2; 
     QList<QwtPlotCurve *> curves_Pol;
     bool PolMeasurementRunning = false;
+    bool isRawData = false;
     int SpectrometerNumber;
+    int selectedWave;
 
 };
 

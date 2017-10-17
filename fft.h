@@ -45,16 +45,40 @@ class fft
 public:
 
     void getFFTfromRawData(QFileInfo FileName);
+    void getFFTfromFFTData(QFileInfo FileName);
+
+    void saveFFTtoFile();
+    void InitializeFFTArrays(void);
     fftw_complex *CalculateFFT(int N, double Data[]);
 
-    double counts[1000];
-    double time[500];
-    double fft_data[500];
+    /* Size of Nr Spectra */
+    double *counts = nullptr;
+    double *time = nullptr;
+    double *fft_data = nullptr;
 
-    double wavelengths[2048];
-    double fft_DC[2048], fft_W[2048], fft_2W[2048];
-    double fft_Compensation_Signal[2048];
-    double fft_Average_DC_signal[500], fft_Average_W_signal[500], fft_Average_2W_signal[500];
+    /* Size of Nr Waves */
+    double *wavelengths = nullptr;
+    double *fft_DC, *fft_W, *fft_2W = nullptr;
+    double *fft_Compensation_Signal = nullptr;
+
+    int NrSpectra;
+    int NrWaves;    
+    int f_w;
+    double IntTime;
+    double FrequencyF;
+
+    /* Not affected by loading a file */
+    double fft_Average_DC_signal[2048], fft_Average_W_signal[2048], fft_Average_2W_signal[2048];
+
+
+
+private:
+
+    double ConcentrationC1;
+    double ConcentrationC2;
+    double NrAverage;
+
+    void ReadFileName(QString ExtractInfoName, QString FilePath, bool isTXT);
 
 };
 

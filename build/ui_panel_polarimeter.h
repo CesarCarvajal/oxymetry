@@ -25,6 +25,7 @@
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "clickablelabel.h"
 #include "plot.h"
 
 QT_BEGIN_NAMESPACE
@@ -72,7 +73,12 @@ public:
     Plot *qwtPlot_Pol_Compensation;
     QSpacerItem *horizontalSpacer_11;
     QVBoxLayout *verticalLayout_12;
+    QHBoxLayout *horizontalLayout_2;
+    QSpacerItem *horizontalSpacer_3;
     QLabel *FFT_label_Pol;
+    ClickableLabel *waveToPlotFFT;
+    QLabel *label;
+    QSpacerItem *horizontalSpacer;
     Plot *qwtPlot_Pol_Prediction;
     QSpacerItem *horizontalSpacer_18;
     QHBoxLayout *horizontalLayout_10;
@@ -96,7 +102,7 @@ public:
     {
         if (PanelPolarimeter->objectName().isEmpty())
             PanelPolarimeter->setObjectName(QStringLiteral("PanelPolarimeter"));
-        PanelPolarimeter->resize(1190, 756);
+        PanelPolarimeter->resize(1190, 765);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -345,12 +351,43 @@ public:
 
         verticalLayout_12 = new QVBoxLayout();
         verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        horizontalSpacer_3 = new QSpacerItem(70, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer_3);
+
         FFT_label_Pol = new QLabel(PanelPolarimeter);
         FFT_label_Pol->setObjectName(QStringLiteral("FFT_label_Pol"));
+        FFT_label_Pol->setMaximumSize(QSize(50, 100));
         FFT_label_Pol->setFont(font);
         FFT_label_Pol->setAlignment(Qt::AlignCenter);
 
-        verticalLayout_12->addWidget(FFT_label_Pol);
+        horizontalLayout_2->addWidget(FFT_label_Pol);
+
+        waveToPlotFFT = new ClickableLabel(PanelPolarimeter);
+        waveToPlotFFT->setObjectName(QStringLiteral("waveToPlotFFT"));
+        waveToPlotFFT->setMaximumSize(QSize(50, 16777215));
+        QFont font1;
+        font1.setUnderline(true);
+        waveToPlotFFT->setFont(font1);
+        waveToPlotFFT->setCursor(QCursor(Qt::PointingHandCursor));
+
+        horizontalLayout_2->addWidget(waveToPlotFFT);
+
+        label = new QLabel(PanelPolarimeter);
+        label->setObjectName(QStringLiteral("label"));
+        label->setMaximumSize(QSize(20, 16777215));
+        label->setFont(font);
+
+        horizontalLayout_2->addWidget(label);
+
+        horizontalSpacer = new QSpacerItem(70, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout_2->addItem(horizontalSpacer);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_2);
 
         qwtPlot_Pol_Prediction = new Plot(PanelPolarimeter);
         qwtPlot_Pol_Prediction->setObjectName(QStringLiteral("qwtPlot_Pol_Prediction"));
@@ -497,7 +534,9 @@ public:
         button_Start_Meas_Pol->setText(QApplication::translate("PanelPolarimeter", "Start Measurement", Q_NULLPTR));
         label_6->setText(QApplication::translate("PanelPolarimeter", "Raw Signal", Q_NULLPTR));
         label_7->setText(QApplication::translate("PanelPolarimeter", "Compensation Signal W/2W", Q_NULLPTR));
-        FFT_label_Pol->setText(QApplication::translate("PanelPolarimeter", "FFT", Q_NULLPTR));
+        FFT_label_Pol->setText(QApplication::translate("PanelPolarimeter", "FFT for", Q_NULLPTR));
+        waveToPlotFFT->setText(QString());
+        label->setText(QApplication::translate("PanelPolarimeter", "nm", Q_NULLPTR));
         label_9->setText(QApplication::translate("PanelPolarimeter", "FFT Amplitudes For All Wavelengths", Q_NULLPTR));
         label_10->setText(QApplication::translate("PanelPolarimeter", "Average Signal", Q_NULLPTR));
         Button_Save_Graphs_Pol->setText(QApplication::translate("PanelPolarimeter", "Save Graphs as PDF", Q_NULLPTR));
