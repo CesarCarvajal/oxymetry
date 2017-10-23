@@ -60,7 +60,8 @@ SOURCES += \
     fluidic_connect.cpp \
     fluidic_control.cpp \
     light_control.cpp \
-    panel_change_Wave_FFT.cpp
+    panel_change_Wave_FFT.cpp \
+    configure_Polarimeter_Measure.cpp
 
 HEADERS += \
     application.h \
@@ -96,7 +97,8 @@ HEADERS += \
     fluidic_connect.h \
     fluidic_control.h \
     light_control.h \
-    panel_change_Wave_FFT.h
+    panel_change_Wave_FFT.h \
+    configure_Polarimeter_Measure.h
 
 FORMS += \
     panel.ui \
@@ -119,7 +121,8 @@ FORMS += \
     fluidic_connect.ui \
     fluidic_control.ui \
     light_control.ui \
-    panel_change_Wave_FFT.ui
+    panel_change_Wave_FFT.ui \
+    configure_Polarimeter_Measure.ui
 
 DISTFILES += \
     oxymetry.rc

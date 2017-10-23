@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -37,30 +38,36 @@ public:
     QHBoxLayout *horizonalLayout_2;
     QVBoxLayout *verticalLayout_8;
     QSpacerItem *verticalSpacer_11;
-    QLabel *label_5_Pol_settings;
-    QHBoxLayout *horizontalLayout_9;
-    QPushButton *button_Pol_Syringe;
-    QPushButton *button_Conf_Setup_Pol;
-    QSpacerItem *verticalSpacer_8;
-    QLabel *label_Save_Pol;
-    QHBoxLayout *horizontalLayout_12;
-    QSpacerItem *horizontalSpacer_17;
-    QCheckBox *checkBox_AutoSave_Pol;
-    QCheckBox *checkBox_AutoSave_Pol_Raw;
-    QSpacerItem *verticalSpacer_12;
     QLabel *label_Set_Spec_Pol;
+    QSpacerItem *verticalSpacer_2;
     QListWidget *list_devices_Pol;
     QSpacerItem *verticalSpacer_9;
-    QLabel *label_Measurements_Pol;
-    QTableWidget *Table_Measurements_Pol;
     QLabel *label_3;
     QProgressBar *currentProgressBar_Pol;
     QLabel *label_5;
     QProgressBar *TotalProgressBar_Pol;
+    QSpacerItem *verticalSpacer_12;
+    QLabel *label_Measurements_Pol;
+    QSpacerItem *verticalSpacer_3;
+    QTableWidget *Table_Measurements_Pol;
+    QSpacerItem *verticalSpacer;
+    QLabel *label_Save_Pol;
+    QSpacerItem *verticalSpacer_5;
+    QHBoxLayout *horizontalLayout;
+    QSpacerItem *horizontalSpacer_17;
+    QCheckBox *checkBox_AutoSave_Pol_Raw;
+    QCheckBox *checkBox_AutoSave_Pol;
     QSpacerItem *verticalSpacer_10;
+    QLabel *label_5_Pol_settings;
+    QSpacerItem *verticalSpacer_4;
+    QHBoxLayout *horizontalLayout_9;
+    QPushButton *button_Pol_ConfigureMeasurement;
+    QPushButton *button_Conf_Setup_Pol;
+    QSpacerItem *verticalSpacer_8;
     QPushButton *button_Start_Meas_Pol;
     QSpacerItem *verticalSpacer_7;
     QSpacerItem *horizontalSpacer_2;
+    QFrame *line_2;
     QVBoxLayout *verticalLayout_7;
     QHBoxLayout *horizontalLayout_13;
     QSpacerItem *horizontalSpacer_10;
@@ -81,6 +88,7 @@ public:
     QSpacerItem *horizontalSpacer;
     Plot *qwtPlot_Pol_Prediction;
     QSpacerItem *horizontalSpacer_18;
+    QFrame *line;
     QHBoxLayout *horizontalLayout_10;
     QSpacerItem *horizontalSpacer_19;
     QVBoxLayout *verticalLayout_13;
@@ -115,82 +123,22 @@ public:
         horizonalLayout_2->setObjectName(QStringLiteral("horizonalLayout_2"));
         verticalLayout_8 = new QVBoxLayout();
         verticalLayout_8->setObjectName(QStringLiteral("verticalLayout_8"));
-        verticalSpacer_11 = new QSpacerItem(5, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        verticalSpacer_11 = new QSpacerItem(5, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         verticalLayout_8->addItem(verticalSpacer_11);
 
-        label_5_Pol_settings = new QLabel(PanelPolarimeter);
-        label_5_Pol_settings->setObjectName(QStringLiteral("label_5_Pol_settings"));
+        label_Set_Spec_Pol = new QLabel(PanelPolarimeter);
+        label_Set_Spec_Pol->setObjectName(QStringLiteral("label_Set_Spec_Pol"));
         QFont font;
         font.setBold(true);
         font.setWeight(75);
-        label_5_Pol_settings->setFont(font);
-
-        verticalLayout_8->addWidget(label_5_Pol_settings);
-
-        horizontalLayout_9 = new QHBoxLayout();
-        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
-        button_Pol_Syringe = new QPushButton(PanelPolarimeter);
-        button_Pol_Syringe->setObjectName(QStringLiteral("button_Pol_Syringe"));
-        button_Pol_Syringe->setMinimumSize(QSize(110, 28));
-        button_Pol_Syringe->setMaximumSize(QSize(110, 28));
-
-        horizontalLayout_9->addWidget(button_Pol_Syringe);
-
-        button_Conf_Setup_Pol = new QPushButton(PanelPolarimeter);
-        button_Conf_Setup_Pol->setObjectName(QStringLiteral("button_Conf_Setup_Pol"));
-        button_Conf_Setup_Pol->setMinimumSize(QSize(110, 28));
-        button_Conf_Setup_Pol->setMaximumSize(QSize(110, 28));
-
-        horizontalLayout_9->addWidget(button_Conf_Setup_Pol);
-
-
-        verticalLayout_8->addLayout(horizontalLayout_9);
-
-        verticalSpacer_8 = new QSpacerItem(10, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
-
-        verticalLayout_8->addItem(verticalSpacer_8);
-
-        label_Save_Pol = new QLabel(PanelPolarimeter);
-        label_Save_Pol->setObjectName(QStringLiteral("label_Save_Pol"));
-        label_Save_Pol->setFont(font);
-
-        verticalLayout_8->addWidget(label_Save_Pol);
-
-        horizontalLayout_12 = new QHBoxLayout();
-        horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
-        horizontalSpacer_17 = new QSpacerItem(10, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
-
-        horizontalLayout_12->addItem(horizontalSpacer_17);
-
-        checkBox_AutoSave_Pol = new QCheckBox(PanelPolarimeter);
-        checkBox_AutoSave_Pol->setObjectName(QStringLiteral("checkBox_AutoSave_Pol"));
-        checkBox_AutoSave_Pol->setMinimumSize(QSize(110, 28));
-        checkBox_AutoSave_Pol->setMaximumSize(QSize(110, 28));
-        checkBox_AutoSave_Pol->setIconSize(QSize(16, 16));
-
-        horizontalLayout_12->addWidget(checkBox_AutoSave_Pol);
-
-        checkBox_AutoSave_Pol_Raw = new QCheckBox(PanelPolarimeter);
-        checkBox_AutoSave_Pol_Raw->setObjectName(QStringLiteral("checkBox_AutoSave_Pol_Raw"));
-        checkBox_AutoSave_Pol_Raw->setMinimumSize(QSize(110, 28));
-        checkBox_AutoSave_Pol_Raw->setMaximumSize(QSize(110, 28));
-        checkBox_AutoSave_Pol_Raw->setChecked(true);
-
-        horizontalLayout_12->addWidget(checkBox_AutoSave_Pol_Raw);
-
-
-        verticalLayout_8->addLayout(horizontalLayout_12);
-
-        verticalSpacer_12 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-        verticalLayout_8->addItem(verticalSpacer_12);
-
-        label_Set_Spec_Pol = new QLabel(PanelPolarimeter);
-        label_Set_Spec_Pol->setObjectName(QStringLiteral("label_Set_Spec_Pol"));
         label_Set_Spec_Pol->setFont(font);
 
         verticalLayout_8->addWidget(label_Set_Spec_Pol);
+
+        verticalSpacer_2 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_8->addItem(verticalSpacer_2);
 
         list_devices_Pol = new QListWidget(PanelPolarimeter);
         list_devices_Pol->setObjectName(QStringLiteral("list_devices_Pol"));
@@ -200,44 +148,9 @@ public:
 
         verticalLayout_8->addWidget(list_devices_Pol);
 
-        verticalSpacer_9 = new QSpacerItem(15, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        verticalSpacer_9 = new QSpacerItem(15, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         verticalLayout_8->addItem(verticalSpacer_9);
-
-        label_Measurements_Pol = new QLabel(PanelPolarimeter);
-        label_Measurements_Pol->setObjectName(QStringLiteral("label_Measurements_Pol"));
-        label_Measurements_Pol->setFont(font);
-
-        verticalLayout_8->addWidget(label_Measurements_Pol);
-
-        Table_Measurements_Pol = new QTableWidget(PanelPolarimeter);
-        if (Table_Measurements_Pol->columnCount() < 3)
-            Table_Measurements_Pol->setColumnCount(3);
-        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-        Table_Measurements_Pol->setHorizontalHeaderItem(0, __qtablewidgetitem);
-        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-        Table_Measurements_Pol->setHorizontalHeaderItem(1, __qtablewidgetitem1);
-        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-        Table_Measurements_Pol->setHorizontalHeaderItem(2, __qtablewidgetitem2);
-        Table_Measurements_Pol->setObjectName(QStringLiteral("Table_Measurements_Pol"));
-        Table_Measurements_Pol->setMinimumSize(QSize(290, 200));
-        Table_Measurements_Pol->setMaximumSize(QSize(280, 16777215));
-        Table_Measurements_Pol->setAutoScroll(true);
-        Table_Measurements_Pol->setAutoScrollMargin(18);
-        Table_Measurements_Pol->setTextElideMode(Qt::ElideLeft);
-        Table_Measurements_Pol->setRowCount(0);
-        Table_Measurements_Pol->setColumnCount(3);
-        Table_Measurements_Pol->horizontalHeader()->setCascadingSectionResizes(false);
-        Table_Measurements_Pol->horizontalHeader()->setDefaultSectionSize(54);
-        Table_Measurements_Pol->horizontalHeader()->setProperty("showSortIndicator", QVariant(false));
-        Table_Measurements_Pol->horizontalHeader()->setStretchLastSection(true);
-        Table_Measurements_Pol->verticalHeader()->setCascadingSectionResizes(false);
-        Table_Measurements_Pol->verticalHeader()->setHighlightSections(true);
-        Table_Measurements_Pol->verticalHeader()->setMinimumSectionSize(39);
-        Table_Measurements_Pol->verticalHeader()->setProperty("showSortIndicator", QVariant(false));
-        Table_Measurements_Pol->verticalHeader()->setStretchLastSection(false);
-
-        verticalLayout_8->addWidget(Table_Measurements_Pol);
 
         label_3 = new QLabel(PanelPolarimeter);
         label_3->setObjectName(QStringLiteral("label_3"));
@@ -268,9 +181,124 @@ public:
 
         verticalLayout_8->addWidget(TotalProgressBar_Pol);
 
-        verticalSpacer_10 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        verticalSpacer_12 = new QSpacerItem(20, 15, QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+        verticalLayout_8->addItem(verticalSpacer_12);
+
+        label_Measurements_Pol = new QLabel(PanelPolarimeter);
+        label_Measurements_Pol->setObjectName(QStringLiteral("label_Measurements_Pol"));
+        label_Measurements_Pol->setFont(font);
+
+        verticalLayout_8->addWidget(label_Measurements_Pol);
+
+        verticalSpacer_3 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_8->addItem(verticalSpacer_3);
+
+        Table_Measurements_Pol = new QTableWidget(PanelPolarimeter);
+        if (Table_Measurements_Pol->columnCount() < 3)
+            Table_Measurements_Pol->setColumnCount(3);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        Table_Measurements_Pol->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        Table_Measurements_Pol->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        Table_Measurements_Pol->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        Table_Measurements_Pol->setObjectName(QStringLiteral("Table_Measurements_Pol"));
+        Table_Measurements_Pol->setMinimumSize(QSize(290, 150));
+        Table_Measurements_Pol->setMaximumSize(QSize(280, 16777215));
+        Table_Measurements_Pol->setAutoScroll(true);
+        Table_Measurements_Pol->setAutoScrollMargin(18);
+        Table_Measurements_Pol->setTextElideMode(Qt::ElideLeft);
+        Table_Measurements_Pol->setRowCount(0);
+        Table_Measurements_Pol->setColumnCount(3);
+        Table_Measurements_Pol->horizontalHeader()->setCascadingSectionResizes(false);
+        Table_Measurements_Pol->horizontalHeader()->setDefaultSectionSize(54);
+        Table_Measurements_Pol->horizontalHeader()->setProperty("showSortIndicator", QVariant(false));
+        Table_Measurements_Pol->horizontalHeader()->setStretchLastSection(true);
+        Table_Measurements_Pol->verticalHeader()->setCascadingSectionResizes(false);
+        Table_Measurements_Pol->verticalHeader()->setHighlightSections(true);
+        Table_Measurements_Pol->verticalHeader()->setMinimumSectionSize(39);
+        Table_Measurements_Pol->verticalHeader()->setProperty("showSortIndicator", QVariant(false));
+        Table_Measurements_Pol->verticalHeader()->setStretchLastSection(false);
+
+        verticalLayout_8->addWidget(Table_Measurements_Pol);
+
+        verticalSpacer = new QSpacerItem(20, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_8->addItem(verticalSpacer);
+
+        label_Save_Pol = new QLabel(PanelPolarimeter);
+        label_Save_Pol->setObjectName(QStringLiteral("label_Save_Pol"));
+        label_Save_Pol->setFont(font);
+
+        verticalLayout_8->addWidget(label_Save_Pol);
+
+        verticalSpacer_5 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+        verticalLayout_8->addItem(verticalSpacer_5);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalSpacer_17 = new QSpacerItem(10, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+        horizontalLayout->addItem(horizontalSpacer_17);
+
+        checkBox_AutoSave_Pol_Raw = new QCheckBox(PanelPolarimeter);
+        checkBox_AutoSave_Pol_Raw->setObjectName(QStringLiteral("checkBox_AutoSave_Pol_Raw"));
+        checkBox_AutoSave_Pol_Raw->setMinimumSize(QSize(110, 28));
+        checkBox_AutoSave_Pol_Raw->setMaximumSize(QSize(110, 28));
+        checkBox_AutoSave_Pol_Raw->setChecked(true);
+
+        horizontalLayout->addWidget(checkBox_AutoSave_Pol_Raw);
+
+        checkBox_AutoSave_Pol = new QCheckBox(PanelPolarimeter);
+        checkBox_AutoSave_Pol->setObjectName(QStringLiteral("checkBox_AutoSave_Pol"));
+        checkBox_AutoSave_Pol->setMinimumSize(QSize(110, 28));
+        checkBox_AutoSave_Pol->setMaximumSize(QSize(110, 28));
+        checkBox_AutoSave_Pol->setIconSize(QSize(16, 16));
+
+        horizontalLayout->addWidget(checkBox_AutoSave_Pol);
+
+
+        verticalLayout_8->addLayout(horizontalLayout);
+
+        verticalSpacer_10 = new QSpacerItem(20, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         verticalLayout_8->addItem(verticalSpacer_10);
+
+        label_5_Pol_settings = new QLabel(PanelPolarimeter);
+        label_5_Pol_settings->setObjectName(QStringLiteral("label_5_Pol_settings"));
+        label_5_Pol_settings->setFont(font);
+
+        verticalLayout_8->addWidget(label_5_Pol_settings);
+
+        verticalSpacer_4 = new QSpacerItem(20, 5, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_8->addItem(verticalSpacer_4);
+
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        button_Pol_ConfigureMeasurement = new QPushButton(PanelPolarimeter);
+        button_Pol_ConfigureMeasurement->setObjectName(QStringLiteral("button_Pol_ConfigureMeasurement"));
+        button_Pol_ConfigureMeasurement->setMinimumSize(QSize(110, 28));
+        button_Pol_ConfigureMeasurement->setMaximumSize(QSize(110, 28));
+
+        horizontalLayout_9->addWidget(button_Pol_ConfigureMeasurement);
+
+        button_Conf_Setup_Pol = new QPushButton(PanelPolarimeter);
+        button_Conf_Setup_Pol->setObjectName(QStringLiteral("button_Conf_Setup_Pol"));
+        button_Conf_Setup_Pol->setMinimumSize(QSize(110, 28));
+        button_Conf_Setup_Pol->setMaximumSize(QSize(110, 28));
+
+        horizontalLayout_9->addWidget(button_Conf_Setup_Pol);
+
+
+        verticalLayout_8->addLayout(horizontalLayout_9);
+
+        verticalSpacer_8 = new QSpacerItem(10, 15, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+        verticalLayout_8->addItem(verticalSpacer_8);
 
         button_Start_Meas_Pol = new QPushButton(PanelPolarimeter);
         button_Start_Meas_Pol->setObjectName(QStringLiteral("button_Start_Meas_Pol"));
@@ -281,7 +309,7 @@ public:
 
         verticalLayout_8->addWidget(button_Start_Meas_Pol);
 
-        verticalSpacer_7 = new QSpacerItem(5, 10, QSizePolicy::Minimum, QSizePolicy::Fixed);
+        verticalSpacer_7 = new QSpacerItem(5, 8, QSizePolicy::Minimum, QSizePolicy::Fixed);
 
         verticalLayout_8->addItem(verticalSpacer_7);
 
@@ -291,6 +319,13 @@ public:
         horizontalSpacer_2 = new QSpacerItem(5, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 
         horizonalLayout_2->addItem(horizontalSpacer_2);
+
+        line_2 = new QFrame(PanelPolarimeter);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setFrameShape(QFrame::VLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        horizonalLayout_2->addWidget(line_2);
 
         verticalLayout_7 = new QVBoxLayout();
         verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
@@ -304,7 +339,11 @@ public:
         verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
         label_6 = new QLabel(PanelPolarimeter);
         label_6->setObjectName(QStringLiteral("label_6"));
-        label_6->setFont(font);
+        QFont font1;
+        font1.setPointSize(10);
+        font1.setBold(true);
+        font1.setWeight(75);
+        label_6->setFont(font1);
         label_6->setAlignment(Qt::AlignCenter);
 
         verticalLayout_10->addWidget(label_6);
@@ -328,7 +367,7 @@ public:
         verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
         label_7 = new QLabel(PanelPolarimeter);
         label_7->setObjectName(QStringLiteral("label_7"));
-        label_7->setFont(font);
+        label_7->setFont(font1);
         label_7->setAlignment(Qt::AlignCenter);
 
         verticalLayout_11->addWidget(label_7);
@@ -353,36 +392,40 @@ public:
         verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        horizontalSpacer_3 = new QSpacerItem(70, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer_3 = new QSpacerItem(50, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_3);
 
         FFT_label_Pol = new QLabel(PanelPolarimeter);
         FFT_label_Pol->setObjectName(QStringLiteral("FFT_label_Pol"));
+        FFT_label_Pol->setMinimumSize(QSize(50, 0));
         FFT_label_Pol->setMaximumSize(QSize(50, 100));
-        FFT_label_Pol->setFont(font);
+        FFT_label_Pol->setFont(font1);
         FFT_label_Pol->setAlignment(Qt::AlignCenter);
 
         horizontalLayout_2->addWidget(FFT_label_Pol);
 
         waveToPlotFFT = new ClickableLabel(PanelPolarimeter);
         waveToPlotFFT->setObjectName(QStringLiteral("waveToPlotFFT"));
-        waveToPlotFFT->setMaximumSize(QSize(50, 16777215));
-        QFont font1;
-        font1.setUnderline(true);
-        waveToPlotFFT->setFont(font1);
+        waveToPlotFFT->setMinimumSize(QSize(50, 0));
+        waveToPlotFFT->setMaximumSize(QSize(50, 100));
+        QFont font2;
+        font2.setPointSize(10);
+        font2.setUnderline(true);
+        waveToPlotFFT->setFont(font2);
         waveToPlotFFT->setCursor(QCursor(Qt::PointingHandCursor));
 
         horizontalLayout_2->addWidget(waveToPlotFFT);
 
         label = new QLabel(PanelPolarimeter);
         label->setObjectName(QStringLiteral("label"));
+        label->setMinimumSize(QSize(20, 0));
         label->setMaximumSize(QSize(20, 16777215));
-        label->setFont(font);
+        label->setFont(font1);
 
         horizontalLayout_2->addWidget(label);
 
-        horizontalSpacer = new QSpacerItem(70, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(70, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer);
 
@@ -408,6 +451,13 @@ public:
 
         verticalLayout_7->addLayout(horizontalLayout_13);
 
+        line = new QFrame(PanelPolarimeter);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout_7->addWidget(line);
+
         horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setObjectName(QStringLiteral("horizontalLayout_10"));
         horizontalSpacer_19 = new QSpacerItem(10, 10, QSizePolicy::Fixed, QSizePolicy::Minimum);
@@ -418,7 +468,7 @@ public:
         verticalLayout_13->setObjectName(QStringLiteral("verticalLayout_13"));
         label_9 = new QLabel(PanelPolarimeter);
         label_9->setObjectName(QStringLiteral("label_9"));
-        label_9->setFont(font);
+        label_9->setFont(font1);
         label_9->setAlignment(Qt::AlignCenter);
 
         verticalLayout_13->addWidget(label_9);
@@ -446,7 +496,7 @@ public:
         verticalLayout_14->setObjectName(QStringLiteral("verticalLayout_14"));
         label_10 = new QLabel(PanelPolarimeter);
         label_10->setObjectName(QStringLiteral("label_10"));
-        label_10->setFont(font);
+        label_10->setFont(font1);
         label_10->setAlignment(Qt::AlignCenter);
 
         verticalLayout_14->addWidget(label_10);
@@ -515,13 +565,9 @@ public:
     void retranslateUi(QWidget *PanelPolarimeter)
     {
         PanelPolarimeter->setWindowTitle(QApplication::translate("PanelPolarimeter", "Form", Q_NULLPTR));
-        label_5_Pol_settings->setText(QApplication::translate("PanelPolarimeter", "Configuration", Q_NULLPTR));
-        button_Pol_Syringe->setText(QApplication::translate("PanelPolarimeter", "Measurement", Q_NULLPTR));
-        button_Conf_Setup_Pol->setText(QApplication::translate("PanelPolarimeter", "F-Rotator", Q_NULLPTR));
-        label_Save_Pol->setText(QApplication::translate("PanelPolarimeter", "Save Options", Q_NULLPTR));
-        checkBox_AutoSave_Pol->setText(QApplication::translate("PanelPolarimeter", "FFT Profiles", Q_NULLPTR));
-        checkBox_AutoSave_Pol_Raw->setText(QApplication::translate("PanelPolarimeter", "Raw Data", Q_NULLPTR));
         label_Set_Spec_Pol->setText(QApplication::translate("PanelPolarimeter", "Spectrometer:", Q_NULLPTR));
+        label_3->setText(QApplication::translate("PanelPolarimeter", "Current Measurement:", Q_NULLPTR));
+        label_5->setText(QApplication::translate("PanelPolarimeter", "Total measurement:", Q_NULLPTR));
         label_Measurements_Pol->setText(QApplication::translate("PanelPolarimeter", "Measurement Progress:", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem = Table_Measurements_Pol->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QApplication::translate("PanelPolarimeter", "No.", Q_NULLPTR));
@@ -529,15 +575,19 @@ public:
         ___qtablewidgetitem1->setText(QApplication::translate("PanelPolarimeter", "Time", Q_NULLPTR));
         QTableWidgetItem *___qtablewidgetitem2 = Table_Measurements_Pol->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QApplication::translate("PanelPolarimeter", "File Name", Q_NULLPTR));
-        label_3->setText(QApplication::translate("PanelPolarimeter", "Current Measurement:", Q_NULLPTR));
-        label_5->setText(QApplication::translate("PanelPolarimeter", "Total measurement:", Q_NULLPTR));
+        label_Save_Pol->setText(QApplication::translate("PanelPolarimeter", "Save Options:", Q_NULLPTR));
+        checkBox_AutoSave_Pol_Raw->setText(QApplication::translate("PanelPolarimeter", "Raw Data", Q_NULLPTR));
+        checkBox_AutoSave_Pol->setText(QApplication::translate("PanelPolarimeter", "FFT Profiles", Q_NULLPTR));
+        label_5_Pol_settings->setText(QApplication::translate("PanelPolarimeter", "Measurement Settings:", Q_NULLPTR));
+        button_Pol_ConfigureMeasurement->setText(QApplication::translate("PanelPolarimeter", "Configure", Q_NULLPTR));
+        button_Conf_Setup_Pol->setText(QApplication::translate("PanelPolarimeter", "Calibrate", Q_NULLPTR));
         button_Start_Meas_Pol->setText(QApplication::translate("PanelPolarimeter", "Start Measurement", Q_NULLPTR));
         label_6->setText(QApplication::translate("PanelPolarimeter", "Raw Signal", Q_NULLPTR));
-        label_7->setText(QApplication::translate("PanelPolarimeter", "Compensation Signal W/2W", Q_NULLPTR));
+        label_7->setText(QApplication::translate("PanelPolarimeter", "Compensation W/2W", Q_NULLPTR));
         FFT_label_Pol->setText(QApplication::translate("PanelPolarimeter", "FFT for", Q_NULLPTR));
         waveToPlotFFT->setText(QString());
         label->setText(QApplication::translate("PanelPolarimeter", "nm", Q_NULLPTR));
-        label_9->setText(QApplication::translate("PanelPolarimeter", "FFT Amplitudes For All Wavelengths", Q_NULLPTR));
+        label_9->setText(QApplication::translate("PanelPolarimeter", "FFT Wavelegth Profile", Q_NULLPTR));
         label_10->setText(QApplication::translate("PanelPolarimeter", "Average Signal", Q_NULLPTR));
         Button_Save_Graphs_Pol->setText(QApplication::translate("PanelPolarimeter", "Save Graphs as PDF", Q_NULLPTR));
         button_Load_FFTData->setText(QApplication::translate("PanelPolarimeter", "Load From FFT", Q_NULLPTR));

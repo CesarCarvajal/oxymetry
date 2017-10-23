@@ -40,6 +40,7 @@
 /* General stuff */
 #include <math.h>
 #include <algorithm>
+#include <messages.h>
 
 /* FFT */
 #include "fft.h"
@@ -68,12 +69,13 @@ extern unsigned int m_NrDevices;
  */
 void fft::getFFTfromFFTData(QFileInfo fileInformation)
 {
+
     /* Get the File Path */
     QString FileName = fileInformation.absoluteFilePath();
     QFile file(FileName);
 
     if(!file.exists()){
-        qDebug() << "File: " << FileName << "doesn't exists!";
+        showWarning("File not Found!", "");
     }
 
     /* Get Information from File Name */
@@ -140,8 +142,6 @@ void fft::getFFTfromFFTData(QFileInfo fileInformation)
 
 }
 
-
-
 /**
  * @brief Get the FFT analysis from Raw Data
  */
@@ -153,7 +153,7 @@ void fft::getFFTfromRawData(QFileInfo fileInformation)
     QFile file(FileName);
 
     if(!file.exists()){
-        qDebug() << "File: " << FileName << "doesn't exists!";
+        showWarning("File not Found!", "");
     }
 
     /* Initialize according to the type of file TXT or CS */
@@ -188,6 +188,7 @@ void fft::getFFTfromRawData(QFileInfo fileInformation)
                 QStringList Readed_Row = Row.split(spliter);
                 Readed_Row.replaceInStrings(",",".");
                 QString Row_waves = Readed_Row.at(0);
+
                 wavelengths[k] = Row_waves.toDouble();
 
                 for (int j=beginer; j < Readed_Row.length()-1; j++){

@@ -16,8 +16,6 @@ both lists should update with the new settings.
 
 Problems:
 
-- How to update the plot of Polarimeter from preview.
+- If I change the integration time from Preview, The list of polarimeter is updated, but not viceversa.
 
-- How to communicate the spectrometer lists from Polarimeter tab to preview tab.
-
-- How to disable buttons of preview from polarimeter tab.
+- How to disable buttons of preview from polarimeter tab. 

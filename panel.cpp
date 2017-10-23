@@ -311,6 +311,7 @@ Panel::Panel(QWidget *parent) :
 
     /* If timer times out, things should be updated */
     connect(timer, SIGNAL(timeout()), this, SLOT(updateProgress()));
+
 }
 
 /**
@@ -437,6 +438,7 @@ void Panel::handleClickEvent(QWidget *widget)
         {
             /* Run automatic adjustment of integration time */
             adjustIntegrationTime(i);
+            polarimeter->adjustIntegrationTime();
         }
         /* The number of averages label has been clicked */ // Polarimeter Setup Involved
         else if (label == devices[i]->ui->label_numberOfAverages)
@@ -719,10 +721,7 @@ void Panel::startPreview(void)
     ui->pushButton_preview->setEnabled(true);
 
 /*------------------------*/
-//    pol.disable();
-
-    polarimeter->disable_Polarimeter_Measurement();  // *** Cesar: Added the function to disable the Polarimeter Mesaurement options when preview is running.
-
+    polarimeter->enable_Polarimeter_Measurement(false);   // *** Cesar: Added the function to disable the Polarimeter Mesaurement options when preview is running.
 /*------------------------*/
 }
 
@@ -779,9 +778,7 @@ void Panel::stopPreview(void)
     ui->pushButton_timePattern->setEnabled(true);
 
 /*------------------------*/
-//    pol.enable();
-
-    polarimeter->enable_Polarimeter_Measurement();  // *** Cesar: Added the function to enable the Polarimeter Measurement if the Preview isn't running.
+    polarimeter->enable_Polarimeter_Measurement(true);  // *** Cesar: Added the function to enable the Polarimeter Measurement if the Preview isn't running.
 /*------------------------*/
 }
 
@@ -910,8 +907,6 @@ bool Panel::isCurveVisible(unsigned int i)
 void Panel::setCurveVisible(unsigned int i, bool value)
 {
     curves[i]->setVisible(value);
-//    curves_Pol[i]->setVisible(value);
-
 }
 
 /**
@@ -921,7 +916,6 @@ void Panel::updateGraph(void)
 {
     /* Update the graph */
     ui->qwtPlot->update();
-//    ui->qwtPlot_Pol->update();
 }
 
 /**
@@ -1553,7 +1547,6 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
 
             /* Update curve data */
             curves[i]->setSamples(ptrSpectrometers[i]->getWavelengths(), ptrSpectrometers[i]->getCounts(), ptrSpectrometers[i]->getNumberOfPixels());
-//            polarimeter->curves_Pol[0]->setSamples(ptrSpectrometers[polarimeter->SpectrometerNumber]->getWavelengths(), ptrSpectrometers[polarimeter->SpectrometerNumber]->getCounts(), ptrSpectrometers[polarimeter->SpectrometerNumber]->getNumberOfPixels()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
 
 /* ---------------------------------------- */
             /* To do */
@@ -1597,10 +1590,9 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
             /* Update the graph */
             ui->qwtPlot->update();
 
-            //ui->qwtPlot_Pol->update();  // Polarimeter Setup Variable
-
-        }
+       }
     }
+
 }
 
 /**

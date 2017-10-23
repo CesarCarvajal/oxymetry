@@ -61,11 +61,16 @@ class PanelPolarimeter : public QWidget
     /* Constructor */
     explicit PanelPolarimeter(QWidget *parent = 0);
 
+    /* Graphical functions */
+    bool isCurveVisible();
+    void setCurveVisible(bool value);
+    void updateGraph(void);
+
     /* Disable/enable polarimeter */
-    void disable_Polarimeter_Measurement(void);
-    void enable_Polarimeter_Measurement(void);
+    void enable_Polarimeter_Measurement(bool activate);
     void SelectedSpectrometer_Polarimeter(void);
     void Plot_FFT_Graphs(double FFTLwavelengths[], double FFTLtime[], double FFTLfft_data[], double FFTLfft_DC[], double FFTLfft_W[], double FFTLfft_2W[], double FFTLfft_Compensation_Signal[]);
+    void adjustIntegrationTime();
 
     /* Destructor */
     ~PanelPolarimeter(void);
@@ -73,6 +78,9 @@ class PanelPolarimeter : public QWidget
 private slots:
     /* Functions for spectrometer items */
     void handleClickEvent(QWidget *widget);
+
+    /* Called if new data signal arrived */
+    void ReceiveDataIsHerePol(int WParam, int LParam);
 
     /* Functions for Polarimeter */
     void start_Pol_Measurement(void);
@@ -91,11 +99,12 @@ private slots:
     void LoadFromFFT(void);
     void LoadFromRawData(void);
 
-    /* Configuration of Pump and Faraday Rotator for Polarimeter */
-    void ConfSetup_Pol_Pump(void);
+    /* Configuration of Measurements for Polarimeter */
+    void ConfSetup_Pol_Measurement(void);
     void ConfSetup_Pol(void);
 
 private:
+
     /* User interface */
     Ui::PanelPolarimeter *ui;
 
@@ -118,7 +127,7 @@ public:
     QList<PanelItem_Pol *> devices2; 
     QList<QwtPlotCurve *> curves_Pol;
     bool PolMeasurementRunning = false;
-    bool isRawData = false;
+    bool isFFTData = false;
     int SpectrometerNumber;
     int selectedWave;
 

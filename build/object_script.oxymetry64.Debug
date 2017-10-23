@@ -35,6 +35,7 @@ C:\Users\OpLaSens-1\Documents\GitHub\oxymetry\build\debug\oxymetry_res.o
 ./debug\fluidic_control.o
 ./debug\light_control.o
 ./debug\panel_change_Wave_FFT.o
+./debug\configure_Polarimeter_Measure.o
 ./debug\qrc_icons.o
 ./debug\moc_application.o
 ./debug\moc_spectrometer_config.o
@@ -61,4 +62,5 @@ C:\Users\OpLaSens-1\Documents\GitHub\oxymetry\build\debug\oxymetry_res.o
 ./debug\moc_fluidic_control.o
 ./debug\moc_light_control.o
 ./debug\moc_panel_change_Wave_FFT.o
+./debug\moc_configure_Polarimeter_Measure.o
 );
