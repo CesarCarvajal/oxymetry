@@ -40,6 +40,7 @@
 
 /* General stuff */
 #include "panel_item_polarimeter.h"
+#include "configure_Polarimeter_Measure.h"
 #include "fft.h"
 
 /*
@@ -101,7 +102,12 @@ private slots:
 
     /* Configuration of Measurements for Polarimeter */
     void ConfSetup_Pol_Measurement(void);
-    void ConfSetup_Pol(void);
+    void toggle_Pol_Calibration(void);
+    void Calibrate_Pol_Start(void);
+    void Calibrate_Pol_Stop(void);
+
+    /* Live Anaylisi Data */
+    void liveFFTAnalysis(void);
 
 private:
 
@@ -127,9 +133,15 @@ public:
     QList<PanelItem_Pol *> devices2; 
     QList<QwtPlotCurve *> curves_Pol;
     bool PolMeasurementRunning = false;
-    bool isFFTData = false;
+    bool isFFTData = true;
     int SpectrometerNumber;
     int selectedWave;
+    bool measurement_Pol_profileLoaded = false;
+
+    QVector<double> averaged_Raw_Signal;
+    QVector<double> averaged_Raw_Signal_time;
+
+    configurePolMeasure ConfigureMeasurement;
 
 };
 

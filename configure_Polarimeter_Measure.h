@@ -26,7 +26,7 @@
 #include <QStringList>
 
 namespace Ui {
-    class configurePolMeasure;
+class configurePolMeasure;
 }
 
 /**
@@ -39,6 +39,16 @@ class configurePolMeasure : public QDialog
 public:
     /* Constructor */
     explicit configurePolMeasure(QWidget *parent = 0);
+
+    QList<unsigned int> numSpectra;
+    QList<double> timePoint;
+    QList<float> integrationTime;
+    QList<unsigned int> numberOfAverages;
+    QStringList wordList;
+    bool configured = false;
+    QString path;
+    /* Time pattern configuration */
+    QStringList fileName;
 
     /* Destructor */
     ~configurePolMeasure(void);
@@ -54,12 +64,7 @@ private:
     /* Abort run if set to FALSE */
     bool bRunTimePattern = false;
 
-    /* Time pattern configuration */
-    QList<double> timePoint;
-    QStringList fileName;
-    QList<unsigned int> numSpectra;
-    QList<float> integrationTime;
-    QList<unsigned int> numberOfAverages;
+
 };
 
 #endif // PANEL_CONFIGUREPOLMEASURE_H

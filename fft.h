@@ -47,8 +47,10 @@ public:
     void getFFTfromRawData(QFileInfo FileName);
     void getFFTfromFFTData(QFileInfo FileName);
 
+    void Calculate_Live_FFT(double *Data);
+
     void saveFFTtoFile();
-    void InitializeFFTArrays(void);
+    void InitializeFFTArrays(QString FilePath, bool isTXT);
     fftw_complex *CalculateFFT(int N, double Data[]);
 
     /* Size of Nr Spectra */

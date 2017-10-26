@@ -58,7 +58,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Oxymetry 0.4.2</string>
+    <string>Oxymetry 0.4.3</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_compiler">
@@ -163,7 +163,23 @@
       <bool>true</bool>
      </property>
      <property name="plainText">
-      <string>Version 0.4.2: (08.10.2017)
+      <string>Version 0.4.3: (26.10.2017)
+
+Polarimeter Tab:
++ Live Average Raw Signal Display with time dependency.
++ Autoadjust of Plot X and Y axis according to the ploted data.
++ Load of data from FFT file or Raw Data File.
++ Save option of FFT Analyzed Data.
++ Save Graphs to PDF.
++ Measurement Profile Load or Edition.
++ Calibration Option for Polarimeter Tab.
++ Plot of the FFT at the selected wavelength.
++ Raw Signal Plot independent from Preview Tab.
++ Spectra, Integration Time and Averaging Profile are now shown in Measurement Profile.
++ Colored Start/Stop measurement toggle button.
+- Disabled preview/polarimeter setup when one preview/polarimeter setup is active.
+
+Version 0.4.2: (08.10.2017)
 
 - Dropped support for 32-bit OS
 + Code cleanup and restructuring

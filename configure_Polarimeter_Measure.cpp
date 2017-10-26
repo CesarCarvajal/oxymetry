@@ -65,8 +65,6 @@ configurePolMeasure::configurePolMeasure(QWidget *parent) :
  */
 void configurePolMeasure::selectPath(void)
 {
-    QString path;
-
     /* No directory chosen until now? */
     if (!ui->lineEdit_path->isEnabled())
     {
@@ -84,6 +82,7 @@ void configurePolMeasure::selectPath(void)
     if (!path.isEmpty())
     {
         QFile file(path);
+        configured = true;
 
         /* Open configuration file */
         if (!file.open(QIODevice::ReadOnly))
@@ -93,11 +92,6 @@ void configurePolMeasure::selectPath(void)
             return;
         }
 
-        /*
-         * Read in configuration file
-         */
-
-        QStringList wordList;
 
         /* Loop through lines in file */
         while (!file.atEnd())
@@ -111,7 +105,6 @@ void configurePolMeasure::selectPath(void)
         /*
          * Process configuration file
          */
-
 
         /* Clear lists */
         timePoint.clear();
@@ -213,6 +206,8 @@ void configurePolMeasure::selectPath(void)
         /* Enable directory field and 'start' button */
         ui->lineEdit_path->setEnabled(true);
     }
+
+    accept();
 }
 
 /**

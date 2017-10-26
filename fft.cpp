@@ -61,19 +61,16 @@ extern Spectrometer** ptrSpectrometers;
 extern unsigned int m_NrDevices;
 
 /**
- * @brief Constructor of 'FFT' class
- */
-
-/**
- * @brief Get the FFT analysis plots from FFT Data
+ * @brief Get the FFT analysis plots from FFT Type Data
  */
 void fft::getFFTfromFFTData(QFileInfo fileInformation)
 {
 
-    /* Get the File Path */
+    /* Get the File Path and Name */
     QString FileName = fileInformation.absoluteFilePath();
     QFile file(FileName);
 
+    /* Does the File exists? */
     if(!file.exists()){
         showWarning("File not Found!", "");
     }
@@ -81,24 +78,33 @@ void fft::getFFTfromFFTData(QFileInfo fileInformation)
     /* Get Information from File Name */
     ReadFileName(fileInformation.completeBaseName(), fileInformation.absoluteFilePath(), true);
 
+    /* Create the readed row and skip the first 10 lines */
     QString Row;
     int k = -10;
 
+    /* Open the file */
     if(file.open(QIODevice::ReadOnly)) {
 
+        /* Get lines from file */
         QTextStream stream(&file);
 
         while(!stream.atEnd()){
 
+            /* Read the current line in file */
             Row = stream.readLine();
 
+            /* Have already skipped the first lines and there is information to save? */
             if (k>=0 && Row!=""){
 
+                /* Get the values from the line */
                 QStringList Readed_Row = Row.split("\t\t");
                 Readed_Row.replaceInStrings(",",".");
                 QString Row_waves = Readed_Row.at(0);
+
+                /* Save the wavelengths on file */
                 wavelengths[k] = Row_waves.toDouble();
 
+                /* Save the DC, W and 2W amplitudes saved in the file */
                 QString Row_Dat = Readed_Row.at(1);
                 fft_DC[k] = Row_Dat.toDouble();
                 Row_Dat = Readed_Row.at(2);
@@ -107,19 +113,22 @@ void fft::getFFTfromFFTData(QFileInfo fileInformation)
                 fft_2W[k] = Row_Dat.toDouble();
                 fft_Compensation_Signal[k] = fft_W[k]/fft_2W[k];
 
+                /* What is the modulation frequency? */
                 f_w = NrSpectra*(IntTime/1000)*FrequencyF;
 
-                /* Get the FFT at a certain wavelength, will become a void later */
+                /* By default show the FFT values for the wavelength 537,57 nm */
                 if (k == 438){
 
                     for ( int  i = 0; i < NrSpectra/2; i++ )
                     {
                         if (i != 0 || i != f_w || i != 2*f_w){
 
+                            /* Amplitude at all other frequencies are set to zero */
                             fft_data[i] = 0;
 
                         }
 
+                        /* Which frequencies are shown in the FFT? */
                         time[i] = i/(NrSpectra*(IntTime/1000));
                     }
 
@@ -148,20 +157,24 @@ void fft::getFFTfromFFTData(QFileInfo fileInformation)
 void fft::getFFTfromRawData(QFileInfo fileInformation)
 {
 
-    /* Get the File Path */
+    /* Get the File Path and Name */
     QString FileName = fileInformation.absoluteFilePath();
     QFile file(FileName);
 
+    /* Does the File exists? */
     if(!file.exists()){
         showWarning("File not Found!", "");
     }
 
-    /* Initialize according to the type of file TXT or CS */
+    /* Initialize the counters and spliter according to the type of file TXT or CS */
     int k = -6;
     QString spliter = "\t\t";
     int beginer = 1;
-    bool isTXT = false;
+    QString Row;
+    fftw_complex *outputFFT;
 
+    /* Is it a txt from Avantes Software or a CS from Oxymetry Software? */
+    bool isTXT = false;
     if(fileInformation.suffix()=="TXT"){
         k = -10;
         spliter = ";";
@@ -172,43 +185,48 @@ void fft::getFFTfromRawData(QFileInfo fileInformation)
     /* Get Information from File Name */
     ReadFileName(fileInformation.completeBaseName(), fileInformation.absoluteFilePath(), isTXT);
 
-    QString Row;
-    fftw_complex *outputFFT;
-
+    /* Open the file */
     if(file.open(QIODevice::ReadOnly)) {
 
+        /* Get lines from file */
         QTextStream stream(&file);
 
         while(!stream.atEnd()){
 
+            /* Read the current line in file */
             Row = stream.readLine();
 
+            /* Have already skipped the first lines and there is information to save? */
             if (k>=0 && Row!=""){
 
+                /* Get the values from the line */
                 QStringList Readed_Row = Row.split(spliter);
                 Readed_Row.replaceInStrings(",",".");
                 QString Row_waves = Readed_Row.at(0);
 
+                /* Save the wavelengths on file */
                 wavelengths[k] = Row_waves.toDouble();
 
+                /* Save all the counts in saved in rows at the file */
                 for (int j=beginer; j < Readed_Row.length()-1; j++){
-
                     QString Row_counts = Readed_Row.at(j);
                     counts[j] = Row_counts.toDouble();
                 }
 
+                /* With the current counts from a row, calculate the FFT */
                 outputFFT = CalculateFFT(NrSpectra, counts);
 
+                /* What is the modulation frequency? */
                 f_w = NrSpectra*(IntTime/1000)*FrequencyF;
 
+                /* From the Output array of FFT, save each of the frequency amplitudes */
                 fft_DC[k] = fabs(outputFFT[0][0]);
                 fft_W[k] = fabs(outputFFT[f_w][0]);
                 fft_2W[k] = fabs(outputFFT[2*f_w][0]);
                 fft_Compensation_Signal[k] = fft_W[k]/fft_2W[k];
 
-                /* Get the FFT at a certain wavelength, will become a void later */
+                /* By default show the FFT values for the wavelength 537,57 nm */
                 if (k == 438){
-
                     for ( int  i = 0; i < NrSpectra/2; i++ )
                     {
                         fft_data[i] = fabs(outputFFT[i][0]);
@@ -222,31 +240,31 @@ void fft::getFFTfromRawData(QFileInfo fileInformation)
         }
     }
 
-    /* Close file */
+    /* Close file and Free Memory*/
     file.close();
-
-    fftw_free ( outputFFT );
     return ;
 }
 
-
 /**
- * @brief Get Information from File Name
+ * @brief Get Information from File Name and from the file itself, for example the amount of frequencies or spectra used.
  */
 void fft::ReadFileName(QString ExtractInfoName, QString FilePath, bool isTXT)
 {
-    /* Data from the File Name */
+    /* Data to get from the File Name */
     QString Concentration1_File,Concentration2_File, IntTime_File, Frequency_File = "";
     ConcentrationC1 = IntTime = FrequencyF = ConcentrationC2 = NrAverage = NrWaves = NrSpectra = 0;
+
+    /* Which "_" are we? */
     int l=0;
 
+    /* Iterate through the name and find the "_" on it */
     for(int i=0; i < ExtractInfoName.length();i++){
         if (ExtractInfoName[i] == "_"){
             l = l+1;
             continue;
         }
 
-        /* Extract the Data from the File Name*/
+        /* Extract the Data from the File Name depending on which "_" are we */
         if (l==0 && (ExtractInfoName[i] != 'C') && (ExtractInfoName[i-1] != 'C')){
             Concentration1_File = Concentration1_File + ExtractInfoName[i];
         } else if (l==1 && (ExtractInfoName[i] != 'C') && (ExtractInfoName[i-1] != 'C')){
@@ -261,17 +279,29 @@ void fft::ReadFileName(QString ExtractInfoName, QString FilePath, bool isTXT)
         }
     }
 
+    /* Get the number from file name and save it */
     ConcentrationC1 = Concentration1_File.toDouble();
     ConcentrationC2 = Concentration2_File.toDouble();
     IntTime = IntTime_File.toDouble();
     FrequencyF = Frequency_File.toDouble();
 
+    /* There is some information in the file very important to know how many data are we using */
+    InitializeFFTArrays(FilePath, isTXT);
+}
+
+/**
+ * @brief Initialize the FFT arrays according to the information size given in the file.
+ */
+void fft::InitializeFFTArrays(QString FilePath, bool isTXT)
+{
     /* Open the file to get the Nr of Spectra and Average Nr. */
     QFile file(FilePath);
 
+    /* Is it a file from Avantes or from Oxymetry Software? It defines where to start reading the data */
     int line = (isTXT) ? 4 : 3;
     int counter = 1;
 
+    /* Open the file */
     if(file.open(QIODevice::ReadOnly)) {
 
         QString ReadRow;
@@ -279,10 +309,12 @@ void fft::ReadFileName(QString ExtractInfoName, QString FilePath, bool isTXT)
 
         while(!stream.atEnd()){
 
+            /* Read a line from the file */
             ReadRow = stream.readLine();
             QStringList Readed_Row = ReadRow.split(" ");
             QString RowInfo;
 
+            /* Get the number of Averages and Spectra from the file depending on its type */
             if (counter==3 && isTXT==false){
                 RowInfo = Readed_Row.at(line);
                 NrAverage = RowInfo.toDouble();
@@ -298,22 +330,13 @@ void fft::ReadFileName(QString ExtractInfoName, QString FilePath, bool isTXT)
             }
 
             counter = counter+1;
-
         }
 
+        /* How many wavelengths do we have? */
         NrWaves = (isTXT) ? (counter - 12): (counter - 7);
     }
 
-    InitializeFFTArrays();
-
-}
-
-/**
- * @brief Initialize the FFT arrays according to the information size.
- */
-void fft::InitializeFFTArrays()
-{
-    /* Initialize the variables according to the opened file*/
+    /* Initialize the variables according to the opened file */
     counts = new double[NrSpectra];
     time = new double[NrSpectra/2];
     fft_data = new double[NrSpectra/2];
@@ -325,34 +348,37 @@ void fft::InitializeFFTArrays()
 }
 
 /**
- * @brief Calculate the FFT from Data
+ * @brief Calculate the FFT from incoming Data
  */
 fftw_complex* fft::CalculateFFT(int N, double Data[])
 {
-
+    /* Create the arrays to save the FFT inputs and outputs */
     fftw_complex *in;
     fftw_complex *out;
     fftw_plan plan_forward;
 
-    /* Create the input and output arrays. */
+    /* Initialize the input and output arrays. */
     in = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * N);
     out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * N);
 
-    /* Create the Plan of the FFT. */
+    /* Create the Plan of the FFT */
     plan_forward = fftw_plan_dft_1d ( N, in, out, FFTW_FORWARD, FFTW_ESTIMATE );
 
+    /* Get the data from the function input and save it as the input for FFT */
     for (int j=0; j < N; j++){
         in[j][1] = 0;
         in[j][0] = Data[j];
     }
 
+    /* Calculate the FFT of the given data */
     fftw_execute ( plan_forward );
+
+    /* Free memory */
     fftw_destroy_plan ( plan_forward );
     fftw_free ( in );
 
     return out;
     fftw_free ( out );
-
 }
 
 /**
@@ -360,26 +386,25 @@ fftw_complex* fft::CalculateFFT(int N, double Data[])
  */
 void fft::saveFFTtoFile()
 {
-    // Saving Option of the FFT
+    /* Save the data with a folder with the current date */
     QString date = QDate::currentDate().toString("dd MM yyyy");
-
     QDir().mkdir("FFT Polarimeter Measurements");
     QString folderOne = "FFT Data " + date;
     QDir("FFT Polarimeter Measurements").mkdir(folderOne);
 
+    /* Save the file with the same input data name, but adding FFT at the end */
     QString FFT_File_Name = QString::number(ConcentrationC1) + "C1_" +  QString::number(ConcentrationC2) + "C2_"
             +  QString::number(IntTime) + "ms_" +  QString::number(FrequencyF) + "Hz_FFT" + ".txt";
 
     QString path = "FFT Polarimeter Measurements/"+folderOne+"/"+FFT_File_Name;
-
     QFile FFT_File(path);
     QFileInfo checkFile(path);
     bool save = true;
 
-    //Check if file exists
+    /* Check if file exists */
     if (checkFile.exists() && checkFile.isFile())
     {
-        /* File exists. Did we ask the user whether files should be overwritten or not? */
+        /* File exists. Did we ask the user if files should be overwritten or not? */
         if (QMessageBox::No == QMessageBox::question(NULL, "File already exists", "Do you want to overwrite the existing file?",
                                                      QMessageBox::Yes | QMessageBox::No))
         {
@@ -388,21 +413,22 @@ void fft::saveFFTtoFile()
         }
     }
 
+    /* The user decided to save the data */
     if(save){
 
         FILE *fileFFT = fopen(path.toLatin1().data(), "wt");
 
-        //    Write serial number
+        /* Write serial number */
         fprintf(fileFFT, "Serial number: %s\n", ptrSpectrometers[0]->getSerialNumber().toLatin1().data());
 
-        //  Check for readable name
+        /* Check for readable name */
         if (ptrSpectrometers[0]->hasReadableName())
         {
-            //   Write readable name
+            /* Write readable name */
             fprintf(fileFFT, "Readable name: %s\n", ptrSpectrometers[0]->getReadableName().toLatin1().data());
         }
 
-        //Write integration time, number of averages and dynamic dark correction
+        /* Write integration time, number of averages, number of spectra, frequency and date on file */
         fprintf(fileFFT, "Number of Recorded Spectra: %i\n", NrSpectra);
         fprintf(fileFFT, "Integration time: %.2f ms\n", IntTime);
         fprintf(fileFFT, "Number of averages: %.1f\n", NrAverage);
@@ -413,8 +439,7 @@ void fft::saveFFTtoFile()
         /* Loop through the wavelengths */
         for (int z = 0; z < NrWaves; z++)
         {
-
-            /* write counts header */
+            /* Write FFT data headers */
             if (z == 0)
             {
                 fprintf(fileFFT, "Wavelength \t \t");
@@ -423,7 +448,8 @@ void fft::saveFFTtoFile()
                 fprintf(fileFFT, "2W Amplitude \t");
                 fprintf(fileFFT, "W/2W \n");
             }
-            /* Write wavelength and counts */
+
+            /* Write wavelengths and amplitudes */
             fprintf(fileFFT, "%.4f\t\t", wavelengths[z]);
             fprintf(fileFFT, "%.6f\t\t", fft_DC[z]);
             fprintf(fileFFT, "%.6f\t\t", fft_W[z]);
@@ -437,8 +463,26 @@ void fft::saveFFTtoFile()
         fprintf(fileFFT, "\n");
         fclose(fileFFT);
     }
+}
+
+
+/**
+ * @brief Calculate the live FFT
+ */
+void fft::Calculate_Live_FFT(double *Data)
+{
+
+
 
 }
+
+
+
+
+
+
+
+
 
 
 

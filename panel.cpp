@@ -938,10 +938,10 @@ void Panel::updateProgress(void)
             if (timeElapsed >= 100)
             {
                 /* Update progress bar */
-                devices[i]->setProgress(timeElapsed / ptrSpectrometers[i]->getTimePerMeasurement() * 100);
+                devices[i]->setProgress(timeElapsed / ptrSpectrometers[i]->getTimePerMeasurement() * 100);        
             }
         }
-    }
+    }           
 }
 
 /**
@@ -1541,7 +1541,7 @@ void Panel::ReceiveDataIsHere(int WParam, int LParam)
 
                     /* Enable GUI elements */
                     devices[i]->setIsEnabled(true);
-                    devices[i]->ui->checkBox_enabled->setEnabled(true);  // Polarimeter Setup Variable
+                    devices[i]->ui->checkBox_enabled->setEnabled(true);
                 }
             }
 

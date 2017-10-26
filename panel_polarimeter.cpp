@@ -66,6 +66,8 @@ extern unsigned int m_NrDevices;
 
 /* Colors for spectrometers */
 extern QString defaultColors[];
+double counts_average_time = 0;
+double counts_average = 0;
 
 QString greenButton = "color: rgb(0,128,0)", RedButton = "color: rgb(250,0,0)", grayButton = "color: rgb(211,211,211)";
 
@@ -130,17 +132,24 @@ PanelPolarimeter::PanelPolarimeter(QWidget *parent) :
             // Polarimeter Plot of Raw Signal
             curves_Pol.append(new QwtPlotCurve(ptrSpectrometers[SpectrometerNumber]->getReadableName()));
             curves_Pol[0]->setItemAttribute(QwtPlotItem::Legend, false);
+            curves_Pol.append(new QwtPlotCurve(ptrSpectrometers[SpectrometerNumber]->getReadableName()));
+            curves_Pol[1]->setItemAttribute(QwtPlotItem::Legend, false);
         }
         else
         {
             // Polarimeter Plot of Raw Signal
             curves_Pol.append(new QwtPlotCurve(ptrSpectrometers[SpectrometerNumber]->getSerialNumber()));
             curves_Pol[0]->setItemAttribute(QwtPlotItem::Legend, false);
+            curves_Pol.append(new QwtPlotCurve(ptrSpectrometers[SpectrometerNumber]->getSerialNumber()));
+            curves_Pol[1]->setItemAttribute(QwtPlotItem::Legend, false);
         }
 
         // Polarimeter Plot of Raw Signal Color
         curves_Pol[0]->setPen(QPen(defaultColors[SpectrometerNumber % 5]));
         curves_Pol[0]->attach(ui->qwtPlot_Pol);
+
+        curves_Pol[1]->setPen(QPen(defaultColors[SpectrometerNumber % 5]));
+        curves_Pol[1]->attach(ui->qwtPlot_Pol_Average);
 
         // Polarimeter buttons and labels signal mapper
         connect(devices2[0]->ui->label_integrationTime, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -175,7 +184,8 @@ PanelPolarimeter::PanelPolarimeter(QWidget *parent) :
     connect(ui->checkBox_AutoSave_Pol_Raw, SIGNAL(clicked(bool)), this, SLOT(AutoSave_Raw()));
 
     /* Connect button for Configuration */
-    connect(ui->button_Conf_Setup_Pol, SIGNAL(clicked()), this, SLOT(ConfSetup_Pol()));
+    connect(ui->button_calibrate, SIGNAL(clicked()), this, SLOT(toggle_Pol_Calibration()));
+    ui->button_Start_Meas_Pol->setStyleSheet("black");
     connect(ui->button_Pol_ConfigureMeasurement, SIGNAL(clicked()), this, SLOT(ConfSetup_Pol_Measurement()));
 
     /* Connect event handler */
@@ -184,34 +194,36 @@ PanelPolarimeter::PanelPolarimeter(QWidget *parent) :
     /* If there are spectrometers connected, allow Polarimetry Measurement */
     ui->button_Start_Meas_Pol->setDisabled((!m_NrDevices) ? true : false);
     ui->button_Start_Meas_Pol->setStyleSheet((!m_NrDevices) ? grayButton : greenButton);
+    ui->button_calibrate->setDisabled((!m_NrDevices) ? true : false);
+    ui->button_calibrate->setStyleSheet((!m_NrDevices) ? grayButton : "black");
     ui->checkBox_AutoSave_Pol->setDisabled((!m_NrDevices) ? true : false);
     ui->checkBox_AutoSave_Pol_Raw->setDisabled((!m_NrDevices) ? true : false);
 
     /* Set axis and title of Raw Signal plot for Polarimeter */
-    ui->qwtPlot_Pol->setXAxisTitle("Wavelength in nm");
+    ui->qwtPlot_Pol->setXAxisTitle("Wavelength (nm)");
     ui->qwtPlot_Pol->setYAxisTitle("ADC counts");
     ui->qwtPlot_Pol->setYAxis(0.0, 65535.0);
 
     /* Set axis and title of Compensated Signal plot for Polarimeter */
-    ui->qwtPlot_Pol_Compensation->setXAxisTitle("Wavelength in nm");
+    ui->qwtPlot_Pol_Compensation->setXAxisTitle("Wavelength (nm)");
     ui->qwtPlot_Pol_Compensation->setYAxisTitle("Intensity");
     ui->qwtPlot_Pol_Compensation->setYAxis(0.0, 3);
 
     /* Set axis and title of w/2w plot for Polarimeter */
-    ui->qwtPlot_Pol_w_2w->setXAxisTitle("Wavelength in nm");
-    ui->qwtPlot_Pol_w_2w->setYAxisTitle("FFT Intesities");
+    ui->qwtPlot_Pol_w_2w->setXAxisTitle("Wavelength (nm)");
+    ui->qwtPlot_Pol_w_2w->setYAxisTitle("Intesity");
     ui->qwtPlot_Pol_w_2w->setYAxis(0.0, 30000000);
 
     /* Set axis and title of Average over all Wavelenths plot for Polarimeter */
-    ui->qwtPlot_Pol_Average->setXAxisTitle("Time in min");
+    ui->qwtPlot_Pol_Average->setXAxisTitle("Time (sec)");
     ui->qwtPlot_Pol_Average->setYAxisTitle("Intensity");
-    ui->qwtPlot_Pol_Average->setYAxis(0.0, 5600000);
-    ui->qwtPlot_Pol_Average->setXAxis(0.0, 60);
+    ui->qwtPlot_Pol_Average->setYAxis(0.0, 2000);
+    ui->qwtPlot_Pol_Average->setXAxis(0.0, 100);
 
     /* Set axis and title of Prediction Curve, now in use to show the FFT */
     // ui->qwtPlot_Pol_Prediction->setXAxisTitle("Reference Concentration");
-    ui->qwtPlot_Pol_Prediction->setXAxisTitle("Frequency in Hz");
-    ui->qwtPlot_Pol_Prediction->setYAxisTitle("FFT Intensity");
+    ui->qwtPlot_Pol_Prediction->setXAxisTitle("Frequency (Hz)");
+    ui->qwtPlot_Pol_Prediction->setYAxisTitle("Intensity");
     // ui->qwtPlot_Pol_Prediction->setXAxis(0.0, 100);
     ui->qwtPlot_Pol_Prediction->setXAxis(0.0, 6);
     ui->qwtPlot_Pol_Prediction->setYAxis(0.0, 30000000);
@@ -248,6 +260,12 @@ PanelPolarimeter::PanelPolarimeter(QWidget *parent) :
 
     /* Which wavelentgth would you like to see the FFT? */
     signalMapper->setMapping(ui->waveToPlotFFT, ui->waveToPlotFFT);
+
+    /* Disable edition of Spectrometer Data until there is a calibration running */
+    devices2[0]->ui->label_autoAdjust->setEnabled(false);
+    devices2[0]->ui->label_integrationTime->setEnabled(false);
+    devices2[0]->ui->label_numberOfAverages->setEnabled(false);
+
 }
 
 /**
@@ -389,6 +407,8 @@ void PanelPolarimeter::enable_Polarimeter_Measurement(bool activate)
     /* Enable measurements and get the information of the current selected spectrometer */
     ui->button_Start_Meas_Pol->setEnabled(activate);
     ui->button_Start_Meas_Pol->setStyleSheet(activate ? greenButton : grayButton);
+    ui->button_calibrate->setEnabled(activate);
+    ui->button_calibrate->setStyleSheet(activate ? "black" : grayButton);
     devices2[0]->ui->label_autoAdjust->setEnabled(activate);
     devices2[0]->ui->label_integrationTime->setEnabled(activate);
     devices2[0]->ui->label_numberOfAverages->setEnabled(activate);
@@ -399,6 +419,18 @@ void PanelPolarimeter::enable_Polarimeter_Measurement(bool activate)
  * @brief Load Data from the FFT, Polarimeter Setup
  */
 void PanelPolarimeter::LoadFromFFT(void) {
+
+    /* Is there something already analyzed by FFT? */
+    if(FFT_DC != nullptr && isFFTData == false){
+
+        /* File doens't exists. Did we ask the user to save the analyzed data from raw data? */
+        if (QMessageBox::Yes == QMessageBox::question(this, "Save FFT File", "Do you want to save the FFT analysis from the Loaded Raw Data?",
+                                                      QMessageBox::Yes | QMessageBox::No))
+        {
+            /* Button 'yes' pressed; Save the FFT data to the folder on Bin */
+            FFTL.saveFFTtoFile();
+        }
+    }
 
     /* What kind of data are we loading? */
     isFFTData = true;
@@ -443,7 +475,7 @@ void PanelPolarimeter::LoadFromFFT(void) {
 void PanelPolarimeter::LoadFromRawData(void) {
 
     /* Is there something already analyzed by FFT? */
-    if(FFTL.fft_DC != nullptr && isFFTData == false){
+    if(FFT_DC != nullptr && isFFTData == false){
 
         /* File doens't exists. Did we ask the user to save the analyzed data from raw data? */
         if (QMessageBox::Yes == QMessageBox::question(this, "Save FFT File", "Do you want to save the FFT analysis from the Loaded Raw Data?",
@@ -453,6 +485,8 @@ void PanelPolarimeter::LoadFromRawData(void) {
             FFTL.saveFFTtoFile();
         }
     }
+
+    isFFTData = false;
 
     /* Clear all the plots for a new load of data */
     clearPlots();
@@ -484,9 +518,6 @@ void PanelPolarimeter::LoadFromRawData(void) {
     /* Plot the FFT Signals */
     this->Plot_FFT_Graphs(FFTL.wavelengths, FFTL.time, FFTL.fft_data, FFTL.fft_DC, FFTL.fft_W, FFTL.fft_2W, FFTL.fft_Compensation_Signal);
     ui->waveToPlotFFT->setText(QString::number(FFTL.wavelengths[438]));
-
-    /* Are we using a FFT file or a Raw Data file? */
-    isFFTData = false;
 }
 
 /**
@@ -499,7 +530,7 @@ void PanelPolarimeter::plotFFTatSelectedWave(double FFTLfft_data[], double FFTLt
     FFT_oneWave->setPen(QPen("blue"));
     FFT_oneWave->setItemAttribute(QwtPlotItem::Legend, false);
     ui->waveToPlotFFT->setStyleSheet("QLabel { color: blue; }");
-    ui->qwtPlot_Pol_Prediction->setXAxis(0.0,  6*FFTL.f_w/10);
+    ui->qwtPlot_Pol_Prediction->setXAxis(0.0,  6*FFTL.f_w/(FFTL.NrSpectra < 1000? 1 : 10));
     ui->qwtPlot_Pol_Prediction->setYAxis(0.0, getMaximum(FFTLfft_data,FFTL.NrSpectra/2)*1.2);
     FFT_oneWave->setSamples(FFTLtime , FFTLfft_data,FFTL.NrSpectra/2);
     FFT_oneWave->attach(ui->qwtPlot_Pol_Prediction);
@@ -601,6 +632,8 @@ void PanelPolarimeter::SelectedSpectrometer_Polarimeter(void){
     /* Update buttons */
     ui->button_Start_Meas_Pol->setEnabled(devicesEnabled ? true : false);
     ui->button_Start_Meas_Pol->setStyleSheet(devicesEnabled ? greenButton : grayButton);
+    ui->button_calibrate->setEnabled(devicesEnabled ? true : false);
+    ui->button_calibrate->setStyleSheet(devicesEnabled ? "black" : grayButton);
 }
 
 /**
@@ -658,14 +691,19 @@ void PanelPolarimeter::saveGraph_Pol(void) {
 /**
  * @brief Toggles Measurements of the Polarimeter
  */
-
 void PanelPolarimeter::toggle_Pol_Measurement(void)
 {
     /* Pol Measurement running or not? */
     if(!PolMeasurementRunning)
     {
         /* No Pol Measurement running at the moment. Start it. */
-        start_Pol_Measurement();
+        if(measurement_Pol_profileLoaded){
+            start_Pol_Measurement();
+        }else{
+            /* Show message */
+            showWarning("Please Load a Measurement Profile to Start a Measurement", "");
+            return;
+        }
     }
     else
     {
@@ -673,7 +711,6 @@ void PanelPolarimeter::toggle_Pol_Measurement(void)
         stop_Pol_Measurement();
     }
 }
-
 
 /**
  * @brief Start Measurments for the Polarimeter Setup
@@ -688,7 +725,7 @@ void PanelPolarimeter::start_Pol_Measurement(void) {
     ui->button_Start_Meas_Pol->setEnabled(false);
     ui->checkBox_AutoSave_Pol->setEnabled(false);
     ui->checkBox_AutoSave_Pol_Raw->setEnabled(false);
-    ui->button_Conf_Setup_Pol->setEnabled(false);
+    ui->button_calibrate->setEnabled(false);
     ui->button_Pol_ConfigureMeasurement->setEnabled(false);
 
     /* Is spectrometer enabled? */
@@ -707,7 +744,113 @@ void PanelPolarimeter::start_Pol_Measurement(void) {
     /* Remember Polarimeter Measurement is Running */
     PolMeasurementRunning = true;
 
-    // Introduce here the routine for a Measurement.
+    /* Measurement Routine */
+    ui->currentProgressBar_Pol->setValue(0);
+    ui->TotalProgressBar_Pol->setValue(0);
+
+    /* Run measurements */
+
+    QElapsedTimer timer;
+
+    /* Start timer */
+    timer.start();
+
+    unsigned int i = 0;
+
+    do
+    {
+        /* Check if we have more entries to do */
+        if (i < (unsigned int)ConfigureMeasurement.timePoint.length())
+        {
+            /* Next measurement starts now? */
+            if (timer.elapsed() >= ConfigureMeasurement.timePoint[i])
+            {
+                /* Generate absolute path for StoreToRAM files */
+                QFileInfo fileInfo(ConfigureMeasurement.path);
+                QString path(fileInfo.absoluteDir().path());
+                path.append(ConfigureMeasurement.fileName[i]);
+
+                /* Check if spectrometer is still measuring */
+                if (ptrSpectrometers[SpectrometerNumber]->isMeasuring())
+                {
+                    /* Show message */
+                    showWarning("Spectrometer is still measuring! Too small time steps?", "");
+                }
+                else
+                {
+                    /* Configure spectrometer */
+                    ptrSpectrometers[SpectrometerNumber]->setIntegrationTime(ConfigureMeasurement.integrationTime[i]);
+                    ptrSpectrometers[SpectrometerNumber]->setNumberOfAverages(ConfigureMeasurement.numberOfAverages[i]);
+
+                    /* Prepare StoreToRAM measurement */
+                    ptrSpectrometers[SpectrometerNumber]->forceStoreToRAM(path, ConfigureMeasurement.numSpectra[i]);
+                    if (ptrSpectrometers[SpectrometerNumber]->prepareMeasurement())
+                    {
+                        /* Start measurement */
+                        ptrSpectrometers[SpectrometerNumber]->startMeasurement(1);
+                    }
+                }
+
+                /* Select the row that belongs to the measurement */
+                ui->Table_Measurements_Pol->setSelectionBehavior(QAbstractItemView::SelectRows);
+                ui->Table_Measurements_Pol->setSelectionMode(QAbstractItemView::SingleSelection);
+                ui->Table_Measurements_Pol->selectRow(i);
+                ui->Table_Measurements_Pol->setSelectionMode(QAbstractItemView::NoSelection);
+
+                /* Go to next entry */
+                i++;
+            }
+        }
+
+        int progress = 0;
+
+        /* Calculate progress for first entry? */
+        if (i == 0)
+        {
+            progress = 100 - (ConfigureMeasurement.timePoint[0] - timer.elapsed()) / ConfigureMeasurement.timePoint[0] * 100;
+        }
+        /* Calculate progress for last entry? */
+        else if (i >= (unsigned int)ConfigureMeasurement.timePoint.length())
+        {
+            /* Abort while loop if no measurement is running anymore */
+            PolMeasurementRunning = ptrSpectrometers[SpectrometerNumber]->isMeasuring();
+
+            /* Progress done */
+            progress = 100;
+        }
+        /* Calculate progress for any other entry? */
+        else
+        {
+            /* Current progress is calculated by the difference between actual time and next measurement */
+            progress = 100 - (ConfigureMeasurement.timePoint[i] - timer.elapsed()) / (ConfigureMeasurement.timePoint[i] - ConfigureMeasurement.timePoint[i-1]) * 100;
+        }
+
+        /* Update progress bars */
+        ui->currentProgressBar_Pol->setValue(progress);
+        ui->TotalProgressBar_Pol->setValue((i - 1) * 100 / ConfigureMeasurement.timePoint.count());
+
+        /* Handle events and update UI */
+        Application::processEvents();
+
+        /* Wait 1 ms */
+        Timer::msleep(1);
+    }
+    while (PolMeasurementRunning);
+
+/* Stop measurements */
+ PolMeasurementRunning = false;
+
+
+    /* Reset selected row */
+    ui->Table_Measurements_Pol->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->Table_Measurements_Pol->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->Table_Measurements_Pol->selectRow(0);
+    ui->Table_Measurements_Pol->setSelectionMode(QAbstractItemView::NoSelection);
+
+    /* Set progress bars to 100 percent */
+    ui->currentProgressBar_Pol->setValue(100);
+    ui->TotalProgressBar_Pol->setValue(100);
+
 
     /* Update pol meas button */
     ui->button_Start_Meas_Pol->setText("Stop Measurement");
@@ -743,7 +886,7 @@ void PanelPolarimeter::stop_Pol_Measurement(void) {
 
     ui->checkBox_AutoSave_Pol->setEnabled(true);
     ui->checkBox_AutoSave_Pol_Raw->setEnabled(true);
-    ui->button_Conf_Setup_Pol->setEnabled(true);
+    ui->button_calibrate->setEnabled(true);
     ui->button_Pol_ConfigureMeasurement->setEnabled(true);
 }
 
@@ -752,23 +895,191 @@ void PanelPolarimeter::stop_Pol_Measurement(void) {
  */
 void PanelPolarimeter::ConfSetup_Pol_Measurement(void) {
 
-    configurePolMeasure ConfigureMeasurement(this);
     ConfigureMeasurement.exec();
 
-    /* Prevent user from resizing the header */
-    ui->Table_Measurements_Pol->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    if(ConfigureMeasurement.configured){
 
-    /* Left align column titles */
-    ui->Table_Measurements_Pol->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        measurement_Pol_profileLoaded = true;
 
-    /* Prevent user from editing the cells */
-    ui->Table_Measurements_Pol->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        /* Prevent user from resizing the header */
+        ui->Table_Measurements_Pol->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+        ui->tableInfoMeasure->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    /* Adjust table widget */
-    ui->Table_Measurements_Pol->setColumnWidth(0, 30);
-    ui->Table_Measurements_Pol->setColumnWidth(1, 80);
-    ui->Table_Measurements_Pol->setColumnWidth(2, 190);
+        /* Left align column titles */
+        ui->Table_Measurements_Pol->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        ui->tableInfoMeasure->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 
+        /* Prevent user from editing the cells */
+        ui->Table_Measurements_Pol->setEditTriggers(QAbstractItemView::NoEditTriggers);
+        ui->tableInfoMeasure->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+        /* Adjust table widget */
+        ui->Table_Measurements_Pol->setColumnWidth(0, 80);
+        ui->Table_Measurements_Pol->setColumnWidth(1, 130);
+
+        /* Zero row count */
+        ui->Table_Measurements_Pol->setRowCount(0);
+
+        unsigned int i = 0;
+        QStringList list;
+
+        /* Loop through elements */
+        for (i = 0; i < (unsigned int) ConfigureMeasurement.wordList.length(); i++)
+        {
+
+            list = ConfigureMeasurement.wordList[i].split(';');
+
+            /* At least second entry? */
+            if (i > 0)
+            {
+                /* Calculate duration of entry before current entry */
+                double duration =  ConfigureMeasurement.numSpectra[i - 1] *  ConfigureMeasurement.integrationTime[i - 1] *  ConfigureMeasurement.numberOfAverages[i - 1];
+
+                /* Check if there's a time overlap between last and current entry */
+                if (( ConfigureMeasurement.timePoint[i - 1] + duration) >  ConfigureMeasurement.timePoint[i])
+                {
+                    /* Zero row count */
+                    ui->Table_Measurements_Pol->setRowCount(0);
+                    return;
+                }
+            }
+
+            /* Increase current row count */
+            ui->Table_Measurements_Pol->setRowCount(ui->Table_Measurements_Pol->rowCount() + 1);
+
+            QLabel *nt2 = new QLabel();
+            /* Create label for time point */
+            nt2->setText(list[0]);
+            nt2->setStyleSheet("QLabel { margin-left: 2px; }");
+            ui->Table_Measurements_Pol->setCellWidget(i, 0, nt2);
+
+            QLabel *nt3 = new QLabel();
+            /* Create label for file name */
+            nt3->setText(list[1]);
+            nt3->setStyleSheet("QLabel { margin-left: 2px; }");
+            ui->Table_Measurements_Pol->setCellWidget(i, 1, nt3);
+
+        }
+
+        QLabel *nt4 = new QLabel();
+        /* Create label for number of spectra */
+        nt4->setText(list[2]);
+        nt4->setStyleSheet("QLabel { margin-left: 2px; }");
+        ui->tableInfoMeasure->setCellWidget(0, 0, nt4);
+
+        QLabel *nt5 = new QLabel();
+        /* Create label for integration time */
+        nt5->setText(list[3]);
+        nt5->setStyleSheet("QLabel { margin-left: 2px; }");
+        ui->tableInfoMeasure->setCellWidget(0, 1, nt5);
+
+        QLabel *nt6 = new QLabel();
+        /* Create label for number of averages */
+        nt6->setText(list[4]);
+        nt6->setStyleSheet("QLabel { margin-left: 2px; }");
+        ui->tableInfoMeasure->setCellWidget(0, 2, nt6);
+
+        /* Select first row */
+        ui->Table_Measurements_Pol->selectRow(0);
+    }
+}
+
+/**
+ * @brief Toggles Calibration of the Polarimeter
+ */
+void PanelPolarimeter::toggle_Pol_Calibration(void)
+{
+    /* Pol Calibration running or not? */
+    if(!PolMeasurementRunning)
+    {
+        /* No Pol Calibration running at the moment. Start it. */
+        Calibrate_Pol_Start();
+        clearPlots();
+    }
+    else
+    {
+        /* Pol Calibration running at the moment. Stop it. */
+        Calibrate_Pol_Stop();
+    }
+}
+
+
+/**
+ * @brief Start to Calibrate the Spectrometer Settings and the Polarimeter Setup
+ */
+void PanelPolarimeter::Calibrate_Pol_Start(void) {
+
+    /* Enable edition of Spectrometer Data until there is no calibration running */
+    devices2[0]->ui->label_autoAdjust->setEnabled(true);
+    devices2[0]->ui->label_integrationTime->setEnabled(true);
+    devices2[0]->ui->label_numberOfAverages->setEnabled(true);
+
+    /* Enable / Disable buttons when measuring */
+    ui->button_Load_FFTData->setEnabled(false);
+    ui->button_AnalyzeRawPolData->setEnabled(false);
+    ui->button_Start_Meas_Pol->setEnabled(false);
+    ui->checkBox_AutoSave_Pol->setEnabled(false);
+    ui->checkBox_AutoSave_Pol_Raw->setEnabled(false);
+    ui->button_calibrate->setEnabled(false);
+    ui->button_Pol_ConfigureMeasurement->setEnabled(false);
+
+    /* Is spectrometer enabled? */
+    devices2[0]->setIsEnabled(false);
+
+    /* Prepare for new measurement */
+    if (ptrSpectrometers[SpectrometerNumber]->prepareMeasurement())
+    {
+        /* If successful, start measurement */
+        ptrSpectrometers[SpectrometerNumber]->startMeasurement(-1);
+    }
+
+    /* Handle events and update UI */
+    Application::processEvents();
+
+    /* Remember Polarimeter Measurement is Running */
+    PolMeasurementRunning = true;
+
+    /* Update pol meas button */
+    ui->button_calibrate->setText("Stop Calibration");
+    ui->button_calibrate->setStyleSheet(RedButton);
+    ui->button_calibrate->setEnabled(true);
+    ui->button_Start_Meas_Pol->setStyleSheet(grayButton);
+}
+
+/**
+ * @brief Stop the Calibration of the Spectrometer Settings and the Polarimeter Setup
+ */
+void PanelPolarimeter::Calibrate_Pol_Stop(void) {
+
+    /* Disable edition of Spectrometer Data until there is a calibration running */
+    devices2[0]->ui->label_autoAdjust->setEnabled(false);
+    devices2[0]->ui->label_integrationTime->setEnabled(false);
+    devices2[0]->ui->label_numberOfAverages->setEnabled(false);
+
+    ui->button_Load_FFTData->setEnabled(true);
+    ui->button_AnalyzeRawPolData->setEnabled(true);
+    ui->button_Start_Meas_Pol->setEnabled(true);
+
+    /* Stop measurement */
+    ptrSpectrometers[SpectrometerNumber]->stopMeasurement();
+
+    devices2[0]->setIsEnabled(true);
+
+    /* Handle events and update UI */
+    Application::processEvents();
+
+    /* No Polarimetric Measurement running anymore */
+    PolMeasurementRunning = false;
+
+    /* Update pol meas button */
+    ui->button_calibrate->setText("Calibrate");
+    ui->button_calibrate->setStyleSheet("black");
+    ui->button_calibrate->setEnabled(true);
+
+    ui->checkBox_AutoSave_Pol->setEnabled(true);
+    ui->checkBox_AutoSave_Pol_Raw->setEnabled(true);
+    ui->button_Pol_ConfigureMeasurement->setEnabled(true);
+    ui->button_Start_Meas_Pol->setStyleSheet(greenButton);
 }
 
 /**
@@ -787,6 +1098,7 @@ bool PanelPolarimeter::isCurveVisible()
 void PanelPolarimeter::setCurveVisible(bool value)
 {
     curves_Pol[0]->setVisible(value);
+    curves_Pol[1]->setVisible(value);
 }
 
 /**
@@ -796,6 +1108,7 @@ void PanelPolarimeter::updateGraph(void)
 {
     /* Update the graph */
     ui->qwtPlot_Pol->update();
+    ui->qwtPlot_Pol_Average->update();
 }
 
 /**
@@ -832,12 +1145,57 @@ void PanelPolarimeter::ReceiveDataIsHerePol(int WParam, int LParam)
         curves_Pol[0]->setSamples(ptrSpectrometers[SpectrometerNumber]->getWavelengths(), ptrSpectrometers[SpectrometerNumber]->getCounts(),
                                   ptrSpectrometers[SpectrometerNumber]->getNumberOfPixels());
 
+        liveFFTAnalysis();
+
         /* Does the graph needs a update? */
         if (needUpdate)
         {
             /* Update the graph */
             ui->qwtPlot_Pol->update();
+            ui->qwtPlot_Pol_Average->update();
         }
+    }
+}
+
+/**
+ * @brief Live Analysis and Plot of the Raw Signal
+ */
+void PanelPolarimeter::liveFFTAnalysis()
+{
+
+    int NrLiveSamples = 200;
+    double *counts = new double[ptrSpectrometers[SpectrometerNumber]->getNumberOfPixels()];
+    counts = ptrSpectrometers[SpectrometerNumber]->getCounts();
+
+    for(int j = 0; j < ptrSpectrometers[SpectrometerNumber]->getNumberOfPixels(); j++ ){
+        counts_average = counts_average + counts[j];
+    }
+
+    counts_average = counts_average/ptrSpectrometers[SpectrometerNumber]->getNumberOfPixels();
+
+    counts_average_time = counts_average_time + 1;
+
+    averaged_Raw_Signal.append(counts_average);
+    averaged_Raw_Signal_time.append(counts_average_time);
+
+    ui->qwtPlot_Pol_Average->setYAxis(0.0, *std::max_element(averaged_Raw_Signal.begin(), averaged_Raw_Signal.end())+200);
+
+    double maxtime = *std::max_element(averaged_Raw_Signal_time.begin(), averaged_Raw_Signal_time.end());
+
+    if(averaged_Raw_Signal_time.length() % 100 == 0){
+        ui->qwtPlot_Pol_Average->setXAxis(maxtime, maxtime+100);
+    }
+
+    if(averaged_Raw_Signal_time.length() > 400){
+        averaged_Raw_Signal.resize(0);
+        averaged_Raw_Signal_time.resize(0);
+        ui->qwtPlot_Pol_Average->setXAxis(maxtime, maxtime+100);
+    }
+
+    curves_Pol[1]->setSamples(averaged_Raw_Signal_time, averaged_Raw_Signal);
+
+    if(averaged_Raw_Signal_time.length() % NrLiveSamples == 0){
+        //  FFTL.Calculate_Live_FFT(Raw_signal); Do we have to create a temporal file with the 200 data of the 1400 wavelength? how to solve this?
     }
 }
 
@@ -1015,14 +1373,6 @@ void PanelPolarimeter::adjustIntegrationTime()
         }
     }
 }
-
-/**
- * @brief Configuration of the Faraday Rotator for the Polarimeter Setup
- */
-void PanelPolarimeter::ConfSetup_Pol(void) {
-    // Development
-}
-
 
 /**
  * @brief Save the FFT Automatic from the Polarimeter Setup
