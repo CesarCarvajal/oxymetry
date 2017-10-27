@@ -138,7 +138,8 @@ public:
     int selectedWave;
     bool measurement_Pol_profileLoaded = false;
 
-    QVector<double> averaged_Raw_Signal;
+    double averaged_Raw_Signal;
+    QVector<double> averaged_Raw_Signal_Difference;
     QVector<double> averaged_Raw_Signal_time;
 
     configurePolMeasure ConfigureMeasurement;
