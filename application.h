@@ -37,7 +37,9 @@ public:
     Application(int &argc, char *argv[]);
 
     void emitsignal(int WParam, int LParam);
+    void emitPolsignal(int WParam, int LParam);
     static void callback(AvsHandle *handle, int *result);
+    static void callPolback(AvsHandle *handle, int *result);
 
     /* Destructor */
     ~Application(void);
@@ -45,6 +47,7 @@ public:
 signals:
     /* Signal when spectrometers report new data */
     void DataIsHere(int WParam, int LParam);
+    void DataPolIsHere(int WParam, int LParam);
 };
 
 #endif // APPLICATION_H
