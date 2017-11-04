@@ -268,7 +268,7 @@ Panel::Panel(QWidget *parent) :
     ui->qwtPlot_reflection->setXAxis(minWavelength, maxWavelength);
     ui->qwtPlot_transmission->setXAxis(minWavelength, maxWavelength);
 
-/* ---------------------------------------- */
+    /* ---------------------------------------- */
     /* To do */
     M_R = new QwtPlotCurve("Diffuse reflection");
     M_T = new QwtPlotCurve("Diffuse transmission");
@@ -298,7 +298,7 @@ Panel::Panel(QWidget *parent) :
     ui->label_iad_configurationName->setCursor(QCursor(Qt::ArrowCursor));
 
     //ui->table_iad_measurements->setup();
-/* ---------------------------------------- */
+    /* ---------------------------------------- */
     polarimeter = new PanelPolarimeter(this);
     ui->tabWidget->addTab(polarimeter, "Polarimeter");
 
@@ -482,32 +482,32 @@ void Panel::handleClickEvent(QWidget *widget)
 
             /* Disable or enable complete item */
             devices[i]->setIsEnabled(isChecked);
-            devices[i]->setClickableLabelsEnabled(isChecked);     
+            devices[i]->setClickableLabelsEnabled(isChecked);
             ptrSpectrometers[i]->setEnabled(isChecked);
 
-        //}  // *** Cesar: (a) This bracket is wrong located. The variable devicesEnabled should be checked when a box is checked/unchecked, not when doing click in other labels.
+            //}  // *** Cesar: (a) This bracket is wrong located. The variable devicesEnabled should be checked when a box is checked/unchecked, not when doing click in other labels.
 
-        /*
+            /*
          * Furthermore, we have to check if there are any enabled spectrometers left.
          * If no spectrometers are enabled anymore, preview has to be disabled.
          */
 
-        bool devicesEnabled = false;
+            bool devicesEnabled = false;
 
-        unsigned int i = 0;
+            unsigned int i = 0;
 
-        /* Loop through devices */
-        for (i = 0; i < m_NrDevices; i++)
-        {
-            devicesEnabled = devicesEnabled || devices[i]->getIsEnabled();
-        }
+            /* Loop through devices */
+            for (i = 0; i < m_NrDevices; i++)
+            {
+                devicesEnabled = devicesEnabled || devices[i]->getIsEnabled();
+            }
 
-        polarimeter->SelectedSpectrometer_Polarimeter();  // *** Cesar: Added this Line. Is important to know when all the spectrometer has been unchecked from the list.
+            polarimeter->SelectedSpectrometer_Polarimeter();  // *** Cesar: Added this Line. Is important to know when all the spectrometer has been unchecked from the list.
 
-        /* Update buttons */
-        ui->pushButton_preview->setEnabled(devicesEnabled ? true : false);
-        ui->pushButton_storeToRam->setEnabled(devicesEnabled ? true : false);
-        ui->pushButton_timePattern->setEnabled(devicesEnabled ? true : false);
+            /* Update buttons */
+            ui->pushButton_preview->setEnabled(devicesEnabled ? true : false);
+            ui->pushButton_storeToRam->setEnabled(devicesEnabled ? true : false);
+            ui->pushButton_timePattern->setEnabled(devicesEnabled ? true : false);
 
         }  // *** Cesar: (a) Moved bracket from above checkpoint, Now it only checks when the click event is on the check boxes.
     }
@@ -550,8 +550,8 @@ void Panel::storeToRam(void)
             /* Is the device enabled and measuring? */
             if (ptrSpectrometers[i]->isMeasuring())
             {
-               /* Stop measurement on current device */
-               ptrSpectrometers[i]->stopMeasurement();
+                /* Stop measurement on current device */
+                ptrSpectrometers[i]->stopMeasurement();
             }
 
             /* Add device to list */
@@ -619,8 +619,8 @@ void Panel::timePattern(void)
             /* Is the device enabled and measuring? */
             if (ptrSpectrometers[i]->isMeasuring())
             {
-               /* Stop measurement on current device */
-               ptrSpectrometers[i]->stopMeasurement();
+                /* Stop measurement on current device */
+                ptrSpectrometers[i]->stopMeasurement();
             }
         }
     }
@@ -653,16 +653,18 @@ void Panel::timePattern(void)
  */
 void Panel::togglePreview(void)
 {
-    /* Preview running or not? */
-    if (!previewRunning)
-    {
-        /* No preview running at the moment. Start preview. */
-        startPreview();
-    }
-    else
-    {
-        /* Preview running at the moment. Stop preview. */
-        stopPreview();
+    if(!polarimeter->PolMeasurementRunning){    // *** Cesar: Do nothing in preview if there is a polarimeter measurement running.
+        /* Preview running or not? */
+        if (!previewRunning )
+        {
+            /* No preview running at the moment. Start preview. */
+            startPreview();
+        }
+        else
+        {
+            /* Preview running at the moment. Stop preview. */
+            stopPreview();
+        }
     }
 }
 
@@ -720,9 +722,9 @@ void Panel::startPreview(void)
     ui->pushButton_preview->setText("Stop preview");
     ui->pushButton_preview->setEnabled(true);
 
-/*------------------------*/
+    /*------------------------*/
     polarimeter->enable_Polarimeter_Measurement(false);   // *** Cesar: Added the function to disable the Polarimeter Mesaurement options when preview is running.
-/*------------------------*/
+    /*------------------------*/
 }
 
 /**
@@ -777,9 +779,9 @@ void Panel::stopPreview(void)
     ui->pushButton_storeToRam->setEnabled(true);
     ui->pushButton_timePattern->setEnabled(true);
 
-/*------------------------*/
+    /*------------------------*/
     polarimeter->enable_Polarimeter_Measurement(true);  // *** Cesar: Added the function to enable the Polarimeter Measurement if the Preview isn't running.
-/*------------------------*/
+    /*------------------------*/
 }
 
 /**
@@ -938,10 +940,10 @@ void Panel::updateProgress(void)
             if (timeElapsed >= 100)
             {
                 /* Update progress bar */
-                devices[i]->setProgress(timeElapsed / ptrSpectrometers[i]->getTimePerMeasurement() * 100);        
+                devices[i]->setProgress(timeElapsed / ptrSpectrometers[i]->getTimePerMeasurement() * 100);
             }
         }
-    }           
+    }
 }
 
 /**
@@ -1047,7 +1049,7 @@ void Panel::adjustIntegrationTime(unsigned int id)
 
         /* Do we have more than 5% deviation from target? */
         if ((maxCounts > (targetCounts + (targetCounts * 5 / 100))) ||
-            (maxCounts < (targetCounts - (targetCounts * 5 / 100))))
+                (maxCounts < (targetCounts - (targetCounts * 5 / 100))))
         {
             /* Get current integration time */
             float intTime = devices[id]->getIntegrationTime();
@@ -1315,56 +1317,56 @@ void Panel::calibrateIAD(void)
  */
 void Panel::measureIAD(void)
 {
-            /* Check for measurement name */
-            if (ui->lineEdit_iad_name->text().isEmpty())
-            {
-                /* Show message */
-                showWarning(QString("You have to enter a name for the measurement."), QString(""));
-                return;
-            }
+    /* Check for measurement name */
+    if (ui->lineEdit_iad_name->text().isEmpty())
+    {
+        /* Show message */
+        showWarning(QString("You have to enter a name for the measurement."), QString(""));
+        return;
+    }
 
-            /* Disable 'Measure' button */
-            ui->button_iad_measure->setEnabled(false);
+    /* Disable 'Measure' button */
+    ui->button_iad_measure->setEnabled(false);
 
-            /* Check if preview is running */
-            if (previewRunning)
-            {
-                /* Stop preview */
-                stopPreview();
-            }
+    /* Check if preview is running */
+    if (previewRunning)
+    {
+        /* Stop preview */
+        stopPreview();
+    }
 
-        /* Disable all buttons */
-        ui->pushButton_preview->setDisabled(true);
-        ui->pushButton_storeToRam->setDisabled(true);
-        ui->pushButton_timePattern->setDisabled(true);
-        ui->pushButton_exportData->setDisabled(true);
-        ui->pushButton_saveGraph->setDisabled(true);
-        ui->pushButton_about->setDisabled(true);
+    /* Disable all buttons */
+    ui->pushButton_preview->setDisabled(true);
+    ui->pushButton_storeToRam->setDisabled(true);
+    ui->pushButton_timePattern->setDisabled(true);
+    ui->pushButton_exportData->setDisabled(true);
+    ui->pushButton_saveGraph->setDisabled(true);
+    ui->pushButton_about->setDisabled(true);
 
-        MeasureIAD assistant;
+    MeasureIAD assistant;
 
-        /* Set measurement name and description */
-        assistant.setName(ui->lineEdit_iad_name->text());
-        assistant.setDescription(ui->plainTextEdit_iad_description->toPlainText());
+    /* Set measurement name and description */
+    assistant.setName(ui->lineEdit_iad_name->text());
+    assistant.setDescription(ui->plainTextEdit_iad_description->toPlainText());
 
-        /* Run measurement */
-        if (assistant.measure())
-        {
-            /* Measurement successful */
-            assistant.save(NULL);
+    /* Run measurement */
+    if (assistant.measure())
+    {
+        /* Measurement successful */
+        assistant.save(NULL);
 
-            /* Add current measurement to list of measurements */
-            ui->table_iad_measurements->add(assistant.getName(), ui->lineEdit_iad_name->text(),
-                                            assistant.getDate(), assistant.getTime());
-        }
+        /* Add current measurement to list of measurements */
+        ui->table_iad_measurements->add(assistant.getName(), ui->lineEdit_iad_name->text(),
+                                        assistant.getDate(), assistant.getTime());
+    }
 
-        /* Enable all buttons */
-        ui->pushButton_preview->setEnabled(true);
-        ui->pushButton_storeToRam->setEnabled(true);
-        ui->pushButton_timePattern->setEnabled(true);
-        ui->pushButton_exportData->setEnabled(true);
-        ui->pushButton_saveGraph->setEnabled(true);
-        ui->pushButton_about->setEnabled(true);
+    /* Enable all buttons */
+    ui->pushButton_preview->setEnabled(true);
+    ui->pushButton_storeToRam->setEnabled(true);
+    ui->pushButton_timePattern->setEnabled(true);
+    ui->pushButton_exportData->setEnabled(true);
+    ui->pushButton_saveGraph->setEnabled(true);
+    ui->pushButton_about->setEnabled(true);
 }
 
 void Panel::liveViewIAD(void)
@@ -1387,212 +1389,211 @@ void Panel::liveViewIAD(void)
  */
 void Panel::ReceiveDataIsHere(int WParam, int LParam)
 {
-    /* Successful gained data */
-    if (WParam >= ERR_SUCCESS)
-    {
-        /* Graph needs update? */
-        bool needUpdate = false;
-
-        unsigned int i = 0;
-
-        /* Loop through spectrometers */
-        for (i = 0; i < m_NrDevices; i++)
+        /* Successful gained data */
+        if (WParam >= ERR_SUCCESS)
         {
-            /* Did the current spectrometer sent the data? */
-            if ((LParam == ptrSpectrometers[i]->getHandle()) && (ptrSpectrometers[i]->getNumberOfPixels() > 0))
+            /* Graph needs update? */
+            bool needUpdate = false;
+
+            unsigned int i = 0;
+
+            /* Loop through spectrometers */
+            for (i = 0; i < m_NrDevices; i++)
             {
-                /* Normal measurement? */
-                if (ERR_SUCCESS == WParam)
+                /* Did the current spectrometer sent the data? */
+                if ((LParam == ptrSpectrometers[i]->getHandle()) && (ptrSpectrometers[i]->getNumberOfPixels() > 0))
                 {
-                    /* Handle event */
-                    ptrSpectrometers[i]->handleEvent();
-
-                    /* Update saturation status */
-                    devices[i]->setIsSaturated(ptrSpectrometers[i]->isSaturated());
-                    polarimeter->devices2[0]->setIsSaturated(ptrSpectrometers[polarimeter->SpectrometerNumber]->isSaturated()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
-
-                    /* Graph needs update */
-                    needUpdate = true;
-                }
-                /* Start Store to RAM measurement */
-                else
-                {
-                    /* Get StoreToRAM path */
-                    QString path = ptrSpectrometers[i]->getStoreToRAMPath();
-
-                    /* Show error if no path is choosen */
-                    if (path.isEmpty())
+                    /* Normal measurement? */
+                    if (ERR_SUCCESS == WParam)
                     {
-                        /* Show critical error */
-                        showCritical(QString("No path for StoreToRAM file specified!"), QString(""));
-                        return;
+                        /* Handle event */
+                        ptrSpectrometers[i]->handleEvent();
+
+                        /* Update saturation status */
+                        devices[i]->setIsSaturated(ptrSpectrometers[i]->isSaturated());
+                        polarimeter->devices2[0]->setIsSaturated(ptrSpectrometers[polarimeter->SpectrometerNumber]->isSaturated()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
+
+                        /* Graph needs update */
+                        needUpdate = true;
                     }
-
-                    /* Allocate memory for spectra (number of pixel elements multiplied with the number of measurements) */
-                    double *a_pSpectrum = new double[ptrSpectrometers[i]->getNumberOfPixels() * (unsigned int)WParam];
-
-                    /* Not able to allocate memory? */
-                    if (nullptr == a_pSpectrum)
+                    /* Start Store to RAM measurement */
+                    else
                     {
-                        /* Show critical error */
-                        showCritical(QString("Not enough memory for StoreToRAM data!"), QString(""));
-                        return;
-                    }
+                        /* Get StoreToRAM path */
+                        QString path = ptrSpectrometers[i]->getStoreToRAMPath();
 
-                    unsigned int j = 1;
-
-                    /* Loop through number of measurements */
-                    for (j = 1; j <= (unsigned int)WParam; j++)
-                    {
-                        /* Did the current spectrometer sent the data? */
-                        if ((LParam == ptrSpectrometers[i]->getHandle()) && (ptrSpectrometers[i]->getNumberOfPixels() > 0))
+                        /* Show error if no path is choosen */
+                        if (path.isEmpty())
                         {
-                            /* Handle event */
-                            ptrSpectrometers[i]->handleEvent();
+                            /* Show critical error */
+                            showCritical(QString("No path for StoreToRAM file specified!"), QString(""));
+                            return;
+                        }
 
-                            /* Update saturation status */
-                            devices[i]->setIsSaturated(ptrSpectrometers[i]->isSaturated());
-                            polarimeter->devices2[0]->setIsSaturated(ptrSpectrometers[polarimeter->SpectrometerNumber]->isSaturated()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
+                        /* Allocate memory for spectra (number of pixel elements multiplied with the number of measurements) */
+                        double *a_pSpectrum = new double[ptrSpectrometers[i]->getNumberOfPixels() * (unsigned int)WParam];
 
-                            /* Save counts */
-                            double *temp = ptrSpectrometers[i]->getCounts();
+                        /* Not able to allocate memory? */
+                        if (nullptr == a_pSpectrum)
+                        {
+                            /* Show critical error */
+                            showCritical(QString("Not enough memory for StoreToRAM data!"), QString(""));
+                            return;
+                        }
 
-                            unsigned int k = 0;
+                        unsigned int j = 1;
 
-                            /* Loop through pixel values */
-                            for (k = 0; k < ptrSpectrometers[i]->getNumberOfPixels(); k++)
+                        /* Loop through number of measurements */
+                        for (j = 1; j <= (unsigned int)WParam; j++)
+                        {
+                            /* Did the current spectrometer sent the data? */
+                            if ((LParam == ptrSpectrometers[i]->getHandle()) && (ptrSpectrometers[i]->getNumberOfPixels() > 0))
                             {
-                                *(a_pSpectrum + (ptrSpectrometers[i]->getNumberOfPixels() * (j - 1)) + k) = *(temp + k);
+                                /* Handle event */
+                                ptrSpectrometers[i]->handleEvent();
+
+                                /* Update saturation status */
+                                devices[i]->setIsSaturated(ptrSpectrometers[i]->isSaturated());
+                                polarimeter->devices2[0]->setIsSaturated(ptrSpectrometers[polarimeter->SpectrometerNumber]->isSaturated()); // *** Cesar: Comunication from Preview to Polarimeter Setup. (There is no comunication from Polarimeter to Preview)
+
+                                /* Save counts */
+                                double *temp = ptrSpectrometers[i]->getCounts();
+
+                                unsigned int k = 0;
+
+                                /* Loop through pixel values */
+                                for (k = 0; k < ptrSpectrometers[i]->getNumberOfPixels(); k++)
+                                {
+                                    *(a_pSpectrum + (ptrSpectrometers[i]->getNumberOfPixels() * (j - 1)) + k) = *(temp + k);
+                                }
                             }
                         }
-                    }
 
-                    /* Graph needs update */
-                    needUpdate = true;
+                        /* Graph needs update */
+                        needUpdate = true;
 
-                    /*
+                        /*
                      * Got all StoreToRAM data, save it to disk now!
                      */
 
-                    FILE *file = fopen(path.toLatin1().data(), "wt");
+                        FILE *file = fopen(path.toLatin1().data(), "wt");
 
-                    /* Check file handle */
-                    if (nullptr == file)
-                    {
-                        /* Free memory */
-                        delete[] a_pSpectrum;
-                        a_pSpectrum = nullptr;
-
-                        /* Show message */
-                        showCritical(QString("Unable to create file '%1'.").arg(ptrSpectrometers[i]->getStoreToRAMPath()), QString(""));
-                        return;
-                    }
-
-                    /* Write header */
-                    fprintf(file, "Serial number: %s\n", ptrSpectrometers[i]->getSerialNumber().toLatin1().data());
-                    if (ptrSpectrometers[i]->hasReadableName())
-                    {
-                        fprintf(file, "Readable name: %s\n", ptrSpectrometers[i]->getReadableName().toLatin1().data());
-                    }
-                    fprintf(file, "Integration time: %.2f ms\n", ptrSpectrometers[i]->getIntegrationTime());
-                    fprintf(file, "Number of averages: %i\n\n", ptrSpectrometers[i]->getNumberOfAverages());
-
-                    /* Save wavelength */
-                    double *a_pWavelength = ptrSpectrometers[i]->getWavelengths();
-
-                    /* Loop through pixel values */
-                    for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
-                    {
-                        unsigned int k = 0;
-
-                        /* write counts header */
-                        if (j == 0)
+                        /* Check file handle */
+                        if (nullptr == file)
                         {
-                            fprintf(file, "Wavelength\t# 00001");
+                            /* Free memory */
+                            delete[] a_pSpectrum;
+                            a_pSpectrum = nullptr;
 
-                            /* Write number of spectrum */
-                            for (k = 2; k <= (unsigned int)WParam; k++)
+                            /* Show message */
+                            showCritical(QString("Unable to create file '%1'.").arg(ptrSpectrometers[i]->getStoreToRAMPath()), QString(""));
+                            return;
+                        }
+
+                        /* Write header */
+                        fprintf(file, "Serial number: %s\n", ptrSpectrometers[i]->getSerialNumber().toLatin1().data());
+                        if (ptrSpectrometers[i]->hasReadableName())
+                        {
+                            fprintf(file, "Readable name: %s\n", ptrSpectrometers[i]->getReadableName().toLatin1().data());
+                        }
+                        fprintf(file, "Integration time: %.2f ms\n", ptrSpectrometers[i]->getIntegrationTime());
+                        fprintf(file, "Number of averages: %i\n\n", ptrSpectrometers[i]->getNumberOfAverages());
+
+                        /* Save wavelength */
+                        double *a_pWavelength = ptrSpectrometers[i]->getWavelengths();
+
+                        /* Loop through pixel values */
+                        for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
+                        {
+                            unsigned int k = 0;
+
+                            /* write counts header */
+                            if (j == 0)
                             {
-                                fprintf(file, "\t\t# %05u", k);
+                                fprintf(file, "Wavelength\t# 00001");
+
+                                /* Write number of spectrum */
+                                for (k = 2; k <= (unsigned int)WParam; k++)
+                                {
+                                    fprintf(file, "\t\t# %05u", k);
+                                }
+                                fprintf(file, "\n");
+                            }
+
+                            /* Write wavelength and counts */
+                            fprintf(file, "%.2f", *(a_pWavelength+j));
+
+                            for (k = 0; k < (unsigned int)WParam; k++)
+                            {
+                                fprintf(file, "\t\t%.2f", *(a_pSpectrum + ptrSpectrometers[i]->getNumberOfPixels() * k + j));
                             }
                             fprintf(file, "\n");
                         }
 
-                        /* Write wavelength and counts */
-                        fprintf(file, "%.2f", *(a_pWavelength+j));
+                        /* Close file */
+                        fclose(file);
+                        file = nullptr;
 
-                        for (k = 0; k < (unsigned int)WParam; k++)
+                        /* Free memory */
+                        delete[] a_pSpectrum;
+                        a_pSpectrum = nullptr;
+
+                        /* Spectrometer finished measurement */
+                        ptrSpectrometers[i]->bMeasuring = false;
+
+                        /* Enable GUI elements */
+                        devices[i]->setIsEnabled(true);
+                        devices[i]->ui->checkBox_enabled->setEnabled(true);
+                    }
+                }
+
+                /* Update curve data */
+                curves[i]->setSamples(ptrSpectrometers[i]->getWavelengths(), ptrSpectrometers[i]->getCounts(), ptrSpectrometers[i]->getNumberOfPixels());
+
+                /* ---------------------------------------- */
+                /* To do */
+                if ((nullptr != Rd_factor) && (nullptr != Td_factor) && (nullptr != Tu_factor))
+                {
+                    unsigned int j = 0;
+
+                    double pixels[ptrSpectrometers[i]->getNumberOfPixels()];
+
+                    if (!QString::compare(ptrSpectrometers[i]->getReadableName(), QString("Diffuse reflection")))
+                    {
+                        for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
                         {
-                            fprintf(file, "\t\t%.2f", *(a_pSpectrum + ptrSpectrometers[i]->getNumberOfPixels() * k + j));
+                            pixels[j] = 1 * (ptrSpectrometers[i]->getCounts()[j] - 0/* Dark */) / Rd_factor[j];
                         }
-                        fprintf(file, "\n");
+                        M_R->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
                     }
-
-                    /* Close file */
-                    fclose(file);
-                    file = nullptr;
-
-                    /* Free memory */
-                    delete[] a_pSpectrum;
-                    a_pSpectrum = nullptr;
-
-                    /* Spectrometer finished measurement */
-                    ptrSpectrometers[i]->bMeasuring = false;
-
-                    /* Enable GUI elements */
-                    devices[i]->setIsEnabled(true);
-                    devices[i]->ui->checkBox_enabled->setEnabled(true);
+                    else if (!QString::compare(ptrSpectrometers[i]->getReadableName(), QString("Diffuse transmission")))
+                    {
+                        for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
+                        {
+                            pixels[j] = (ptrSpectrometers[i]->getCounts()[j] - 0/* Dark */) / Td_factor[j];
+                        }
+                        M_T->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
+                    }
+                    else if (!QString::compare(ptrSpectrometers[i]->getReadableName(), QString("Unscattered transmission")))
+                    {
+                        for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
+                        {
+                            pixels[j] = (ptrSpectrometers[i]->getCounts()[j] - 0/* Dark */) / Tu_factor[j];
+                        }
+                        M_U->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
+                    }
                 }
+                /* ---------------------------------------- */
             }
 
-            /* Update curve data */
-            curves[i]->setSamples(ptrSpectrometers[i]->getWavelengths(), ptrSpectrometers[i]->getCounts(), ptrSpectrometers[i]->getNumberOfPixels());
-
-/* ---------------------------------------- */
-            /* To do */
-            if ((nullptr != Rd_factor) && (nullptr != Td_factor) && (nullptr != Tu_factor))
+            /* Does the graph needs a update? */
+            if (needUpdate)
             {
-                unsigned int j = 0;
+                /* Update the graph */
+                ui->qwtPlot->update();
 
-                double pixels[ptrSpectrometers[i]->getNumberOfPixels()];
-
-                if (!QString::compare(ptrSpectrometers[i]->getReadableName(), QString("Diffuse reflection")))
-                {
-                    for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
-                    {
-                        pixels[j] = 1 * (ptrSpectrometers[i]->getCounts()[j] - 0/* Dark */) / Rd_factor[j];
-                    }
-                    M_R->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
-                }
-                else if (!QString::compare(ptrSpectrometers[i]->getReadableName(), QString("Diffuse transmission")))
-                {
-                    for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
-                    {
-                        pixels[j] = (ptrSpectrometers[i]->getCounts()[j] - 0/* Dark */) / Td_factor[j];
-                    }
-                    M_T->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
-                }
-                else if (!QString::compare(ptrSpectrometers[i]->getReadableName(), QString("Unscattered transmission")))
-                {
-                    for (j = 0; j < ptrSpectrometers[i]->getNumberOfPixels(); j++)
-                    {
-                        pixels[j] = (ptrSpectrometers[i]->getCounts()[j] - 0/* Dark */) / Tu_factor[j];
-                    }
-                    M_U->setSamples(ptrSpectrometers[i]->getWavelengths(), pixels, ptrSpectrometers[i]->getNumberOfPixels());
-                }
             }
- /* ---------------------------------------- */
         }
-
-        /* Does the graph needs a update? */
-        if (needUpdate)
-        {
-            /* Update the graph */
-            ui->qwtPlot->update();
-
-       }
-    }
-
 }
 
 /**
@@ -1617,7 +1618,7 @@ Panel::~Panel(void)
         }
     }
 
-/* ---------------------------------------- */
+    /* ---------------------------------------- */
     /* To do */
     M_R->detach();
     delete M_R;
@@ -1630,7 +1631,7 @@ Panel::~Panel(void)
     M_U->detach();
     delete M_U;
     M_U = nullptr;
-/* ---------------------------------------- */
+    /* ---------------------------------------- */
     if (nullptr != polarimeter)
     {
         delete polarimeter;

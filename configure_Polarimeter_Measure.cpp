@@ -58,6 +58,7 @@ configurePolMeasure::configurePolMeasure(QWidget *parent) :
 
     /* Connect buttons to signal mapper */
     connect(ui->pushButton_select, SIGNAL(clicked()), this, SLOT(selectPath()));
+
 }
 
 /**
@@ -65,6 +66,7 @@ configurePolMeasure::configurePolMeasure(QWidget *parent) :
  */
 void configurePolMeasure::selectPath(void)
 {
+
     /* No directory chosen until now? */
     if (!ui->lineEdit_path->isEnabled())
     {
@@ -77,6 +79,15 @@ void configurePolMeasure::selectPath(void)
         /* Get path of configuration file */
         path = QFileDialog::getOpenFileName(this, "Configuration file", path, "Text files (*.txt)");
     }
+
+    /* Did user select a new path? */
+    if (path != ui->lineEdit_path->text() && !path.isEmpty() && ui->lineEdit_path->text() != "Please select a configuration file")
+    {
+        cleanAll();
+    }
+
+    QStringList wordList;
+
 
     /* Did user select a path? */
     if (!path.isEmpty())
@@ -91,7 +102,6 @@ void configurePolMeasure::selectPath(void)
             showCritical("Unable to open configuration file!", "");
             return;
         }
-
 
         /* Loop through lines in file */
         while (!file.atEnd())
@@ -109,12 +119,13 @@ void configurePolMeasure::selectPath(void)
         /* Clear lists */
         timePoint.clear();
         fileName.clear();
-        numSpectra.clear();
-        integrationTime.clear();
-        numberOfAverages.clear();
+        numSpectra=0;
+        integrationTime=0;
+        numberOfAverages=0;
+        freqToMeasure = 0;
 
-        /* Check format of configuration file; we need at least 4 semicolons per line */
-        if (wordList[0].count(QLatin1Char(';')) != 4)
+        /* Check format of configuration file; we need at least 5 semicolons per line */
+        if (wordList[0].count(QLatin1Char(';')) != 5)
         {
             /* Show message */
             showWarning("Malformed configuration file!", "");
@@ -131,15 +142,16 @@ void configurePolMeasure::selectPath(void)
             /* Copy entries to lists */
             timePoint.append(list[0].toInt());
             fileName.append(list[1]);
-            numSpectra.append(list[2].toInt());
-            integrationTime.append(list[3].toFloat());
-            numberOfAverages.append(list[4].toInt());
+            numSpectra = list[2].toInt();
+            integrationTime = list[3].toFloat();
+            numberOfAverages = list[4].toInt();
+            freqToMeasure = list[5].toInt();
 
             /* At least second entry? */
             if (i > 0)
             {
                 /* Calculate duration of entry before current entry */
-                double duration = numSpectra[i - 1] * integrationTime[i - 1] * numberOfAverages[i - 1];
+                double duration = numSpectra * integrationTime * numberOfAverages;
 
                 /* Check if there's a time overlap between last and current entry */
                 if ((timePoint[i - 1] + duration) > timePoint[i])
@@ -147,9 +159,10 @@ void configurePolMeasure::selectPath(void)
                     /* Clear lists */
                     timePoint.clear();
                     fileName.clear();
-                    numSpectra.clear();
-                    integrationTime.clear();
-                    numberOfAverages.clear();
+                    numSpectra=0;
+                    integrationTime=0;
+                    numberOfAverages=0;
+                    freqToMeasure =0;
 
                     QString message;
 
@@ -162,42 +175,6 @@ void configurePolMeasure::selectPath(void)
                     return;
                 }
             }
-
-            QLabel *nt = new QLabel();
-
-            /* Create label for index */
-            nt->setText(QString::number(i));
-            nt->setStyleSheet("QLabel { margin-left: 2px; }");
-
-            QLabel *nt2 = new QLabel();
-
-            /* Create label for time point */
-            nt2->setText(list[0]);
-            nt2->setStyleSheet("QLabel { margin-left: 2px; }");
-
-            QLabel *nt3 = new QLabel();
-
-            /* Create label for file name */
-            nt3->setText(list[1]);
-            nt3->setStyleSheet("QLabel { margin-left: 2px; }");
-
-            QLabel *nt4 = new QLabel();
-
-            /* Create label for number of spectra */
-            nt4->setText(list[2]);
-            nt4->setStyleSheet("QLabel { margin-left: 2px; }");
-
-            QLabel *nt5 = new QLabel();
-
-            /* Create label for integration time */
-            nt5->setText(list[3]);
-            nt5->setStyleSheet("QLabel { margin-left: 2px; }");
-
-            QLabel *nt6 = new QLabel();
-
-            /* Create label for number of averages */
-            nt6->setText(list[4]);
-            nt6->setStyleSheet("QLabel { margin-left: 2px; }");
         }
 
         /* Copy path into line edit */
@@ -208,6 +185,21 @@ void configurePolMeasure::selectPath(void)
     }
 
     accept();
+}
+
+/**
+ * @brief Select path for StoreToRAM files
+ */
+void configurePolMeasure::cleanAll(void)
+{
+    /* Clear lists */
+    timePoint.clear();
+    fileName.clear();
+    numSpectra=0;
+    integrationTime=0;
+    numberOfAverages=0;
+    freqToMeasure =0;
+    ui->lineEdit_path->setEnabled(false);
 }
 
 /**

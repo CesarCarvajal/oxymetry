@@ -62,6 +62,11 @@ void Application::emitsignal(int WParam, int LParam)
     emit DataIsHere(WParam, LParam);
 }
 
+void Application::emitPolsignal(int WParam, int LParam)
+{
+    emit DataPolIsHere(WParam, LParam);
+}
+
 void Application::callback(AvsHandle *handle, int *result)
 {
     if (0 <= *result)
@@ -72,6 +77,20 @@ void Application::callback(AvsHandle *handle, int *result)
         if (nullptr != m)
         {
             m->emitsignal(*result, *handle);
+        }
+    }
+}
+
+void Application::callPolback(AvsHandle *handle, int *result)
+{
+    if (0 <= *result)
+    {
+        Application *m1 = static_cast<Application*>(qApp);
+
+        /* Check handle */
+        if (nullptr != m1)
+        {
+            m1->emitPolsignal(*result, *handle);
         }
     }
 }

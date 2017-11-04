@@ -40,15 +40,18 @@ public:
     /* Constructor */
     explicit configurePolMeasure(QWidget *parent = 0);
 
-    QList<unsigned int> numSpectra;
+    int numSpectra;
     QList<double> timePoint;
-    QList<float> integrationTime;
-    QList<unsigned int> numberOfAverages;
-    QStringList wordList;
+    float integrationTime;
+    int numberOfAverages;
+    int freqToMeasure;
     bool configured = false;
     QString path;
+
     /* Time pattern configuration */
     QStringList fileName;
+
+    void cleanAll(void);
 
     /* Destructor */
     ~configurePolMeasure(void);

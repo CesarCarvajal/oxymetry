@@ -219,7 +219,7 @@ PanelPolarimeter::PanelPolarimeter(QWidget *parent) :
     ui->qwtPlot_Pol_Average->setXAxisTitle("Time (sec)");
     ui->qwtPlot_Pol_Average->setYAxisTitle("Intensity");
     ui->qwtPlot_Pol_Average->setYAxis(0.0, 2000);
-    ui->qwtPlot_Pol_Average->setXAxis(0.0, 100);
+    ui->qwtPlot_Pol_Average->setXAxis(0.0, 500);
 
     /* Set axis and title of Prediction Curve, now in use to show the FFT */
     // ui->qwtPlot_Pol_Prediction->setXAxisTitle("Reference Concentration");
@@ -863,7 +863,7 @@ void PanelPolarimeter::start_Pol_Measurement(void) {
         /* Wait 1 ms */
         Timer::msleep(1);
 
-        if(timer.elapsed() % 1000 == 0){
+        if(timer.elapsed() % 1000){
             plotAverages(timer.elapsed()/1000);
         }
     }
@@ -1592,7 +1592,7 @@ void PanelPolarimeter::writeToFile(FILE *file, double *a_pSpectrum, int WParam) 
 /**
  * @brief Plot W, DC and 2W averaged
  */
-void PanelPolarimeter::plotAverages(double time){
+void PanelPolarimeter::plotAverages(int time){
 
     double average_DC=0, average_W=0, average_2W = 0;
 
@@ -1616,9 +1616,11 @@ void PanelPolarimeter::plotAverages(double time){
 
     averaged_Raw_Signal_time.append(time);
 
+    qDebug() << time << " a " << averaged_Raw_Signal_time.length();
+
     double maxtime = *std::max_element(averaged_Raw_Signal_time.begin(), averaged_Raw_Signal_time.end());
 
-    if(averaged_Raw_Signal_time.length() % 100 == 0){
+    if(averaged_Raw_Signal_time.length() % 10000 == 0){
         ui->qwtPlot_Pol_Average->setXAxis(maxtime, maxtime+30);
     }
 
@@ -1634,12 +1636,12 @@ void PanelPolarimeter::plotAverages(double time){
     Average_2W_Signal->attach(ui->qwtPlot_Pol_Average);
 
     /* Signal Restart */
-    if(averaged_Raw_Signal_time.length() > 5000){
+    if(averaged_Raw_Signal_time.length() > 50000){
         averaged_Raw_Signal_time.resize(0);
         AverageDC.resize(0);
         AverageW.resize(0);
         Average2W.resize(0);
-        ui->qwtPlot_Pol_Average->setXAxis(maxtime, maxtime+30);
+        ui->qwtPlot_Pol_Average->setXAxis(maxtime, maxtime+100);
     }
 
     ui->qwtPlot_Pol_Average->setYAxis(0.0, *std::max_element(AverageDC.begin(), AverageDC.end())+10000);

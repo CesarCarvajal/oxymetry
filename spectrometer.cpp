@@ -59,9 +59,9 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
     {
         /* Create message box */
         showWarning(QString("Unable to activate spectrometer %1 for communication.").
-                      arg(serialNumber),
+                    arg(serialNumber),
                     QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nAvsHandle AVS_Activate(AvsIdentityType* a_pDeviceId) returned INVALID_AVS_HANDLE_VALUE.").
-                      arg(__FILE__, __FUNCTION__, QString::number(__LINE__-9)));
+                    arg(__FILE__, __FUNCTION__, QString::number(__LINE__-9)));
     }
     else
     {
@@ -75,44 +75,44 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
 
             switch (result)
             {
-                case ERR_DEVICE_NOT_FOUND:
-                {
-                    /* Opening communication failed or time-out during communication occurred */
-                    errorCode = "ERR_DEVICE_NOT_FOUND";
-                    detailedText = "Opening communication failed or time-out during communication occurred";
-                    break;
-                }
+            case ERR_DEVICE_NOT_FOUND:
+            {
+                /* Opening communication failed or time-out during communication occurred */
+                errorCode = "ERR_DEVICE_NOT_FOUND";
+                detailedText = "Opening communication failed or time-out during communication occurred";
+                break;
+            }
 
-                case ERR_INVALID_DEVICE_ID:
-                {
-                    /* AvsHandle is unknown in the DLL */
-                    errorCode = "ERR_INVALID_DEVICE_ID";
-                    detailedText =  "AvsHandle is unknown in the DLL";
-                    break;
-                }
+            case ERR_INVALID_DEVICE_ID:
+            {
+                /* AvsHandle is unknown in the DLL */
+                errorCode = "ERR_INVALID_DEVICE_ID";
+                detailedText =  "AvsHandle is unknown in the DLL";
+                break;
+            }
 
-                case ERR_TIMEOUT:
-                {
-                    /* No answer received from device */
-                    errorCode = "ERR_TIMEOUT";
-                    detailedText = "No answer received from device";
-                    break;
-                }
+            case ERR_TIMEOUT:
+            {
+                /* No answer received from device */
+                errorCode = "ERR_TIMEOUT";
+                detailedText = "No answer received from device";
+                break;
+            }
 
-                default:
-                {
-                    /* Set error message */
-                    errorCode = "ERR_UNKNOWN";
-                    detailedText = QString("Unhandled error, code %1").arg(result);
-                    break;
-                }
+            default:
+            {
+                /* Set error message */
+                errorCode = "ERR_UNKNOWN";
+                detailedText = QString("Unhandled error, code %1").arg(result);
+                break;
+            }
             }
 
             /* Create message box */
             showWarning(QString("Unable to get the status of the software and version info of the different parts of spectrometer %1.").
-                          arg(a_pDeviceId->SerialNumber),
+                        arg(a_pDeviceId->SerialNumber),
                         QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetVersionInfo(a_hDevice, a_pFPGAVersion, a_pFirmwareVersion, a_pDLLVersion) returned %4.").
-                          arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
+                        arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
         }
 
         /* Get the number of pixels */
@@ -125,44 +125,44 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
 
             switch (result)
             {
-                case ERR_DEVICE_NOT_FOUND:
-                {
-                    /* Opening communication failed or time-out during communication occurred */
-                    errorCode = "ERR_DEVICE_NOT_FOUND";
-                    detailedText = "Opening communication failed or time-out during communication occurred";
-                    break;
-                }
+            case ERR_DEVICE_NOT_FOUND:
+            {
+                /* Opening communication failed or time-out during communication occurred */
+                errorCode = "ERR_DEVICE_NOT_FOUND";
+                detailedText = "Opening communication failed or time-out during communication occurred";
+                break;
+            }
 
-                case ERR_INVALID_DEVICE_ID:
-                {
-                    /* AvsHandle is unknown in the DLL */
-                    errorCode = "ERR_INVALID_DEVICE_ID";
-                    detailedText = "AvsHandle is unknown in the DLL";
-                    break;
-                }
+            case ERR_INVALID_DEVICE_ID:
+            {
+                /* AvsHandle is unknown in the DLL */
+                errorCode = "ERR_INVALID_DEVICE_ID";
+                detailedText = "AvsHandle is unknown in the DLL";
+                break;
+            }
 
-                case ERR_INVALID_SIZE:
-                {
-                    /* Allocated buffer size too small */
-                    errorCode = "ERR_INVALID_SIZE";
-                    detailedText = "Allocated buffer size too small";
-                    break;
-                }
+            case ERR_INVALID_SIZE:
+            {
+                /* Allocated buffer size too small */
+                errorCode = "ERR_INVALID_SIZE";
+                detailedText = "Allocated buffer size too small";
+                break;
+            }
 
-                default:
-                {
-                    /* Set error message */
-                    errorCode = "ERR_UNKNOWN";
-                    detailedText = QString("Unhandled error, code %1").arg(result);
-                    break;
-                }
+            default:
+            {
+                /* Set error message */
+                errorCode = "ERR_UNKNOWN";
+                detailedText = QString("Unhandled error, code %1").arg(result);
+                break;
+            }
             }
 
             /* Create message box */
             showWarning(QString("Unable to get the number of pixels of spectrometer %1.").
-                          arg(a_pDeviceId->SerialNumber),
+                        arg(a_pDeviceId->SerialNumber),
                         QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetNumPixels(a_hDevice, &a_pNumPixels) returned %4.").
-                          arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
+                        arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
         }
 
         /* Valid number of detector elements? */
@@ -170,9 +170,9 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
         {
             /* Create message box */
             showCritical(QString("Invalid number of detector elements of spectrometer %1.").
-                           arg(a_pDeviceId->SerialNumber),
+                         arg(a_pDeviceId->SerialNumber),
                          QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetNumPixels(a_hDevice, &a_pNumPixels) returned invalid a_pNumPixels.").
-                           arg(__FILE__, __FUNCTION__, QString::number(__LINE__-56)));
+                         arg(__FILE__, __FUNCTION__, QString::number(__LINE__-56)));
         }
 
         unsigned int a_Size = 0;
@@ -195,49 +195,6 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
 
                 switch (result)
                 {
-                    case ERR_DEVICE_NOT_FOUND:
-                    {
-                        /* Opening communication failed or time-out during communication occurred */
-                        errorCode = "ERR_DEVICE_NOT_FOUND";
-                        detailedText = "Opening communication failed or time-out during communication occurred";
-                        break;
-                    }
-
-                    case ERR_INVALID_DEVICE_ID:
-                    {
-                        /* AvsHandle is unknown in the DLL */
-                        errorCode = "ERR_INVALID_DEVICE_ID";
-                        detailedText = "AvsHandle is unknown in the DLL";
-                        break;
-                    }
-
-                    default:
-                    {
-                        /* Set error message */
-                        errorCode = "ERR_UNKNOWN";
-                        detailedText = QString("Unhandled error, code %1").arg(result);
-                        break;
-                    }
-                }
-
-                /* Create message box */
-                showWarning(QString("Unable to get the device information of spectrometer %1.").
-                              arg(a_pDeviceId->SerialNumber),
-                            QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetParameter(a_hDevice, 0, &a_Size, a_pDeviceData) returned %4.").
-                              arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
-            }
-        }
-
-        /* Get device information */
-        result = AVS_GetParameter(a_hDevice, a_Size, &a_Size, a_pDeviceData);
-
-        /* Call of AVS_GetParameter successful? */
-        if (ERR_SUCCESS != result)
-        {
-            QString errorCode, detailedText;
-
-            switch (result)
-            {
                 case ERR_DEVICE_NOT_FOUND:
                 {
                     /* Opening communication failed or time-out during communication occurred */
@@ -254,14 +211,6 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
                     break;
                 }
 
-                case ERR_INVALID_SIZE:
-                {
-                    /* Allocated buffer size too small */
-                    errorCode = "ERR_INVALID_SIZE";
-                    detailedText = "Allocated buffer size too small";
-                    break;
-                }
-
                 default:
                 {
                     /* Set error message */
@@ -269,13 +218,64 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
                     detailedText = QString("Unhandled error, code %1").arg(result);
                     break;
                 }
+                }
+
+                /* Create message box */
+                showWarning(QString("Unable to get the device information of spectrometer %1.").
+                            arg(a_pDeviceId->SerialNumber),
+                            QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetParameter(a_hDevice, 0, &a_Size, a_pDeviceData) returned %4.").
+                            arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
+            }
+        }
+
+        /* Get device information */
+        result = AVS_GetParameter(a_hDevice, a_Size, &a_Size, a_pDeviceData);
+
+        /* Call of AVS_GetParameter successful? */
+        if (ERR_SUCCESS != result)
+        {
+            QString errorCode, detailedText;
+
+            switch (result)
+            {
+            case ERR_DEVICE_NOT_FOUND:
+            {
+                /* Opening communication failed or time-out during communication occurred */
+                errorCode = "ERR_DEVICE_NOT_FOUND";
+                detailedText = "Opening communication failed or time-out during communication occurred";
+                break;
+            }
+
+            case ERR_INVALID_DEVICE_ID:
+            {
+                /* AvsHandle is unknown in the DLL */
+                errorCode = "ERR_INVALID_DEVICE_ID";
+                detailedText = "AvsHandle is unknown in the DLL";
+                break;
+            }
+
+            case ERR_INVALID_SIZE:
+            {
+                /* Allocated buffer size too small */
+                errorCode = "ERR_INVALID_SIZE";
+                detailedText = "Allocated buffer size too small";
+                break;
+            }
+
+            default:
+            {
+                /* Set error message */
+                errorCode = "ERR_UNKNOWN";
+                detailedText = QString("Unhandled error, code %1").arg(result);
+                break;
+            }
             }
 
             /* Create message box */
             showWarning(QString("Unable to get the device information of spectrometer %1.").
-                          arg(a_pDeviceId->SerialNumber),
+                        arg(a_pDeviceId->SerialNumber),
                         QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetParameter(a_hDevice, 0, &a_Size, a_pDeviceData) returned %4.").
-                          arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
+                        arg(__FILE__, __FUNCTION__, QString::number(__LINE__-46), errorCode));
         }
 
         /* Memory for wavelengths allocated? */
@@ -299,36 +299,36 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
 
             switch (result)
             {
-                case ERR_DEVICE_NOT_FOUND:
-                {
-                    /* Opening communication failed or time-out during communication occurred */
-                    errorCode = "ERR_DEVICE_NOT_FOUND";
-                    detailedText = "Opening communication failed or time-out during communication occurred";
-                    break;
-                }
+            case ERR_DEVICE_NOT_FOUND:
+            {
+                /* Opening communication failed or time-out during communication occurred */
+                errorCode = "ERR_DEVICE_NOT_FOUND";
+                detailedText = "Opening communication failed or time-out during communication occurred";
+                break;
+            }
 
-                case ERR_INVALID_DEVICE_ID:
-                {
-                    /* AvsHandle is unknown in the DLL */
-                    errorCode = "ERR_INVALID_DEVICE_ID";
-                    detailedText = "AvsHandle is unknown in the DLL";
-                    break;
-                }
+            case ERR_INVALID_DEVICE_ID:
+            {
+                /* AvsHandle is unknown in the DLL */
+                errorCode = "ERR_INVALID_DEVICE_ID";
+                detailedText = "AvsHandle is unknown in the DLL";
+                break;
+            }
 
-                default:
-                {
-                    /* Set error message */
-                    errorCode = "ERR_UNKNOWN";
-                    detailedText = QString("Unhandled error, code %1").arg(result);
-                    break;
-                }
+            default:
+            {
+                /* Set error message */
+                errorCode = "ERR_UNKNOWN";
+                detailedText = QString("Unhandled error, code %1").arg(result);
+                break;
+            }
             }
 
             /* Create message box */
             showWarning(QString("Unable to get the wavelength values corresponding to the pixels of spectrometer %1.").
-                          arg(a_pDeviceId->SerialNumber),
+                        arg(a_pDeviceId->SerialNumber),
                         QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_GetLambda(a_hDevice, a_pWavelength) returned %4.").
-                          arg(__FILE__, __FUNCTION__, QString::number(__LINE__-38), errorCode));
+                        arg(__FILE__, __FUNCTION__, QString::number(__LINE__-38), errorCode));
         }
 
         /* Memory for spectrum allocated? */
@@ -424,28 +424,28 @@ Spectrometer::Spectrometer(AvsIdentityType *a_pDeviceId)
 
             switch (result)
             {
-                case ERR_OPERATION_NOT_SUPPORTED:
-                {
-                    /* This function is not supported by AS5216 hardware version R1C or earlier */
-                    errorCode = "ERR_OPERATION_NOT_SUPPORTED";
-                    detailedText = "This function is not supported by AS5216 hardware version R1C or earlier";
-                    break;
-                }
+            case ERR_OPERATION_NOT_SUPPORTED:
+            {
+                /* This function is not supported by AS5216 hardware version R1C or earlier */
+                errorCode = "ERR_OPERATION_NOT_SUPPORTED";
+                detailedText = "This function is not supported by AS5216 hardware version R1C or earlier";
+                break;
+            }
 
-                default:
-                {
-                    /* Set error message */
-                    errorCode = "ERR_UNKNOWN";
-                    detailedText = QString("Unhandled error, code %1").arg(result);
-                    break;
-                }
+            default:
+            {
+                /* Set error message */
+                errorCode = "ERR_UNKNOWN";
+                detailedText = QString("Unhandled error, code %1").arg(result);
+                break;
+            }
             }
 
             /* Create message box */
             showWarning(QString("Unable to enable high resolution mode on spectrometer %1.").
-                          arg(a_pDeviceId->SerialNumber),
+                        arg(a_pDeviceId->SerialNumber),
                         QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_UseHighResAdc(a_hDevice, bool a_Enable) returned %4.").
-                          arg(__FILE__, __FUNCTION__, QString::number(__LINE__-28), errorCode));
+                        arg(__FILE__, __FUNCTION__, QString::number(__LINE__-28), errorCode));
         }
 
         /* Enable extended non-linearity correction? */
@@ -531,62 +531,62 @@ void Spectrometer::showEEPROM(void)
     /* Set detector type */
     switch (a_pDeviceData->m_Detector.m_SensorType)
     {
-        case SENS_HAMS8378_256      : detectorName = "HAMS8378_256";
-                                      break;
-        case SENS_HAMS8378_1024     : detectorName = "HAMS8378_1024";
-                                      break;
-        case SENS_ILX554            : detectorName = "ILX554";
-                                      break;
-        case SENS_HAMS9201          : detectorName = "HAMS9201";
-                                      break;
-        case SENS_TCD1304           : detectorName = "TCD1304";
-                                      break;
-        case SENS_TSL1301           : detectorName = "TSL1301";
-                                      break;
-        case SENS_TSL1401           : detectorName = "TSL1401";
-                                      break;
-        case SENS_HAMS8378_512      : detectorName = "HAMS8378_512";
-                                      break;
-        case SENS_HAMS9840          : detectorName = "HAMS9840";
-                                      break;
-        case SENS_ILX511            : detectorName = "ILX511";
-                                      break;
-        case SENS_HAMS10420_2048X64 : detectorName = "HAMS10420_2048X64";
-                                      break;
-        case SENS_HAMS11071_2048X64 : detectorName = "HAMS11071_2048X64";
-                                      break;
-        case SENS_HAMS7031_1024X122 : detectorName = "HAMS7031_1024X122";
-                                      break;
-        case SENS_HAMS7031_1024X58  : detectorName = "HAMS7031_1024X58";
-                                      break;
-        case SENS_HAMS11071_2048X16 : detectorName = "HAMS11071_2048X16";
-                                      break;
-        case SENS_SU256LSB          : detectorName = "SU256LSB";
-                                      break;
-        case SENS_SU512LDB          : detectorName = "SU512LDB";
-                                      break;
-        default                     : detectorName = "???";
-                                      break;
+    case SENS_HAMS8378_256      : detectorName = "HAMS8378_256";
+        break;
+    case SENS_HAMS8378_1024     : detectorName = "HAMS8378_1024";
+        break;
+    case SENS_ILX554            : detectorName = "ILX554";
+        break;
+    case SENS_HAMS9201          : detectorName = "HAMS9201";
+        break;
+    case SENS_TCD1304           : detectorName = "TCD1304";
+        break;
+    case SENS_TSL1301           : detectorName = "TSL1301";
+        break;
+    case SENS_TSL1401           : detectorName = "TSL1401";
+        break;
+    case SENS_HAMS8378_512      : detectorName = "HAMS8378_512";
+        break;
+    case SENS_HAMS9840          : detectorName = "HAMS9840";
+        break;
+    case SENS_ILX511            : detectorName = "ILX511";
+        break;
+    case SENS_HAMS10420_2048X64 : detectorName = "HAMS10420_2048X64";
+        break;
+    case SENS_HAMS11071_2048X64 : detectorName = "HAMS11071_2048X64";
+        break;
+    case SENS_HAMS7031_1024X122 : detectorName = "HAMS7031_1024X122";
+        break;
+    case SENS_HAMS7031_1024X58  : detectorName = "HAMS7031_1024X58";
+        break;
+    case SENS_HAMS11071_2048X16 : detectorName = "HAMS11071_2048X16";
+        break;
+    case SENS_SU256LSB          : detectorName = "SU256LSB";
+        break;
+    case SENS_SU512LDB          : detectorName = "SU512LDB";
+        break;
+    default                     : detectorName = "???";
+        break;
     }
     eepromDialog.ui->detectorType->setText(detectorName);
 
     /* Calculate ip address */
     eepromDialog.ui->m_IpAddr->setText(QString("%1.%2.%3.%4").arg(QString::number(a_Data.m_IpAddr & 0xFF),
-                                                            QString::number((a_Data.m_IpAddr >> 8) & 0xFF),
-                                                            QString::number((a_Data.m_IpAddr >> 16) & 0xFF),
-                                                            QString::number((a_Data.m_IpAddr >> 24) & 0xFF)));
+                                                                  QString::number((a_Data.m_IpAddr >> 8) & 0xFF),
+                                                                  QString::number((a_Data.m_IpAddr >> 16) & 0xFF),
+                                                                  QString::number((a_Data.m_IpAddr >> 24) & 0xFF)));
 
     /* Calculate net mask */
     eepromDialog.ui->m_NetMask->setText(QString("%1.%2.%3.%4").arg(QString::number(a_Data.m_NetMask & 0xFF),
-                                                             QString::number((a_Data.m_NetMask >> 8) & 0xFF),
-                                                             QString::number((a_Data.m_NetMask >> 16) & 0xFF),
-                                                             QString::number((a_Data.m_NetMask >> 24) & 0xFF)));
+                                                                   QString::number((a_Data.m_NetMask >> 8) & 0xFF),
+                                                                   QString::number((a_Data.m_NetMask >> 16) & 0xFF),
+                                                                   QString::number((a_Data.m_NetMask >> 24) & 0xFF)));
 
     /* Calculate gateway */
     eepromDialog.ui->m_Gateway->setText(QString("%1.%2.%3.%4").arg(QString::number(a_Data.m_Gateway & 0xFF),
-                                                             QString::number((a_Data.m_Gateway >> 8) & 0xFF),
-                                                             QString::number((a_Data.m_Gateway >> 16) & 0xFF),
-                                                             QString::number((a_Data.m_Gateway >> 24) & 0xFF)));
+                                                                   QString::number((a_Data.m_Gateway >> 8) & 0xFF),
+                                                                   QString::number((a_Data.m_Gateway >> 16) & 0xFF),
+                                                                   QString::number((a_Data.m_Gateway >> 24) & 0xFF)));
 
     /* Check DHCP state and get TCP port */
     eepromDialog.ui->m_DhcpEnabled->setChecked(a_Data.m_DhcpEnabled > 0);
@@ -970,84 +970,84 @@ bool Spectrometer::prepareMeasurement(void)
 
         switch (result)
         {
-            case ERR_DEVICE_NOT_FOUND:
-            {
-                /* Set error message */
-                errorCode = "ERR_DEVICE_NOT_FOUND";
-                detailedText = "Opening communication failed or time-out during communication occurred.";
-                break;
-            }
+        case ERR_DEVICE_NOT_FOUND:
+        {
+            /* Set error message */
+            errorCode = "ERR_DEVICE_NOT_FOUND";
+            detailedText = "Opening communication failed or time-out during communication occurred.";
+            break;
+        }
 
-            case ERR_OPERATION_PENDING:
-            {
-                /* Set error message */
-                errorCode = "ERR_OPERATION_PENDING";
-                detailedText = "Function is called while result of previous call to AVS_Measure is not received yet.";
-                break;
-            }
+        case ERR_OPERATION_PENDING:
+        {
+            /* Set error message */
+            errorCode = "ERR_OPERATION_PENDING";
+            detailedText = "Function is called while result of previous call to AVS_Measure is not received yet.";
+            break;
+        }
 
-            case ERR_INVALID_DEVICE_ID:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_DEVICE_ID";
-                detailedText = "AvsHandle is unknown in the DLL.";
-                break;
-            }
+        case ERR_INVALID_DEVICE_ID:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_DEVICE_ID";
+            detailedText = "AvsHandle is unknown in the DLL.";
+            break;
+        }
 
-            case ERR_INVALID_PARAMETER:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_PARAMETER";
-                detailedText = "Function called with invalid parameter value.";
-                break;
-            }
+        case ERR_INVALID_PARAMETER:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_PARAMETER";
+            detailedText = "Function called with invalid parameter value.";
+            break;
+        }
 
-            case ERR_INVALID_PIXEL_RANGE:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_PIXEL_RANGE";
-                detailedText = "Measurement preparation failed because pixel range is invalid.";
-                break;
-            }
+        case ERR_INVALID_PIXEL_RANGE:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_PIXEL_RANGE";
+            detailedText = "Measurement preparation failed because pixel range is invalid.";
+            break;
+        }
 
-            case ERR_INVALID_CONFIGURATION:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_CONFIGURATION";
-                detailedText = "Invalid measurement configuration.";
-                break;
-            }
+        case ERR_INVALID_CONFIGURATION:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_CONFIGURATION";
+            detailedText = "Invalid measurement configuration.";
+            break;
+        }
 
-            case ERR_TIMEOUT:
-            {
-                /* Set error message */
-                errorCode = "ERR_TIMEOUT";
-                detailedText = "No answer received from device.";
-                break;
-            }
+        case ERR_TIMEOUT:
+        {
+            /* Set error message */
+            errorCode = "ERR_TIMEOUT";
+            detailedText = "No answer received from device.";
+            break;
+        }
 
-            case ERR_INVALID_MEASPARAM_DYNDARK:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_MEASPARAM_DYNDARK";
-                detailedText = "Dynamic Dark Correction not supported.";
-                break;
-            }
+        case ERR_INVALID_MEASPARAM_DYNDARK:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_MEASPARAM_DYNDARK";
+            detailedText = "Dynamic Dark Correction not supported.";
+            break;
+        }
 
-            default:
-            {
-                /* Set error message */
-                errorCode = "ERR_UNKNOWN";
-                detailedText = QString("Unhandled error, code %1").arg(result);
-                break;
-            }
+        default:
+        {
+            /* Set error message */
+            errorCode = "ERR_UNKNOWN";
+            detailedText = QString("Unhandled error, code %1").arg(result);
+            break;
+        }
         }
 
         /* Create message box */
         showCritical(QString("Unable to prepare the measurement on spectrometer %1.").
-                       arg(serialNumber),
+                     arg(serialNumber),
                      QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_PrepareMeasure(AvsHandle a_hDevice, MeasConfigType* a_pMeasConfig) returned %4.").
-                       arg(__FILE__, __FUNCTION__, QString::number(__LINE__-86), errorCode));
+                     arg(__FILE__, __FUNCTION__, QString::number(__LINE__-86), errorCode));
 
         /* Failure */
         return false;
@@ -1084,8 +1084,18 @@ bool Spectrometer::startMeasurement(short numMeasurements)
     /* Start counter */
     m_Time.start();
 
-    /* Set up measurement callback */
-    int result = AVS_MeasureCallback(a_hDevice, &Application::callback, numMeasurements);
+    int result = 0;
+
+    /* Set up measurement callback
+      * If receives -1 directly, the signal comes from Preview.
+      * If receives -2 the signal comes from the polarimetry Measurement - Improvement Pending.
+*/
+    if(numMeasurements == -2 || numMeasurements==2){
+        numMeasurements = numMeasurements - (numMeasurements/2);
+        result = AVS_MeasureCallback(a_hDevice, &Application::callPolback, numMeasurements);
+    }else{
+        result = AVS_MeasureCallback(a_hDevice, &Application::callback, numMeasurements);
+    }
 
     /* Call of AVS_MeasureCallback successful? */
     if (ERR_SUCCESS != result)
@@ -1094,28 +1104,28 @@ bool Spectrometer::startMeasurement(short numMeasurements)
 
         switch (result)
         {
-            case ERR_INVALID_PARAMETER:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_PARAMETER";
-                detailedText = "Invalid parameter";
-                break;
-            }
+        case ERR_INVALID_PARAMETER:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_PARAMETER";
+            detailedText = "Invalid parameter";
+            break;
+        }
 
-            default:
-            {
-                /* Set error message */
-                errorCode = "ERR_UNKNOWN";
-                detailedText = QString("Unhandled error, code %1").arg(result);
-                break;
-            }
+        default:
+        {
+            /* Set error message */
+            errorCode = "ERR_UNKNOWN";
+            detailedText = QString("Unhandled error, code %1").arg(result);
+            break;
+        }
         }
 
         /* Create message box */
         showCritical(QString("Unable to start the measurement on spectrometer %1.").
-                       arg(serialNumber),
+                     arg(serialNumber),
                      QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_MeasureCallback(AvsHandle a_hDevice, void (*__Done)(AvsHandle*, int*), short a_Nmsr) returned %4.").
-                       arg(__FILE__, __FUNCTION__, QString::number(__LINE__-30), errorCode));
+                     arg(__FILE__, __FUNCTION__, QString::number(__LINE__-30), errorCode));
 
         /* Not successful */
         return false;
@@ -1161,52 +1171,52 @@ bool Spectrometer::stopMeasurement(void)
 
         switch (result)
         {
-            case ERR_DEVICE_NOT_FOUND:
-            {
-                /* Set error message */
-                errorCode = "ERR_DEVICE_NOT_FOUND";
-                detailedText = "Opening communication failed or time-out during communication occurred.";
-                break;
-            }
+        case ERR_DEVICE_NOT_FOUND:
+        {
+            /* Set error message */
+            errorCode = "ERR_DEVICE_NOT_FOUND";
+            detailedText = "Opening communication failed or time-out during communication occurred.";
+            break;
+        }
 
-            case ERR_INVALID_DEVICE_ID:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_DEVICE_ID";
-                detailedText = "AvsHandle is unknown in the DLL.";
-                break;
-            }
+        case ERR_INVALID_DEVICE_ID:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_DEVICE_ID";
+            detailedText = "AvsHandle is unknown in the DLL.";
+            break;
+        }
 
-            case ERR_TIMEOUT:
-            {
-                /* Set error message */
-                errorCode = "ERR_TIMEOUT";
-                detailedText = "No answer received from device.";
-                break;
-            }
+        case ERR_TIMEOUT:
+        {
+            /* Set error message */
+            errorCode = "ERR_TIMEOUT";
+            detailedText = "No answer received from device.";
+            break;
+        }
 
-            case ERR_INVALID_PARAMETER:
-            {
-                /* Set error message */
-                errorCode = "ERR_INVALID_PARAMETER";
-                detailedText = "Function called with invalid parameter value.";
-                break;
-            }
+        case ERR_INVALID_PARAMETER:
+        {
+            /* Set error message */
+            errorCode = "ERR_INVALID_PARAMETER";
+            detailedText = "Function called with invalid parameter value.";
+            break;
+        }
 
-            default:
-            {
-                /* Set error message */
-                errorCode = "ERR_UNKNOWN";
-                detailedText = QString("Unhandled error, code %1").arg(result);
-                break;
-            }
+        default:
+        {
+            /* Set error message */
+            errorCode = "ERR_UNKNOWN";
+            detailedText = QString("Unhandled error, code %1").arg(result);
+            break;
+        }
         }
 
         /* Show warning */
         showWarning(QString("Unable to stop the measurement on spectrometer %1.").
-                      arg(serialNumber),
+                    arg(serialNumber),
                     QString("File:\t%1\nFunction:\t%2\nLine:\t%3\n\nint AVS_StopMeasure(AvsHandle a_hDevice) returned %4.").
-                      arg(__FILE__, __FUNCTION__, QString::number(__LINE__-54), errorCode));
+                    arg(__FILE__, __FUNCTION__, QString::number(__LINE__-54), errorCode));
 
         /* Failure */
         return false;

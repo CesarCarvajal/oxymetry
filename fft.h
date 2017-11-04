@@ -49,7 +49,7 @@ public:
 
     void Calculate_Live_FFT(double *Data);
 
-    void saveFFTtoFile();
+    void saveFFTtoFile(QFileInfo FileDetails);
     void InitializeFFTArrays(QString FilePath, bool isTXT);
     fftw_complex *CalculateFFT(int N, double Data[]);
 
@@ -64,15 +64,10 @@ public:
     double *fft_Compensation_Signal = nullptr;
 
     int NrSpectra;
-    int NrWaves;    
+    int NrWaves=0;
     int f_w;
     double IntTime;
     double FrequencyF;
-
-    /* Not affected by loading a file */
-    double fft_Average_DC_signal[2048], fft_Average_W_signal[2048], fft_Average_2W_signal[2048];
-
-
 
 private:
 

@@ -48,7 +48,7 @@
  */
 
 namespace Ui {
-    class PanelPolarimeter;
+class PanelPolarimeter;
 }
 
 /**
@@ -58,7 +58,7 @@ class PanelPolarimeter : public QWidget
 {
     Q_OBJECT
 
- public:
+public:
     /* Constructor */
     explicit PanelPolarimeter(QWidget *parent = 0);
 
@@ -91,11 +91,11 @@ private slots:
     /* Save Functions for Polarimeter */
     void saveGraph_Pol(void);
 
-    void AutoSave_FFT(void);
-    void AutoSave_Raw(void);
     void clearPlots(void);
+    void writeToFile(FILE *file, double *a_pSpectrum, int WParam);
 
     void plotFFTatSelectedWave( double FFTLfft_data[], double FFTLtime[]);
+    void plotAverages(double time);
 
     void LoadFromFFT(void);
     void LoadFromRawData(void);
@@ -106,8 +106,8 @@ private slots:
     void Calibrate_Pol_Start(void);
     void Calibrate_Pol_Stop(void);
 
-    /* Live Anaylisi Data */
-    void liveFFTAnalysis(void);
+    /* Live Analysis calibration */
+    void liveFFTCalibration(void);
 
 private:
 
@@ -115,6 +115,7 @@ private:
     Ui::PanelPolarimeter *ui;
 
     QSignalMapper *signalMapper;
+    QFileInfo fileInfo;
 
     QList<QwtPlotCurve *> FFT;
 
@@ -130,7 +131,7 @@ private:
 
 public:
 
-    QList<PanelItem_Pol *> devices2; 
+    QList<PanelItem_Pol *> devices2;
     QList<QwtPlotCurve *> curves_Pol;
     bool PolMeasurementRunning = false;
     bool isFFTData = true;
@@ -141,6 +142,8 @@ public:
     double averaged_Raw_Signal;
     QVector<double> averaged_Raw_Signal_Difference;
     QVector<double> averaged_Raw_Signal_time;
+    QVector<double> AverageDC, AverageW, Average2W;
+
 
     configurePolMeasure ConfigureMeasurement;
 

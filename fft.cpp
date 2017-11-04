@@ -384,7 +384,7 @@ fftw_complex* fft::CalculateFFT(int N, double Data[])
 /**
  * @brief Save the FFT Data to a File
  */
-void fft::saveFFTtoFile()
+void fft::saveFFTtoFile(QFileInfo FileDetails)
 {
     /* Save the data with a folder with the current date */
     QString date = QDate::currentDate().toString("dd MM yyyy");
@@ -393,8 +393,7 @@ void fft::saveFFTtoFile()
     QDir("FFT Polarimeter Measurements").mkdir(folderOne);
 
     /* Save the file with the same input data name, but adding FFT at the end */
-    QString FFT_File_Name = QString::number(ConcentrationC1) + "C1_" +  QString::number(ConcentrationC2) + "C2_"
-            +  QString::number(IntTime) + "ms_" +  QString::number(FrequencyF) + "Hz_FFT" + ".txt";
+    QString FFT_File_Name = FileDetails.completeBaseName() + "_FFT.txt";
 
     QString path = "FFT Polarimeter Measurements/"+folderOne+"/"+FFT_File_Name;
     QFile FFT_File(path);
@@ -475,46 +474,3 @@ void fft::Calculate_Live_FFT(double *Data)
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//*********************************************************************************************** in progress
-
-/*
-
-          //double AverageDC =0, AverageW = 0, Average2W = 0;
-
-
-                //AverageDC = AverageDC + fft_DC[k];
-                //AverageW = AverageW + fft_W[k];
-                //Average2W = Average2W + fft_2W[k];
-
-
-                // Average the Analyzed Signals
-                //for ( int  i = 0; i < 500; i++ )
-                {
-                    fft_Average_DC_signal[i] = AverageDC/1000;
-                    fft_Average_W_signal[i] = AverageW/1000;
-                    fft_Average_2W_signal[i] = Average2W/1000;
-                }
-
-
-
-
-*/
